@@ -1,0 +1,103 @@
+@prefix wf: <http://www.w3.org/2005/01/wf/flow#>.
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix r: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix doc: <http://www.w3.org/2000/10/swap/pim/doc#>.
+@prefix contact: <http://www.w3.org/2000/10/swap/pim/contact#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix ui: <http://www.w3.org/ns/ui#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+
+@prefix : <#>.
+@prefix tt: <#>.
+@keywords is, of, a.
+
+<> s:label "A  definition file for a To-Do list";
+    s:comment """Simple binary done/not done.
+    """.
+
+tracker a wf:Tracker;
+    s:label "Test to-do list";
+    is doap:bug-database of <http://www.w3.org/People/Berners-Lee/card3#i>; # Same set of developers
+
+
+
+# IMPORTANT     CHANGE THE URIS BELOW IF YOU COPY THIS FILE
+#               DO NOT USE THE TABULATOR ISSUE STORE BY ACCIDENT!
+
+
+    wf:stateStore <https://timbl.databox.me/Public/Test/Todo/state.ttl>.
+
+#    wf:messageStore </2007/wiki/tab-tracker/mesages/2010>;
+
+
+##########################################################################
+
+# What follows is the structure and workflow of the issue tracking system.
+
+tracker
+    wf:issueClass  ToDoItem;
+#    wf:issueCategory ToDoItemCategory;
+    wf:assigneeClass foaf:Person; # Can assign tasks to anyone, not just devs
+    wf:initialState Open.
+
+# Actually we should use OWL to define the set of people who are tabulator developers
+# as the set of possible assignees.  But we will leave it open for now.
+
+# These are the states any issue can be in
+
+ToDoItem a s:Class; s:subClassOf wf:Task;
+    s:label "To Do";
+    owl:disjointUnionOf ( Open Closed ).
+
+
+
+
+# Note that the classes must be explicitly subclasses of (indirectly) wf:Task
+# as tabulator (and maybe others) are not smart ebough to deduce that from the
+# owl:disjointUnionOf.
+
+Open a s:Class; s:subClassOf ToDoItem, wf:Open; s:label "open"; ui:sortOrder 90;
+    ui:backgroundColor "#ffeef8";
+    s:comment """Not done yet.""".
+
+#Chatting a s:Class; s:subClassOf ToDoItem, wf:Open; s:label "chatting"; ui:sortOrder 70;
+#    s:comment "Being discussed".
+#Assigned a s:Class; s:subClassOf ToDoItem, wf:Open; s:label "assigned"; ui:sortOrder 60;
+#    s:comment "Assigned to someone".
+#InProgress a s:Class; s:subClassOf ToDoItem, wf:Open; s:label "in progress"; ui:sortOrder 50;
+#    s:comment "Someone is working on this".
+#Testing a s:Class; s:subClassOf ToDoItem, wf:Open; s:label "testing"; ui:sortOrder 40;
+#    s:comment "Should be fixed, but not tested yet".
+#Deferred a s:Class; s:subClassOf ToDoItem, wf:Closed; s:label "deferred"; ui:sortOrder 30;
+#    s:comment "Put off for now, not being worked on.".
+#NeedsExample a s:Class; s:subClassOf ToDoItem, wf:Open; s:label "needs example"; ui:sortOrder 20;
+#    s:comment "This needs an example to be given.".
+#Obsolete a s:Class; s:subClassOf ToDoItem, wf:Closed; s:label "obsolete"; ui:sortOrder 10;
+#    s:comment "Overtaken by events. No further action necessary."
+
+Closed a s:Class; s:subClassOf ToDoItem, wf:Closed; s:label "done"; ui:sortOrder 0;
+    ui:backgroundColor "#eeffee";
+    s:comment "Acheived. No further action necessary.".
+
+#                              Classifications
+#
+# These classifications of issues are
+# orthogonal to the state of the issue above.
+
+#ToDoItemCategory owl:disjointUnionOf (
+#    Critical Urgent Bug Feature Wish).
+#
+#Critical a s:Class; s:subClassOf ToDoItemCategory; ui:sortOrder 90;
+ #   s:label "critical"; ui:backgroundColor "#ffa8ab".  # was "#fdc".
+#Urgent a s:Class; s:subClassOf ToDoItemCategory;   ui:sortOrder 80;
+#    s:label "urgent"; ui:backgroundColor "#ffcbad". # was"#fe8".
+#Bug a s:Class; s:subClassOf ToDoItemCategory;  ui:sortOrder 70;
+#    s:label "bug"; ui:backgroundColor "#fffed0". # Was "#ff7".
+#Feature a s:Class; s:subClassOf ToDoItemCategory;  ui:sortOrder 60;
+#    s:label "feature request"; ui:backgroundColor "#cbffcf". # Was "#dfd".
+#Wish a s:Class; s:subClassOf ToDoItemCategory;  ui:sortOrder 50;
+#    s:label "wish"; ui:backgroundColor "#cbcdfc". # Was "#ddf".
+
+# ENDS
