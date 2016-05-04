@@ -1,0 +1,10 @@
+# This defines the form which can be used for editing a form template
+#
+@keywords is, of, a.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix s:   <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix ui:  <http://www.w3.org/ns/ui#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+#ends

@@ -1,0 +1,884 @@
+diff --git a/js/panes/contact/contactPane.js b/js/panes/contact/contactPane.js
+index 00eadfa..e408c2a 100644
+--- a/js/panes/contact/contactPane.js
++++ b/js/panes/contact/contactPane.js
+@@ -22,203 +22,6 @@ if (typeof console == 'undefined') { // e.g. firefox extension. Node and browser
+ 
+ 
+ 
+-//////////////////////////////////////////////////////  SUBCRIPTIONS
+-
+-$rdf.subscription =  function(options, doc, onChange) {
+-
+-
+-    //  for all Link: uuu; rel=rrr  --->  { rrr: uuu }
+-    var linkRels = function(doc) {
+-        var links = {}; // map relationship to uri
+-        var linkHeaders = tabulator.fetcher.getHeader(doc, 'link');
+-        if (!linkHeaders) return null;
+-        linkHeaders.map(function(headerValue){
+-            var arg = headerValue.trim().split(';');
+-            var uri = arg[0];
+-            arg.slice(1).map(function(a){
+-                var key = a.split('=')[0].trim();
+-                var val = a.split('=')[1].trim();
+-                if (key ==='rel') {
+-                    links[val] = uri.trim();
+-                }
+-            });        
+-        });
+-        return links;
+-    };
+-
+-
+-    var getChangesURI = function(doc, rel) {
+-        var links = linkRels(doc);
+-        if (!links[rel]) {
+-            console.log("No link header rel=" + rel + " on " + doc.uri)
+-            return null;
+-        }
+-        var changesURI = $rdf.uri.join(links[rel], doc.uri);
+-        // console.log("Found rel=" + rel + " URI: " + changesURI);
+-        return changesURI;
+-    };
+-
+-
+-
+-///////////////  Subscribe to changes by SSE
+-
+-
+-    var getChanges_SSE = function(doc, onChange) {
+-        var streamURI = getChangesURI(doc, 'events');
+-        if (!streamURI) return;
+-        var source = new EventSource(streamURI); // @@@  just path??
+-        console.log("Server Side Source");   
+-
+-        source.addEventListener('message', function(e) {
+-            console.log("Server Side Event: " + e);   
+-            alert("SSE: " + e)  
+-            // $('ul').append('<li>' + e.data + ' (message id: ' + e.lastEventId + ')</li>');
+-        }, false);
+-    };
+-
+- 
+-    
+-
+-    //////////////// Subscribe to changes websocket
+-
+-    // This implementation uses web sockets using update-via
+-    
+-    var getChanges_WS2 = function(doc, onChange) {
+-        var router = new $rdf.UpdatesVia(tabulator.fetcher); // Pass fetcher do it can subscribe to headers
+-        var wsuri = getChangesURI(doc, 'changes').replace(/^http:/, 'ws:').replace(/^https:/, 'wss:');
+-        router.register(wsuri, doc.uri);
+-    };
+-    
+-    
+-    var getChanges_WS = function(doc, onChange) {
+-        var SQNS = $rdf.Namespace('http://www.w3.org/ns/pim/patch#');
+-        var changesURI = getChangesURI(doc, 'updates'); //  @@@@ use single
+-        var socket;
+-        try {
+-            socket = new WebSocket(changesURI);
+-        } catch(e) {
+-            socket = new MozWebSocket(changesURI);
+-        };
+-        
+-        socket.onopen = function(event){
+-            console.log("socket opened");
+-        };
+-        
+-        socket.onmessage = function (event) {
+-            console.log("socket received: " +event.data);
+-            var patchText = event.data;
+-            console.log("Success: patch received:" + patchText);
+-            
+-            // @@ check integrity of entire patch
+-            var patchKB = $rdf.graph();
+-            var sts;
+-            try {
+-                $rdf.parse(patchText, patchKB, doc.uri, 'text/n3');
+-            } catch(e) {
+-                console.log("Parse error in patch: "+e);
+-            };
+-            clauses = {};
+-            ['where', 'insert', 'delete'].map(function(pred){
+-                sts = patchKB.statementsMatching(undefined, SQNS(pred), undefined);
+-                if (sts) clauses[pred] = sts[0].object;
+-            });
+-            console.log("Performing patch!");
+-            kb.applyPatch(clauses, doc, function(err){
+-                if (err) {
+-                    console.log("Incoming patch failed!!!\n" + err)
+-                    alert("Incoming patch failed!!!\n" + err)
+-                    socket.close();
+-                } else {
+-                    console.log("Incoming patch worked!!!!!!\n" + err)
+-                    onChange(); // callback user
+-                };
+-            });
+-        };
+-
+-    }; // end getChanges
+-    
+-
+-    ////////////////////////// Subscribe to changes using Long Poll
+-
+-    // This implementation uses link headers and a diff returned by plain HTTP
+-    
+-    var getChanges_LongPoll = function(doc, onChange) {
+-        var changesURI = getChangesURI(doc, 'changes');
+-        if (!changesURI) return "No advertized long poll URI";
+-        console.log(tabulator.panes.utils.shortTime() + " Starting new long poll.")
+-        var xhr = $rdf.Util.XMLHTTPFactory();
+-        xhr.alreadyProcessed = 0;
+-
+-        xhr.onreadystatechange = function(){
+-            switch (xhr.readyState) {
+-            case 0:
+-            case 1:
+-                return;
+-            case 3:
+-                console.log("Mid delta stream (" + xhr.responseText.length + ") "+ changesURI);
+-                handlePartial();
+-                break;
+-            case 4:
+-                handlePartial();
+-                console.log(tabulator.panes.utils.shortTime() + " End of delta stream " + changesURI);
+-                break;
+-             }   
+-        };
+-
+-        try {
+-            xhr.open('GET', changesURI);
+-        } catch (er) {
+-            console.log("XHR open for GET changes failed <"+changesURI+">:\n\t" + er);
+-        }
+-        try {
+-            xhr.send();
+-        } catch (er) {
+-            console.log("XHR send failed <"+changesURI+">:\n\t" + er);
+-        }
+-
+-        var handlePartial = function() {
+-            // @@ check content type is text/n3
+-
+-            if (xhr.status >= 400) {
+-                console.log("HTTP (" + xhr.readyState + ") error " + xhr.status + "on change stream:" + xhr.statusText);
+-                console.log("     error body: " + xhr.responseText);
+-                xhr.abort();
+-                return;
+-            } 
+-            if (xhr.responseText.length > xhr.alreadyProcessed) {
+-                var patchText = xhr.responseText.slice(xhr.alreadyProcessed);
+-                xhr.alreadyProcessed = xhr.responseText.length;
+-                
+-                console.log(tabulator.panes.utils.shortTime() + " Long poll returns, processing...")
+-                xhr.headers = $rdf.Util.getHTTPHeaders(xhr);
+-                try {
+-                    onChange(patchText);
+-                } catch (e) {
+-                    console.log("Exception in patch update handler: " + e)
+-                    // @@ Where to report error e?
+-                }
+-                getChanges_LongPoll(doc, onChange); // Queue another one
+-                
+-            }        
+-        };
+-        return null; // No error
+-
+-    }; // end getChanges_LongPoll
+-    
+-    if (options.longPoll ) {
+-        getChanges_LongPoll(doc, onChange);
+-    }
+-    if (options.SSE) {
+-        getChanges_SSE(doc, onChange);
+-    }
+-    if (options.websockets) {
+-        getChanges_WS(doc, onChange);
+-    }
+-
+-}; // subscription
+-
+-/////////////////////////////////////////// End of subscription stufff 
+-
+ // Sets the best name we have and looks up a better one
+ tabulator.panes.utils.setName = function(element, subject) {
+     var kb = tabulator.kb, ns = tabulator.ns;
+@@ -271,15 +74,15 @@ tabulator.panes.utils.deleteButtonWithCheck = function(dom, container, noun, del
+ 
+ tabulator.panes.utils.adoptACLDefault = function(doc, aclDoc, defaultResource, defaultACLdoc) {
+     var kb = tabulator.kb;
+-    var auth = tabulator.ns.auth;
++    var ACL = tabulator.ns.acl;
+     var ns = tabulator.ns;
+-    var defaults = kb.each(undefined, auth('defaultForNew'), defaultResource, defaultACLdoc);
++    var defaults = kb.each(undefined, ACL('defaultForNew'), defaultResource, defaultACLdoc);
+     var proposed = [];
+     defaults.map(function(da) {
+-        proposed = proposed.concat(kb.statementsMatching(da, auth('agent'), undefined, defaultACLdoc))
+-            .concat(kb.statementsMatching(da, auth('agentClass'), undefined, defaultACLdoc))
+-            .concat(kb.statementsMatching(da, auth('mode'), undefined, defaultACLdoc));
+-        proposed.push($rdf.st(da, auth('accessTo'), doc, defaultACLdoc)); // Suppose 
++        proposed = proposed.concat(kb.statementsMatching(da, ACL('agent'), undefined, defaultACLdoc))
++            .concat(kb.statementsMatching(da, ACL('agentClass'), undefined, defaultACLdoc))
++            .concat(kb.statementsMatching(da, ACL('mode'), undefined, defaultACLdoc));
++        proposed.push($rdf.st(da, ACL('accessTo'), doc, defaultACLdoc)); // Suppose 
+     });
+     var kb2 = $rdf.graph(); // Potential - derived is kept apart
+     proposed.map(function(st){
+@@ -292,29 +95,177 @@ tabulator.panes.utils.adoptACLDefault = function(doc, aclDoc, defaultResource, d
+     });
+     
+     //   @@@@@ ADD TRIPLES TO ACCES CONTROL ACL FILE -- until servers fixed @@@@@
+-    var ccc = kb2.each(undefined, auth('accessTo'), doc)
+-        .filter(function(au){ return  kb2.holds(au, auth('mode'), auth('Control'))});
++    var ccc = kb2.each(undefined, ACL('accessTo'), doc)
++        .filter(function(au){ return  kb2.holds(au, ACL('mode'), ACL('Control'))});
+     ccc.map(function(au){
+         var au2 = kb2.sym(au.uri + "__ACLACL");
+-            kb2.add(au2, ns.rdf('type'), auth('Authorization'), aclDoc);
+-            kb2.add(au2, auth('accessTo'), aclDoc, aclDoc);
+-            kb2.add(au2, auth('mode'), auth('Read'), aclDoc);
+-            kb2.add(au2, auth('mode'), auth('Write'), aclDoc);
+-        kb2.each(au, auth('agent')).map(function(who){
+-            kb2.add(au2, auth('agent'), who, aclDoc);
++            kb2.add(au2, ns.rdf('type'), ACL('Authorization'), aclDoc);
++            kb2.add(au2, ACL('accessTo'), aclDoc, aclDoc);
++            kb2.add(au2, ACL('mode'), ACL('Read'), aclDoc);
++            kb2.add(au2, ACL('mode'), ACL('Write'), aclDoc);
++        kb2.each(au, ACL('agent')).map(function(who){
++            kb2.add(au2, ACL('agent'), who, aclDoc);
+         });
+-        kb2.each(au, auth('agentClass')).map(function(who){
+-            kb2.add(au2, auth('agentClass'), who, aclDoc);
++        kb2.each(au, ACL('agentClass')).map(function(who){
++            kb2.add(au2, ACL('agentClass'), who, aclDoc);
+         });
+     });
+     
+     return kb2;
+ }
+ 
++
++// Read and conaonicalize the ACL for x in aclDoc
++//
++// Accumulate the access rights which each agent or class has
++//
++tabulator.panes.utils.readACL = function(x, aclDoc) {
++    var ac = {'agent': [], 'agentClass': []};
++    var auths = kb.each(undefined, ACL('acccessTo'), x);
++    for (var pred in ['agent', 'agentClass']) {
++        auths.map(function(a){
++            kb.each(a,  ACL('mode')).map(function(mode){
++                 kb.each(a,  ACL('agent')).map(function(agent){
++                 
++                    if (!ac[pred][agent]) ac[pred][agent] = [];
++                    ac[pred][agent][mode] = true;
++                    agents[mode][agent] = a;
++                });
++            });
++        });
++    }
++    return ac;
++}
++
++// Compare two ACLs
++tabulator.panes.utils.sameACL = function(a, b) {
++    var contains = function(a, b) {
++        ['agent', 'agentClass'].map(function(pred){
++            if (a[pred]) {
++                for (var ag in a[pred]) {
++                    for (var mode in a[pred][agent]) {
++                        if (!b[pred][agent] || !b[pred][agent][mode]) {
++                            return false;
++                        }
++                    }
++                }
++            };
++        });
++        return true;
++    }
++    return contains(a, b) && contains(b,a);
++}
++
++// Union N ACLs
++tabulator.panes.utils.ACLunion = function(list) {
++    var b = list[0];
++    for (var k=1; k < list.length; k++) {
++        ['agent', 'agentClass'].map(function(pred){
++            if (a[pred]) {
++                for (var ag in a[pred]) {
++                    for (var mode in a[pred][ag]) {
++                        if (!b[pred][ag]) b[pred][ag] = [];
++                        b[pred][ag][mode] = true;
++                    }
++                }
++            };
++        });
++    }
++    return b;
++}
++
++
++// Merge ACLs lists from things to form union
++
++tabulator.panes.utils.loadUnionACL = function(subjectList, callback) {
++    var aclList = [];
++    var doList = function(list) {
++        if (list.length) {
++            doc = list.shift();
++            tabulator.panes.utils.getACLorDefault(list[0], function(ok, defa, p3, p4, defaultHolder, defaultACLDoc){
++                if (!ok) return callback(ok, p4);
++                acList.append((defa) ? tabulator.panes.utils.readACL(defaultHolder, defaultACLDoc) :
++                    tabulator.panes.utils.readACL(p3, p4));
++                doList(list.slice(1));
++            });
++        } else { // all gone
++            callback(true, tabulator.panes.utils.ACLunion(aclList))
++        }
++    }
++    doList(subjectList);
++}
++
++// Represents these as a RDF graph by combination of modes
++//
++tabulator.panes.utils.writeACL = function(kb, x, ac, aclDoc) {
++    var byCombo = [];
++    for (var pred in ['agent', 'agentClass']) {
++        for (var agent in ac[pred]) {
++            if (ac[pred][agent]) for (var agent in ac[pred][agent]) {
++                var modes = ac[pred][agent];
++                var combo = [];
++                for (var mode in ac[pred][agent]) {
++                    combo.append(mode.fromNT.uri) //
++                }
++                combo.sort()
++                combo = combo.join('\n'); 
++                if (!byCombo[combo]) byCombo[combo] = [];
++                byCombo[combo].append([pred, agent])
++            }
++        }
++    }
++    for (combo in byCombo) {
++        var a = kb.sym(aclDoc.uri + '#' + combo);
++        kb.add(a, tabulator.ns.rdf('type'), ACL('Authorization'), aclDoc);
++        var m = combo.split('\n');
++        for (var i=0; i < m.length; i++) {
++            kb.add(a, ACL('mode'), kb.sym(m[i]), aclDoc);
++        }
++        var pairs = byCombo[combo];
++        for (i=0; i< pairs.length; i++) {
++            var p = pairs[0], ag = pairs[1];
++            kb.add(a, ACL(p), kb.sym(ag), aclDoc);
++        } 
++        
++    }
++}
++
++// Fix the ACl for an individual card as a function of the groups it is in
++// 
++// All group files must be loaded first
++//
++
++tabulator.panes.utils.fixIndividualCardACL = function(person, callback)  {
++    var groups =  tabulator.kb.each(undefined, tabulator.ns.vcard('hasMember'), person); 
++    if (groups) {
++        tabulator.panes.utils.fixIndividualACL(person.doc(), groups, callback);
++    }
++    // @@ if no groups, then use default for People container or the book top container.
++}
++
++tabulator.panes.utils.fixIndividualACL = function(doc, subjects, callback)  {
++    tabulator.panes.utils.getACLorDefault(doc, function(ok, defa, p3, p4, defaultHolder, defaultACLDoc){ 
++        if (!ok) return callback(ok, p4);
++        var ac = (defa) ? tabulator.panes.utils.readACL(defaultHolder, defaultACLDoc) :
++            tabulator.panes.utils.readACL(p3, p4);
++        tabulator.panes.utils.loadUnionACL(subjects, function(ok, union){
++            if (tabulator.panes.utils.sameACL(union, ac)) {
++                console.log("Nice - same ACL. no change " + doc);
++            } else {
++                console.log("Group ACLs differ for " + doc);
++                console.log("Group ACLs " + union + "\n");
++                console.log((defa ? "Default" : "Previous set") + " ACLs " + ac + "\n");
++                // @@@ TBD
++                // serialize and store ACL.
++            }
++        });
++    })
++}
++
+ tabulator.panes.utils.ACLControlBox = function(subject, dom, callback) {
+     var kb = tabulator.kb;
+     var updater = new tabulator.rdf.sparqlUpdate(kb);
+-    var auth = tabulator.ns.auth;
++    var ACL = tabulator.ns.acl;
+     var doc = $rdf.sym(subject.uri.split('#')[0]); // The ACL is actually to the doc describing the thing
+ 
+     var table = dom.createElement('table');
+@@ -331,15 +282,15 @@ tabulator.panes.utils.ACLControlBox = function(subject, dom, callback) {
+     var bottomRow = table.appendChild(dom.createElement('tr'));
+ 
+     var ACLControl = function(box, doc, aclDoc, kb) {
+-        var authorizations = kb.each(undefined, auth('accessTo'), doc, aclDoc); // ONLY LOOK IN ACL DOC
++        var authorizations = kb.each(undefined, ACL('accessTo'), doc, aclDoc); // ONLY LOOK IN ACL DOC
+         if (authorizations.length === 0) {
+             statusBlock.textContent += "Access control file exists but contains no authorizations! " + aclDoc + ")";
+         }
+         for (i=0; i < authorizations.length; i++) {
+             var row = box.appendChild(dom.createElement('tr'));
+             var rowdiv1 = row.appendChild(dom.createElement('div'));
+-            row.setAttribute('style', 'margin: 1em; border: 0.1em solid black; border-radius: 0.5em; padding: 1em;') // doesn't work
+-            rowdiv1.setAttribute('style', 'margin: 1em; border: 0.1em solid black; border-radius: 1em; padding: 1em;');
++
++            rowdiv1.setAttribute('style', 'margin: 1em; border: 0.1em solid #444; border-radius: 0.5em; padding: 1em;');
+             rowtable1 = rowdiv1.appendChild(dom.createElement('table'));
+             rowrow = rowtable1.appendChild(dom.createElement('tr'));
+             var left = rowrow.appendChild(dom.createElement('td'));
+@@ -351,44 +302,105 @@ tabulator.panes.utils.ACLControlBox = function(subject, dom, callback) {
+             var rightTable = right.appendChild(dom.createElement('table'));
+             var a = authorizations[i];
+             
+-            kb.each(a,  auth('agent')).map(function(x){
++            kb.each(a,  ACL('agent')).map(function(x){
+                 var tr = leftTable.appendChild(dom.createElement('tr'));
+                 tabulator.panes.utils.setName(tr, x);
+                 tr.setAttribute('style', 'min-width: 12em');
+             });
+             
+-            kb.each(a,  auth('agentClass')).map(function(x){
++            kb.each(a,  ACL('agentClass')).map(function(x){
+                 var tr = leftTable.appendChild(dom.createElement('tr'));
+                 tr.textContent = tabulator.Util.label(x) + ' *'; // for now // later add # or members
+             });
+             
+-            kb.each(a,  auth('mode')).map(function(x){
++            kb.each(a,  ACL('mode')).map(function(x){
+                 var tr = rightTable.appendChild(dom.createElement('tr'));
+                 tr.textContent = tabulator.Util.label(x); // for now // later add # or members
+             });
+         }
+     }
+ 
+-    tabulator.panes.utils.getACL(doc, function(ok, status, aclDoc, message) {
+-        var i, row, left, right, a;
+-        var auth = tabulator.ns.auth;
+-        var useDefault;
+-        var addDefaultButton = function() {
+-            useDefault = bottomRow.appendChild(dom.createElement('button'));
+-            useDefault.textContent = "Stop specific sharing for this group -- just use default.";
+-            useDefault.addEventListener('click', function(event) {
+-                updater.delete(doc, function(uri, ok, message){
+-                    if (!ok) {
+-                        statusBlock.textContent += " (Error deleting access control file: "+message+")";
+-                    } else {
+-                        statusBlock.textContent = " The sharing for this group is now the default.";
+-                        bottomRow.removeChild(useDefault);
+-                    }
+-                });
+ 
+-            });
++    tabulator.panes.utils.getACLorDefault(doc, function(ok, defa, p3, p4, defaultHolder, defaultACLDoc){
++        if (!ok) {
++            statusBlock.textContent += "Error reading " + (defa? " default " : "") + "ACL."
++                + " status " + p3 + ": " + p4;
++        } else {
++            if (defa) {
++                var defaults = kb.each(undefined, ACL('defaultForNew'), defaultHolder, defaultACLDoc);
++                if (!defaults.length) {
++                    statusBlock.textContent += " (No defaults given.)";
++                } else {
++                    statusBlock.textContent = "The sharing for this group is the default.";
++                    var kb2 = tabulator.panes.utils.adoptACLDefault(doc, aclDoc, defaultHolder, defaultACLDoc) 
++                    ACLControl(box, doc, aclDoc, kb2); // Add btton to save them as actual
++                    
++                    var editPlease = bottomRow.appendChild(dom.createElement('button'));
++                    editPlease.textContent = "Set specific sharing\nfor this group";
++                    editPlease.addEventListener('click', function(event) {
++                        updater.put(aclDoc, kb2.statements,
++                            'text/turtle', function(uri, ok, message){
++                            if (!ok) {
++                                statusBlock.textContent += " (Error writing back access control file: "+message+")";
++                            } else {
++                                statusBlock.textContent = " (Now editing specific access for this group)";
++                                bottomRow.removeChild(editPlease);
++                            }
++                        });
++
++                    });
++                } // defaults.length
++            } else { // Not using defaults
++
++                ACLControl(box, p3, p4, kb);
++                addDefaultButton();
++            
++            } // Not using defaults
+         }
++            
++    });
++
++    return table
++    
++}; // ACLControl
++
++
++tabulator.panes.utils.setACL = function(docURI, aclText, callback) {
++    var aclDoc = kb.any(kb.sym(docURI),
++        kb.sym('http://www.iana.org/assignments/link-relations/acl')); // @@ check that this get set by web.js
++    if (aclDoc) { // Great we already know where it is
++        webOperation('PUT', aclDoc.uri, { data: aclText, contentType: 'text/turtle'}, callback);        
++    } else {
++    
++        fetcher.nowOrWhenFetched(docURI, undefined, function(ok, body){
++            if (!ok) return callback(ok, "Gettting headers for ACL: " + body);
++            var aclDoc = kb.any(kb.sym(docURI),
++                kb.sym('http://www.iana.org/assignments/link-relations/acl')); // @@ check that this get set by web.js
++            if (!aclDoc) {
++                // complainIfBad(false, "No Link rel=ACL header for " + docURI);
++                callback(false, "No Link rel=ACL header for " + docURI);
++            } else {
++                webOperation('PUT', aclDoc.uri, { data: aclText, contentType: 'text/turtle'}, callback);
++            }
++        })
++    }
++};
++
+ 
++//  Get ACL file or default if necessary
++//
++// callback(true, true, doc, aclDoc)   The ACL did exist
++// callback(true, false, doc, aclDoc, defaultHolder, defaultACLDoc)   ACL file did not exist but a default did
++// callback(false, false, status, message)  error getting original
++// callback(false, true, status, message)  error getting defualt
++
++tabulator.panes.utils.getACLorDefault = function(doc, callback) {
++
++    tabulator.panes.utils.getACL(doc, function(ok, status, aclDoc, message) {
++        var i, row, left, right, a;
++        var kb = tabulator.kb;
++        var ACL = tabulator.ns.acl;
++        if (!ok) return callback(false, false, status, message);
+         
+         // Recursively search for the ACL file which gives default access
+         var tryParent = function(uri) {
+@@ -399,91 +411,48 @@ tabulator.panes.utils.ACLControlBox = function(subject, dom, callback) {
+             var left = uri.indexOf('/', uri.indexOf('//') + 2);
+             uri = uri.slice(0, right + 1);
+             var doc2 = $rdf.sym(uri);
+-            tabulator.panes.utils.getACL(doc2, function(ok, status, aclDoc2) {
++            tabulator.panes.utils.getACL(doc2, function(ok, status, defaultACLDoc) {
+ 
+                 if (!ok) {
+-                    statusBlock.textContent += ("( No ACL pointer " + uri + ' ' + status + ")");
++                    return callback(false, true, status, "( No ACL pointer " + uri + ' ' + status + ")")
+                 } else if (status === 403) {
+-                    statusBlock.textContent += ("( ACL file FORBIDDEN. Stop." + uri + ")");
++                    return callback(false, true, status,"( default ACL file FORBIDDEN. Stop." + uri + ")");
+                 } else if (status === 404) {
+-                    statusBlock.textContent += ("( No ACL file for set " + uri + ")");
+                     if (left >= right) {
+-                        statusBlock.textContent += ("( Thats all folks.)");
++                        return callback(false, true, 499, "Nothing to hold a default");
+                     } else {
+                         tryParent(uri);
+                     }
++                } else if (status !== 200) {
++                        return callback(false, true, status, "Error searching for default");
+                 } else { // 200
+-                    statusBlock.textContent += (" ACCESS set at " + uri + ". End search.");
+-                    var defaults = kb.each(undefined, auth('defaultForNew'), kb.sym(uri), aclDoc2);
++                    //statusBlock.textContent += (" ACCESS set at " + uri + ". End search.");
++                    var defaults = kb.each(undefined, ACL('defaultForNew'), kb.sym(uri), defaultACLDoc);
+                     if (!defaults.length) {
+-                        statusBlock.textContent += " (No defaults given.)";
++                        tryParent(uri);       // Keep searching
+                     } else {
+-                        statusBlock.textContent = "The sharing for this group is the default.";
+-                        var kb2 = tabulator.panes.utils.adoptACLDefault(doc, aclDoc, kb.sym(uri), aclDoc2) 
+-                        ACLControl(box, doc, aclDoc, kb2); // Add btton to save them as actual
+-                        
+-                        var editPlease = bottomRow.appendChild(dom.createElement('button'));
+-                        editPlease.textContent = "Set specific sharing\nfor this group";
+-                        editPlease.addEventListener('click', function(event) {
+-                            updater.put(aclDoc, kb2.statements,
+-                                'text/turtle', function(uri, ok, message){
+-                                if (!ok) {
+-                                    statusBlock.textContent += " (Error writing back access control file: "+message+")";
+-                                } else {
+-                                    statusBlock.textContent = " (Now editing specific access for this group)";
+-                                    bottomRow.removeChild(editPlease);
+-                                }
+-                            });
+-
+-                        });
++                        var defaultHolder = kb.sym(uri);
++                        callback(true, false, doc, aclDoc, defaultHolder, defaultACLDoc)
+                     }
+                 }
+             });
+-        };
++        }; // tryParent
+ 
+         if (!ok) {
+-            statusBlock.textContent += ("( Access control information not provided " + uri +")");
++            return callback(false, false, status , "Error accessing Access Control information for " + uri +")");
+         } else if (status === 404) {
+-            statusBlock.textContent = '(No specific access control has been set.)\n'; // error message
+-            statusBlock.setAttribute('style', 'background-color: #ffe; padding:2em;');
+-            tryParent(doc.uri);
+-            //  @@ construct default one - the server should do that
++            tryParent(doc.uri);   //  @@ construct default one - the server should do that
+         } else  if (status === 403) {
+-            statusBlock.textContent = '(Sharing not available to you)'; // error message
++            return callback(false, false, status, "(Sharing not available to you)");
+         } else  if (status !== 200) {
+-            statusBlock.textContent = message; // error message
+-            statusBlock.setAttribute('style', 'background-color: #f99; padding:2em;')
++            return callback(false, false, status, "Error " + status + " accessing Access Control information for " + uri); 
+         } else { // 200
+-            ACLControl(box, doc, aclDoc, kb);
+-            addDefaultButton();
+-        }        
+-    });
+-    
+-    return table
+-}; // ACLControl
++            return callback(true, true, doc, aclDoc);
++        }  
++    }); // Call to getACL
++} // getACLorDefault
+ 
+ 
+-tabulator.panes.utils.setACL = function(docURI, aclText, callback) {
+-    var aclDoc = kb.any(kb.sym(docURI),
+-        kb.sym('http://www.iana.org/assignments/link-relations/acl')); // @@ check that this get set by web.js
+-    if (aclDoc) { // Great we already know where it is
+-        webOperation('PUT', aclDoc.uri, { data: aclText, contentType: 'text/turtle'}, callback);        
+-    } else {
+-    
+-        fetcher.nowOrWhenFetched(docURI, undefined, function(ok, body){
+-            if (!ok) return callback(ok, "Gettting headers for ACL: " + body);
+-            var aclDoc = kb.any(kb.sym(docURI),
+-                kb.sym('http://www.iana.org/assignments/link-relations/acl')); // @@ check that this get set by web.js
+-            if (!aclDoc) {
+-                // complainIfBad(false, "No Link rel=ACL header for " + docURI);
+-                callback(false, "No Link rel=ACL header for " + docURI);
+-            } else {
+-                webOperation('PUT', aclDoc.uri, { data: aclText, contentType: 'text/turtle'}, callback);
+-            }
+-        })
+-    }
+-};
+-
+ //    Calls back (ok, status, acldoc, message)
+ // 
+ //   (false, errormessage)        no link header
+@@ -574,9 +543,9 @@ tabulator.panes.register( {
+         } 
+ 
+         var complainIfBad = function(ok,body){
+-            if (ok) {
++            if (!ok) {
++                console.log("Error: " + body);
+             }
+-            else console.log("Sorry, failed to save your change:\n"+body, 'background-color: pink;');
+         }
+ 
+         var getOption = function (tracker, option){ // eg 'allowSubContacts'
+@@ -966,7 +935,7 @@ tabulator.panes.register( {
+            // Write new group to web
+            // Creates an empty new group file and adds it to the index
+            //
+-           var createNewGroup = function(book, name, callback) {
++           var saveNewGroup = function(book, name, callback) {
+                 var gix = kb.any(book, ns.vcard('groupIndex'));
+                 
+                 var x = subject.uri.split('#')[0]
+@@ -1060,6 +1029,25 @@ tabulator.panes.register( {
+                     return name ? name.value : '???';
+                 }
+                 
++                var filterName = function(name) {
++                    var filter = searchInput.value.trim().toLowerCase();
++                    if (filter.length === 0) return true;
++                    var parts = filter.split(' '); // Each name part must be somewhere
++                    for (var j=0; j< parts.length; j++) {
++                        word = parts[j];
++                        if (name.toLowerCase().indexOf(word) <0 ) return false;
++                    }
++                    return true;
++                }
++                
++                var searchFilterNames = function() {
++                    for (var i=0; i < peopleMainTable.children.length; i++) {
++                        row = peopleMainTable.children[i] 
++                        row.setAttribute('style',
++                            filterName(nameFor(row.subject)) ? '' : 'display: none;');
++                    }
++                }
++
+                 var bookTable = dom.createElement('table');
+                 bookTable.setAttribute('style', 'border-collapse: collapse; margin-right: 0;')
+                 div.appendChild(bookTable);
+@@ -1078,17 +1066,53 @@ tabulator.panes.register( {
+                 var peopleFooter =  bookFooter.appendChild(dom.createElement('td'));
+                 var cardFooter =  bookFooter.appendChild(dom.createElement('td'));
+                 
++                var  searchDiv = cardHeader.appendChild(dom.createElement('div'));
++                // searchDiv.setAttribute('style', 'border: 0.1em solid #888; border-radius: 0.5em');
++                searchInput = cardHeader.appendChild(dom.createElement('input'));
++                searchInput.setAttribute('type', 'text');
++                searchInput.setAttribute('style', 'border: 0.1em solid #444; border-radius: 0.5em; width: 100%;');
++                // searchInput.addEventListener('input', searchFilterNames);
++                searchInput.addEventListener('input', function(e){
++                    searchFilterNames();
++                });
++
+                 var cardMain = bookMain.appendChild(dom.createElement('td'));
+                 cardMain.setAttribute('style', 'margin: 0;'); // fill space available
+                 var dataCellStyle =  'padding: 0.1em;'
+                 
+                 groupsHeader.textContent = "groups";
+                 groupsHeader.setAttribute('style', 'min-width: 10em; padding-bottom 0.2em;');
++                var allGroups = groupsHeader.appendChild(dom.createElement('button'));
++                allGroups.textContent = "All";
++                allGroups.setAttribute('style', 'margin-left: 1em;');
++                allGroups.addEventListener('click', function(event){
++                    allGroups.state = allGroups.state ? 0 : 1;
++                    peopleMainTable.innerHTML = ''; // clear in case refreshNames doesn't work for unknown reason
++                    if (allGroups.state) {
++                        for (var k=0; k < groupsMainTable.children.length; k++) {
++                            var groupRow = groupsMainTable.children[k];
++                            var group = groupRow.subject;
++
++                            var groupList = kb.sym(group.uri.split('#')[0]);
++                            selected[group.uri] = true;
++
++                            kb.fetcher.nowOrWhenFetched(groupList.uri, undefined, function(ok, message){
++                                if (!ok) return complainIfBad(ok, "Can't load group file: " +  groupList + ": " + message);
++                                groupRow.setAttribute('style', 'background-color: #cce;');
++                                refreshNames(); // @@ every time??
++                            });
++                        //refreshGroups();
++                        } // for each row
++                    } else {
++                        selected = {};
++                        refreshGroups();
++                    }
++                }); // on button click
++
+                 
+                 peopleHeader.textContent = "name";
+                 peopleHeader.setAttribute('style', 'min-width: 18em;');
+                 peopleMain.setAttribute('style','overflow:scroll;');
+-                // cardHeader.textContent = "contact details"; // clutter
+                 
+                 
+                 var groups = kb.each(subject, ns.vcard('includesGroup'));
+@@ -1099,7 +1123,7 @@ tabulator.panes.register( {
+                 var cardPane = function(dom, subject, paneName) {
+                     var p = tabulator.panes.byName(paneName);
+                     var d = p.render(subject, dom);
+-                    d.setAttribute('style', 'border: 0.1em solid #888; border-radius: 0.5em')
++                    d.setAttribute('style', 'border: 0.1em solid #444; border-radius: 0.5em')
+                     return d;
+                 };
+ 
+@@ -1156,19 +1180,29 @@ tabulator.panes.register( {
+                         }
+                     }
+                     cards.sort(compareForSort); // @@ sort by name not UID later
++                    for (var k=0; k < cards.length - 1;) {
++                        if (cards[k].uri === cards[k+1].uri) {
++                            cards.splice(k,1);
++                        } else {
++                            k++;
++                        }
++                    }
++                    
+                     peopleMainTable.innerHTML = ''; // clear
+                     peopleHeader.textContent = (cards.length > 5 ? '' + cards.length + " contacts" : "contact");
+ 
+                     for (var j =0; j < cards.length; j++) {
+                         var personRow = peopleMainTable.appendChild(dom.createElement('tr'));
+-                        personRow.setAttribute('style', dataCellStyle);
++                        var personLeft = personRow.appendChild(dom.createElement('td'));
++                        var personRight = personRow.appendChild(dom.createElement('td'));
++                        personLeft.setAttribute('style', dataCellStyle);
+                         var person = cards[j];
+                         var name = nameFor(person);
+-                        personRow.textContent = name;
++                        personLeft.textContent = name;
+                         personRow.subject = person;
+ 
+-                        var setPersonListener = function toggle(personRow, person) {
+-                            tabulator.panes.utils.deleteButtonWithCheck(dom, personRow, 'contact', function(){
++                        var setPersonListener = function toggle(personLeft, person) {
++                            tabulator.panes.utils.deleteButtonWithCheck(dom, personRight, 'contact', function(){
+                                 deleteThing(person);
+                                 refreshNames();
+                                 cardMain.innerHTML = '';
+@@ -1181,12 +1215,17 @@ tabulator.panes.register( {
+                                     cardMain.innerHTML = '';
+                                     if (!ok) return complainIfBad(ok, "Can't load card: " +  group.uri.split('#')[0] + ": " + message)
+                                     // dump("Loaded card " + cardURI + '\n')
+-                                    cardMain.appendChild(cardPane(dom, person, 'contact'));            
++                                    cardMain.appendChild(cardPane(dom, person, 'contact'));  
++                                    cardMain.appendChild(dom.createElement('br'));
++                                    var anchor = cardMain.appendChild(dom.createElement('a'));
++                                    anchor.setAttribute('href', person.uri);
++                                    anchor.textContent = '->';
+                                 })
+                            });
+                         };
+                         setPersonListener(personRow, person);
+                     };
++                    searchFilterNames();
+     
+                 }
+                 
+@@ -1209,10 +1248,8 @@ tabulator.panes.register( {
+                     // var groupLeft = groupRow.appendChild(dom.createElement('td'));
+                     // var groupRight = groupRow.appendChild(dom.createElement('td'));
+                     groupRow.textContent = name;
+-                    // var checkBox = groupLeft.appendChild(dom.createElement('input'))
+-                    // checkBox.setAttribute('type', 'checkbox'); // @@ set from personal last settings
+-                    var foo = function toggle(groupRow, group) {
+-                        tabulator.panes.utils.deleteButtonWithCheck(dom, groupRow, "group", function(){
++                    var foo = function toggle(groupRow, group, name) {
++                        tabulator.panes.utils.deleteButtonWithCheck(dom, groupRow, "group " + name, function(){
+                             deleteThing(group);
+                         });
+                         groupRow.addEventListener('click', function(event){
+@@ -1220,12 +1257,6 @@ tabulator.panes.register( {
+                             var groupList = kb.sym(group.uri.split('#')[0]);
+                             if (!event.altKey) {
+                                 selected = {}; // If alt key pressed, accumulate multiple
+-                                /*
+-                                cardMain.innerHTML = ''; 
+-                                cardMain.appendChild(tabulator.panes.utils.ACLControlBox(group, dom, function(ok, body){
+-                                    if (!ok) cardMain.innerHTML = "Failed: " + body;
+-                                }));
+-                                */
+                             }
+                             selected[group.uri] = selected[group.uri] ? false : true;
+                             refreshGroups();
+@@ -1244,7 +1275,7 @@ tabulator.panes.register( {
+                             })
+                         }, true);
+                     };
+-                    foo(groupRow, group);
++                    foo(groupRow, group, name);
+                 }
+                 
+  
+@@ -1311,7 +1342,7 @@ tabulator.panes.register( {
+                     // cardMain.appendChild(newContactForm(dom, kb, selected, createdNewContactCallback1));
+                     cardMain.appendChild(getNameForm(dom, kb, "Group", selected,
+                         function(subject, name, selectedGroups) {
+-                            createNewGroup(subject, name, function(success, body) {
++                            saveNewGroup(subject, name, function(success, body) {
+                                 if (!success) {
+                                      console.log("Error: can\'t save new group:" + body);
+                                      cardMain.innerHTML = "Failed to save group" + body
