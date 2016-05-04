@@ -11,9 +11,14 @@ requireState.loadedPackage['http'] = requireState.loadedPackage['http-browserify
 
 
 //  Solid-compatible UI module
-var UI = require('solid-ui')
+// try global
+UI = require('solid-ui')
+$rdf = UI.rdf
 
-var $rdf = UI.rdf
+if (typeof window !== 'undefined'){
+  window.UI = UI
+}
+
 $rdf.log = UI.log
 
 
