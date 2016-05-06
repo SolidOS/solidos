@@ -1,6 +1,6 @@
 {
   "name": "mashlib",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Data mashup library",
   "main": "./index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/linkeddata/tabulator"
+    "url": "https://github.com/linkeddata/mashlib"
   },
   "keywords": [
     "solid",
@@ -31,15 +31,14 @@
   "author": "Tim Berners-Lee <timbl@mit.edu>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/linkeddata/tabulator/issues"
+    "url": "https://github.com/linkeddata/mashlib/issues"
   },
-  "homepage": "https://github.com/linkeddata/tabulator",
+  "homepage": "https://github.com/linkeddata/mashlib",
   "dependencies": {
     "http-browserify": "^0.0.0",
     "events": "",
     "url":"",
-    "better-simple-slideshow": "git://github.com/linkeddata/better-simple-slideshow.git#gh-pages",
-    "solid-ui": "git://github.com/linkeddata/solid-ui.git"
+    "solid-app-set": "https://github.com/linkeddata/solid-app-set.git"
   },
   "devDependencies": {
     "browserify": "^13.0.0",

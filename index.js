@@ -4,10 +4,20 @@
  *
  */
 
+dump = function(msg) {
+  console.log(msg.slice(0,-1))
+}
+
+
+
+if (typeof tabulator === 'undefined'){
+  tabulator = { isExtension: false} // a kludge until tabulator completely removed
+  tabulator.preferences = {get: function(){}, set: function(){}}
+}
+
 
 var events = require('events') // load in the order which they are npm installed
 var http = require('http-browserify')
-requireState.loadedPackage['http'] = requireState.loadedPackage['http-browserify']
 
 
 //  Solid-compatible UI module
@@ -27,31 +37,22 @@ UI.OutlineObject  = require('./panes/outline/manager.js')
 // later in the context of a window and a document:
 
 var dom = window.document
-dom.outline = new tabulator.OutlineObject(dom)
+dom.outline = UI.outline = new UI.OutlineObject(dom)
 
 
 UI.panes = require("./panes/index.js")
 
+// Override the ones set by browserify:
+
+UI.icons.originalIconBase = "https://linkeddata.github.io/tabulator-firefox/content/js/solid-ui/lib/originalIcons/"
+UI.icons.iconBase = "https://linkeddata.github.io/tabulator-firefox/content/js/solid-ui/lib/icons/"
+
+
+
+module.exports = UI
 
 // UI.color = require('jscolor/jscolor.js')
 
 
-//And Preferences mechanisms.
-// tabulator.loadScript("js/init/prefs.js");
-
-/*
-tabulator.loadScript("js/tab/sources-ext.js");
-
-//And, finally, all non-pane UI code.
-tabulator.loadScript("js/tab/labeler.js");
-tabulator.loadScript("js/tab/request.js");
-// tabulator.loadScript("js/tab/outlineinit.js");
-tabulator.loadScript("js/tab/userinput.js"); // moved to panes
-// tabulator.loadScript("js/tab/outline.js");
-
-//Oh, and the views!
-// tabulator.loadScript("js/init/views.js");
-
-*/
 
 // ENDS
