@@ -4,7 +4,7 @@
   "description": "Data mashup library",
   "main": "./index.js",
   "scripts": {
-    "build-browserified": "browserify -r ./index.js:mashup --insert-global-vars UI,__filename,__dirname,process,Buffer,global --debug --exclude 'xhr2' > dist/mashup-node-2.js",
+    "build-browserified": "browserify -r ./index.js:mashlib --debug --exclude 'xhr2' > dist/mashlib-prealpha.js",
     "build-minified": "browserify -r ./index.js:solid-ui --exclude 'xhr2' --exclude 'rdflib' -d -p [minifyify --no-map] > mashup/mashup-node.min.js",
     "build": "npm run clean && mkdir -p dist/resources && npm run standard && npm run build-browserified && npm run build-minified",
     "build-qunit-resources": "browserify -r ./test/resources/profile-ldnode.js:test-ldnode-profile --exclude 'xhr2' --exclude 'rdflib' > dist/resources/test-ldnode-profile.js",
