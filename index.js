@@ -12,7 +12,16 @@ dump = function(msg) {
 
 if (typeof tabulator === 'undefined'){
   tabulator = { isExtension: false} // a kludge until tabulator completely removed
-  tabulator.preferences = {get: function(){}, set: function(){}}
+  tabulator.mode = 'webapp'
+  tabulator.preferences = { // non-persistent stand-in just for 'me' value 2016
+    value: [],
+    get: function(k){
+      return this.value[k]
+    },
+    set: function(k,v){
+      this.value[k] = v
+    }
+  }
 }
 
 
@@ -32,22 +41,14 @@ if (typeof window !== 'undefined'){
 $rdf.log = UI.log
 
 
-UI.OutlineObject  = require('./panes/outline/manager.js')
+UI.OutlineObject  = require('solid-app-set/outline/manager.js')
 
 // later in the context of a window and a document:
 
 var dom = window.document
 dom.outline = UI.outline = new UI.OutlineObject(dom)
 
-
-UI.panes = require("./panes/index.js")
-
-// Override the ones set by browserify:
-
-UI.icons.originalIconBase = "https://linkeddata.github.io/tabulator-firefox/content/js/solid-ui/lib/originalIcons/"
-UI.icons.iconBase = "https://linkeddata.github.io/tabulator-firefox/content/js/solid-ui/lib/icons/"
-
-
+UI.panes = require("solid-app-set")
 
 module.exports = UI
 
