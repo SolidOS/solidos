@@ -1,0 +1,11 @@
+@prefix n0: <http://www.w3.org/ns/auth/acl#>.
+@prefix c: <https://www.w3.org/People/Berners-Lee/card#>.
+
+<#a1>
+    a    n0:Authorization;
+    n0:accessTo
+       <groups.ttl>;
+    n0:agent
+       c:i;
+    n0:mode
+       n0:Control, n0:Read, n0:Write.
