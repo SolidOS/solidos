@@ -9,7 +9,7 @@ dump = function(msg) {
 }
 
 
-
+// Vestigial things still in old tabulator entry point 
 if (typeof tabulator === 'undefined'){
   tabulator = { isExtension: false} // a kludge until tabulator completely removed
   tabulator.mode = 'webapp'
