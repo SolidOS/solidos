@@ -4,12 +4,14 @@
  *
  */
 
+// var dump, tabulator, UI, $rdf
+
 dump = function(msg) {
   console.log(msg.slice(0,-1))
 }
 
 
-// Vestigial things still in old tabulator entry point 
+// Vestigial things still in old tabulator entry point
 if (typeof tabulator === 'undefined'){
   tabulator = { isExtension: false} // a kludge until tabulator completely removed
   tabulator.mode = 'webapp'
@@ -19,6 +21,10 @@ if (typeof tabulator === 'undefined'){
       return this.value[k]
     },
     set: function(k,v){
+      if (typeof v !== 'string'){
+        console.log("Non-string value of preference " + k + ": " + v)
+        throw "Non-string value of preference " + k + ": " + v
+      }
       this.value[k] = v
     }
   }
