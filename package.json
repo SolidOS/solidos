@@ -5,7 +5,7 @@
   "main": "./index.js",
   "scripts": {
     "build-browserified": "browserify -r ./index.js:mashlib --debug -t babelify --exclude 'xhr2' | tr -d '\r' > dist/mashlib-prealpha.js",
-    "build-minified": "browserify -r ./index.js:solid-ui --exclude 'xhr2' --exclude 'rdflib' -d -p [minifyify --no-map] > mashup/mashup-node.min.js",
+    "build-minified": "browserify -r ./index.js:mashlib  -t babelify --exclude 'xhr2' -d -p [minifyify --no-map] > dist/mashlib.min.js",
     "build": "npm run clean && mkdir -p dist/resources && npm run standard && npm run build-browserified && npm run build-minified",
     "build-qunit-resources": "browserify -r ./test/resources/profile-ldnode.js:test-ldnode-profile --exclude 'xhr2' --exclude 'rdflib' > dist/resources/test-ldnode-profile.js",
     "clean": "rm -rf dist/",
