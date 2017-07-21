@@ -6,14 +6,14 @@
 
 // var dump, tabulator, UI, $rdf
 
-dump = function(msg) {
+var dump = function(msg) {
   console.log(msg.slice(0,-1))
 }
 
 
 // Vestigial things still in old tabulator entry point
 if (typeof tabulator === 'undefined'){
-  tabulator = { isExtension: false} // a kludge until tabulator completely removed
+  var tabulator = { isExtension: false} // a kludge until tabulator completely removed
   tabulator.mode = 'webapp'
   tabulator.preferences = { // non-persistent stand-in just for 'me' value 2016
     value: [],
@@ -28,17 +28,17 @@ if (typeof tabulator === 'undefined'){
       this.value[k] = v
     }
   }
+  global.tabulator = tabulator
 }
 
-
-var events = require('events') // load in the order which they are npm installed
-var http = require('http-browserify')
-
+// var events = require('events') // load in the order which they are npm installed
+// var http = require('http-browserify')
 
 //  Solid-compatible UI module
 // try global
-UI = require('solid-ui')
-$rdf = UI.rdf
+var UI = require('solid-ui')
+var $rdf = UI.rdf
+global.$rdf = $rdf
 
 if (typeof window !== 'undefined'){
   window.UI = UI
@@ -46,15 +46,16 @@ if (typeof window !== 'undefined'){
 
 $rdf.log = UI.log
 
+UI.panes = require("solid-app-set")
 
 UI.OutlineObject  = require('solid-app-set/outline/manager.js')
 
 // later in the context of a window and a document:
 
-var dom = window.document
-dom.outline = UI.outline = new UI.OutlineObject(dom)
-
-UI.panes = require("solid-app-set")
+if (typeof window !== 'undefined') {
+  var dom = window.document
+  dom.outline = UI.outline = new UI.OutlineObject(dom)
+}
 
 module.exports = UI
 

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset='UTF-8'>
-<link type="text/css" rel="stylesheet" href="/timbl/Automation/Library/Mashup/tabbedtab.css" />
-<script type="text/javascript" src="../dist/mashlib-prealpha.js"></script>
+<head>
+    <meta charset='UTF-8'>
+<!--<link type="text/css" rel="stylesheet" href="/timbl/Automation/Library/Mashup/tabbedtab.css" />-->
+    <link type="text/css" rel="stylesheet" href="./mash.css" />
+<script type="text/javascript" src="./mashlib-prealpha.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var UI = require('mashlib')
+    UI = Mashlib;
     var uri = window.location.href;
     var data_uri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + '';
     var subject = UI.rdf.sym(data_uri);
