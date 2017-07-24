@@ -4,6 +4,7 @@
   "description": "Data mashup library",
   "main": "./index.js",
   "scripts": {
+    "build-browserified": "npm run build",
     "build-browserified-old": "browserify -r ./index.js:mashlib --debug -t babelify --exclude 'xmldom' --exclude 'node-fetch' > dist/mashlib-prealpha.js",
     "build-minified": "browserify -r ./index.js:mashlib  -t babelify --exclude 'xmldom' --exclude 'node-fetch' -d -p [minifyify --no-map] > dist/mashlib.min.js",
     "build-old": "npm run clean && mkdir -p dist/ && npm run build-browserified && npm run build-minified",
