@@ -7,7 +7,7 @@
 <script type="text/javascript" src="./mashlib-prealpha.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    UI = Mashlib;
+    UI = require('mashlib');
     var uri = window.location.href;
     var data_uri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + '';
     var subject = UI.rdf.sym(data_uri);
