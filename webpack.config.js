@@ -11,16 +11,33 @@ module.exports = {
     libraryTarget: 'umd'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        query: {
-          presets: ['es2015']
-        }
+        exclude: /node_modules/
+      },
+      {
+        test: /^.*\/oidc-rp\/.*\.js$/,
+        loader: 'babel-loader'
+      },
+      {
+        test: /^.*\/solid-app-set\/.*\.js$/,
+        loader: 'babel-loader'
       }
     ]
   },
+  // module: {
+  //   loaders: [
+  //     {
+  //       test: /\.js$/,
+  //       loader: 'babel-loader',
+  //       query: {
+  //         presets: ['es2015']
+  //       }
+  //     }
+  //   ]
+  // },
   externals: {
     'node-fetch': 'fetch',
     'isomorphic-fetch': 'fetch',

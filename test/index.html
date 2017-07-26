@@ -6,13 +6,17 @@
     <link type="text/css" rel="stylesheet" href="./mash.css" />
 <script type="text/javascript" src="./mashlib-prealpha.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    UI = require('mashlib');
-    var uri = window.location.href;
-    var data_uri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + '';
-    var subject = UI.rdf.sym(data_uri);
-    UI.outline.GotoSubject(subject, true, undefined, true, undefined);
-});
+  document.addEventListener('DOMContentLoaded', function() {
+    UI = require('mashlib')
+    UI.rdf.Fetcher.crossSiteProxyTemplate = 'https://databox.me/,proxy?uri={uri}'
+    var uri = window.location.href
+
+    UI.authn.checkCurrentUser()
+
+    var data_uri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + ''
+    var subject = UI.rdf.sym(data_uri)
+    UI.outline.GotoSubject(subject, true, undefined, true, undefined)
+  })
 </script>
 </head>
 <body>
