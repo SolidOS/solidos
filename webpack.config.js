@@ -1,4 +1,5 @@
-var path = require('path')
+const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   entry: [
@@ -27,6 +28,10 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new webpack.DefinePlugin({ 'global.IS_BROWSER': true })
+    // new webpack.optimize.UglifyJsPlugin()
+  ],
   // module: {
   //   loaders: [
   //     {
