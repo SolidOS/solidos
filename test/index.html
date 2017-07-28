@@ -11,7 +11,7 @@
     UI.rdf.Fetcher.crossSiteProxyTemplate = 'https://databox.me/,proxy?uri={uri}'
     var uri = window.location.href
 
-    UI.authn.checkCurrentUser()
+    UI.authn.checkUser()
 
     var data_uri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + ''
     var subject = UI.rdf.sym(data_uri)
