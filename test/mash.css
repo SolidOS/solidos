@@ -1,0 +1,1061 @@
+/*  Some style for the tabulator
+**
+**
+**  Do NOT use physical measures, but font-relative measures.
+**  2006-10-21  timbl  cconverted px to em at approx 1em = 12px
+** 
+*/
+@import url("js/panes/microblogPane/mbStyle.css"); /*microblog pane*/
+@import url("js/panes/social/style.css"); /*social pane*/
+/* @import url("chrome://tabulator/content/js/panes/microblogPane/mbStyle.css"); /*microblog pane*/
+/* @import url("chrome://tabulator/content/js/panes/social/style.css"); /*social pane*/
+
+/* I couldn't find the code for the collapse image. this is a quick work around
+to make the collapsing easier to use ( the triangles dont jump 20 pixels). ~cm2
+*/
+img[title="Hide details."]{
+  float:left;
+}
+body {background-color: white ; font-size: 80%; font-family: sans-serif}
+
+.warning { color: red; }
+.selected {background-color: #8F3}
+
+.licOkay {background-color: #dfd}
+
+/*
+** other potential colors for CC:
+**  #C4FF55. "faded" version of CC
+**  #486d00, actual CC
+**  #ccff99, mit page color
+*/
+
+strong { font-size: 120%; color: #333 }
+div.Outliner { margin-top: 2em; padding: 0.8em; }
+form#TabulateForm { padding: 0.8em }
+div#addViewForm { padding: 0.8em }
+iframe { background: white }
+
+/* Map */
+
+img.pic { max-height: 20em }
+
+/* Sources */
+
+.fetched { background-color: #eeffee }
+.requested { background-color: yellow }
+.failed { color: red; background-color: white }
+.unparseable { background-color: #ffcc00; }
+
+pre#status { font-size: 100% }
+
+/* Panes */
+
+td.internal  {  }
+div.internalPane { background-color: #ddddff; padding: 0.5em;
+ -moz-border-radius: 1em; /* CSS3: border-radius: .4em; */ }
+
+div.instancePane {
+        border-top: solid 1px #777; border-bottom: solid 1px #777; 
+        margin-top: 0.5em; margin-bottom: 0.5em }
+
+/* ***************** For the Justification UI Panes **********/
+
+div.container {
+    border-top: solid 5px black;
+    border-left: solid 5px black;
+    border-bottom: solid 5px black;
+    border-right: solid 5px black;
+    margin-top: 0.5em; 
+    margin-bottom: 0.5em;
+    -moz-border-radius: 0.75em;
+}
+
+div.nonCompliantPane {
+    border-top: solid 1px red;
+    border-left: solid 1px red;
+    border-bottom: solid 1px red;
+    border-right: solid 1px red;
+    padding: 0.5em;  
+    background-color: #fbf0f7; 
+    margin-top: 0.5em; margin-bottom: 0.5em;
+    -moz-border-radius: 1em;
+}
+
+div.compliantPane {
+    border-top: solid 1px green;
+    border-left: solid 1px green;
+    border-bottom: solid 1px green;
+    border-right: solid 1px green;
+    padding: 0.5em;  
+    background-color: #def8e0; 
+    margin-top: 0.5em; margin-bottom: 0.5em;
+    -moz-border-radius: 1em;
+}
+
+div.justification {
+    font-size: 100%;
+    padding: 0 5px;
+    width: 80%; /* @@ Don't use pixels -- use em */
+    background-color: white; 
+    margin-top: 0.5em; margin-bottom: 0.5em;
+}
+
+
+div.description {
+    font-size: 120%;
+    border-top: solid 1px yellow;
+    border-left: solid 1px yellow;
+    border-bottom: solid 1px yellow;
+    border-right: solid 1px yellow;
+    padding: 15px;
+    width: 100%; 
+    background-color: #ffffdd; 
+    margin-top: 0.5em; 
+    margin-bottom: 0.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    -moz-border-radius: 0.75em;
+    position:relative;
+    left:0%
+}
+
+div.premises {
+    font-size: 100%;
+    border-top: solid 1px #3399ff;
+    border-left: solid 1px #3399ff;
+    border-bottom: solid 1px #3399ff;
+    border-right: solid 1px #3399ff;
+    padding: 0.5px;
+    width: 100%; 
+    background-color: #ccccff; 
+    margin-top: 0.5em; 
+    margin-bottom: 0.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    -moz-border-radius: 0.75em;
+    position:relative;
+    left:0% /*May be we could shift the left margin a bit?*/
+}
+
+/* ***************** Social Pane **********/
+
+div.socialPane {
+        border-top: solid 1px #777; border-bottom: solid 1px #777; 
+        padding-top: 0.5em; padding-bottom: 0.5em;
+        margin: 0 }
+
+img.foafPic { width: 100% ; border: none; margin: 0; padding: 0;
+        /*float:right; */}
+
+
+div.mildNotice {
+        border: dashed 0.1em #777;  margin: 1em; padding: 1em;
+        width: 80%;        /* float: right; */
+        background-color: #ffe; }
+
+.friendBox { /* height: 4em; */ border-top: solid 0.01em #ccc; margin: 0; padding: 0.3em;
+            /* float: left; */}
+.friendBoxBig { height: 20em; border-top: solid 0.01em #202; /* float: left; */}
+
+.socialPane a      { color: #3B5998; text-decoration: none; font-weight: bold}
+.socialPane a:link { color: #3B5998; text-decoration: none; font-weight: bold}
+.socialPane a:visited { color: #3B5998; text-decoration: none; font-weight: bold}
+.socialPane a:hover { color: #3B5998; text-decoration: underline; font-weight: bold}
+.socialPane a:active { color: #888; text-decoration: none; }
+
+img.foafThumb { height: 3em ; border: 0px; margin: 0.1em; padding: 0.1em;
+    vertical-align: middle;
+        } /* Thumbnail of a fiend etc */
+
+.friendBox .confirmed { font-weight: bold; }
+
+table.inputForm { font-size: 100% }
+
+.mainBlock {
+   background: #fff;
+   color: #000;
+   float: left;
+   width: 46%;
+   margin: 0;
+   border-left: 1px solid #ccc;
+   border-right: 1px solid #ccc;
+   border-bottom: 1px solid #ccc;
+   padding: 0;
+}
+
+.navBlock {
+   background-color: #eee;
+   float: left;
+   width: 25%;
+   border: 0;
+   padding: 0.5em;
+   margin: 0;
+}
+
+.navBlock .navSection {
+    border: solid 0.05em gray;
+    padding: 0.5em;
+ -moz-border-radius: 0.5em; /* CSS3: border-radius: .4em; */ 
+}
+ 
+div.socialPane h2 { color: #202 }
+div.socialPane h3 { color: #202 }
+
+div.social_linkButton {
+    width: 80%;
+    background-color: #fff;
+    border: solid 0.05em #ccc;
+    margin-top: 0.1em; margin-bottom: 0.1em;
+    padding: 0.1em;
+    text-align: center;
+}
+
+/*  For question-and-answer stuff for new web id but quite reusable.
+*/
+  .answer  { font-style: italic; color: #00c; text-decoration: underline; }
+  .tip  { font-style: normal; color: #333; margin: 1em;}
+  .task  { font-style: normal; color: #333; margin: 1em;
+        background-color: #ffe; padding: 1em;
+ -moz-border-radius: 1em; /* CSS3: border-radius: 1em; */
+  }
+  .success {background-color: #efe }
+  .failure {background-color: white ; border: 0.5em red}
+  div.unknown { display:none } 
+  div.yes > div.negative { display: none } 
+  div.no > div.affirmative { display: none } 
+
+/******************* Exception Pane ********
+**
+** A pane created when the loading of a pane 
+** throws an exception
+**/
+
+div.exceptionPane pre { background-color: #fee; }
+
+
+  
+/******************* Category Pane *********/
+
+.categoryPane a      { color: #3B5998; text-decoration: none; font-weight: bold}
+.categoryPane a:link { color: #3B5998; text-decoration: none; font-weight: bold}
+.categoryPane a:visited { color: #3B5998; text-decoration: none; font-weight: bold}
+.categoryPane a:hover { color: #3B5998; text-decoration: underline; font-weight: bold}
+.categoryPane a:active { color: #888; text-decoration: none; }
+
+.categoryBottomClass { background-color: #efe ; border: 0.1em solid green }
+
+.categoryTable { padding-left: 2em;}
+.categoryPane { background-color: #f8fff8; padding: 0.5em;
+    border-width: 0.1em; border-color: #777777; 
+ -moz-border-radius: 1em; /* CSS3: border-radius: .4em; */ }
+
+.categoryPane a.categoryWhy      { color: #ddd}
+.categoryPane a.categoryWhy:link { color: #ddd; text-decoration: none; font-weight: bold}
+.categoryPane a.categoryWhy:visited { color: #ddd; text-decoration: none; font-weight: bold}
+.categoryPane a.categoryWhy:hover { color: #3B5998; text-decoration: underline; font-weight: bold}
+.categoryPane a.categoryWhy:active { color: #ddd; text-decoration: none; }
+
+.categoryPane a.categoryWhy { color:grey }
+/* a.categoryWhy:hover { color: #3B5998 } */
+
+
+/******************* PubsPane *********/
+
+.pubsPane { 
+    background-color: #F2F6DA; 
+    border-width: 0.1em; 
+    border-color: #777777;
+    -moz-border-radius: 1em; /* CSS3: border-radius: .4em; */ 
+    padding: 1em;
+
+    text-decoration: none; 
+    font-weight: bold;
+}
+
+.pubsPane h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.pubsPane form {
+    padding-left: 1em;
+}
+
+/*Clear both - start things on individula lines */
+.pubsRow {
+    margin: 0.5em 3em 0.5em 0em;
+    clear: both;
+}
+
+/*inputs float right to line up */
+.pubsRow input {
+    float: right;
+    width: 20em;
+    height: 1em;
+}
+#inpid_book_description {
+    float: right;
+    height: 8em;
+    width: 17em;
+}
+
+.pubsRow button {
+    float: left;
+    height: 2em;
+    padding: 0.5em;
+    margin: 0.5em;
+}
+
+.hideit
+{
+    display: none;
+}
+
+.active {
+    /* display: visible; */
+}
+
+.submitRow {
+    clear: both;
+    height: 5em;
+}
+
+.submitRow button {
+    width: 7em;
+    height: 100%;
+}
+
+#buttonid {
+    display: none;
+}
+
+#buttonid.active{
+    display: inline;
+}
+
+
+
+
+/******************* CV Pane *****************/
+
+.CVclass {
+    background-color: LightSkyBlue;
+}
+
+/******************* Data Content Pane *****************/
+
+div.dataContentPane {
+    border-top: solid 1px black;
+    border-left: solid 1px black;
+    border-bottom: solid 1px #777;
+    border-right: solid 1px #777;
+     padding: 0.5em; /* color: #404; */
+    margin-top: 0.5em; margin-bottom: 0.5em;
+}
+
+.nestedFormula {
+    border-top: solid 1px black;
+    border-left: solid 1px black;
+    border-bottom: solid 1px #777;
+    border-right: solid 1px #777;
+    padding: 0.5em;
+     -moz-border-radius: 0.5em;
+}
+
+div.dataContentPane td {
+                padding-left: 0.2em;
+                padding-top: 0.1em;
+                padding-right: 0.2em;
+                padding-bottom: 0.05em;
+/*	        vertical-align: middle; /*@@ Lalana's request*/
+	        vertical-align: top; /*@@ Tims's request*/
+                /* With middel, you can't tell what is with what */
+                /* background-color: white; */
+                 }
+
+div.dataContentPane tr { 
+	margin-bottom: 0.6em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+    
+}
+
+.dataContentPane a      { color: #3B5998; text-decoration: none; font-weight: bold}
+.dataContentPane a:link { color: #3B5998; text-decoration: none; font-weight: bold}
+.dataContentPane a:visited { color: #3B5998; text-decoration: none; font-weight: bold}
+.dataContentPane a:hover { color: #3B5998; text-decoration: underline; font-weight: bold}
+.dataContentPane a:active { color: #888; text-decoration: none; }
+
+.dataContentPane.embeddedText { white-space: pre-wrap;}
+.dataContentPane.embeddedXHTML {}
+
+/* div.dataContentPane a { text-decoration: none; color: #006} /* Only very slightly blue */
+div.dataContentPane td.pred  { min-width: 12em } /* Keep aligned with others better */ 
+div.dataContentPane td.pred a { color: #444 } /* Greyish as form field names have less info value */
+
+/* .collectionAsTables  {border-right: green 1px; margin: 0.2em;} */
+
+
+
+div.n3Pane {
+    padding: 1em;
+    border-top: solid 1px black;
+    border-left: solid 1px black;
+    border-bottom: solid 1px #777;
+    border-right: solid 1px #777;
+    color: #004;
+}
+
+.imageView { border: 1em white; margin: 1em; }
+
+.n3Pane pre { font-size: 120%; } 
+div.n3Pane  { }
+
+.RDFXMLPane pre { font-size: 120%; } 
+div.RDFXMLPane  { }
+
+div.RDFXMLPane {
+    padding: 1em;
+    border-top: solid 2px black;
+    border-left: solid 2px black;
+    border-bottom: solid 2px #777;
+    border-right: solid 2px #777;
+    color: #440;
+}
+
+/* Generic things useful anywhere */
+
+
+img.hideTillHover {
+  visibility:hidden;
+}
+img.hideTillHover:hover  {
+ visibility:visible;
+}
+.hideTillHover img{
+  visibility:hidden;
+}
+.hideTillHover:hover img {
+ visibility:visible;
+}
+.hideTillHover a{
+  visibility:hidden;
+}
+.hideTillHover:hover a {
+ visibility:visible;
+}
+.hoverControl .hoverControlHide{
+  visibility:hidden;
+}
+.hoverControl:hover .hoverControlHide {
+ visibility:visible;
+}
+
+
+/* Pane icons: */
+.paneShown{ -moz-border-radius: 0.5em;
+            border-top:         solid #222 1px; 
+            border-left:        solid #222 0.1em; border-bottom: solid #eee 0.1em;
+            border-right:       solid #eee 0.1em; 
+            margin-left:        1em; padding: 3px;
+            background-color:   #ffd; }
+            
+.paneHidden { -moz-border-radius: 0.5em; margin-left: 1em; padding: 3px;  }
+
+/* outline object view */
+img.outlineImage { max-height: 20em; max-width: 30em } /* save vertical space */
+/* Compare facebook which only limits width -> lots of tall images! */
+
+img.phoneIcon { border: 0; margin-left: 1em}
+
+table#sources { width: 100% }
+
+table { border-spacing: 0}
+
+table { margin: 0em }
+
+td {    font-size: 100%;
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    margin: 0.2em;
+/*  border-right: solid purple 0.1em ;
+    border-bottom: solid purple 0.1em;
+*/
+    vertical-align: top;
+/*    display: compact;    Causes console errors in ffox */
+     }
+
+td.pred { padding-left: 0.5em }
+/*td.optButton { display: none }
+tr[parentOfSelected] > td.pred td.optButton { display: block }
+*/
+
+table.results { width: 100% }
+
+table.results td {  font-size: 100%;
+    background-color:#fff;
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    margin: 0.1em;
+    border-right: solid #777 0.1em ;
+    border-bottom: solid #777 0.1em;
+
+    vertical-align: top }
+
+
+table.results th {  font-size: 100%;
+    background-color: #ddf; 
+    border-left: none;
+    border-top: none;
+    border-right: solid #777 0.1em;
+    border-bottom: solid #777 0.1em;
+    margin: 0.3em;
+    padding-top: 0.5em; padding-right: 0.5em;
+    border-right: solid #777 0.1em ;
+    border-bottom: solid #777 0.1em;
+
+    vertical-align: top }
+
+/* Hide sections of the display.
+Collpase not actually in CSS1 except for table row and col.
+Supposed to leave layoutunchanged. So we float it too. */
+
+.collapse { display: none }
+.expand { display: block }
+
+/* log classes */
+.nrml { color: black; }
+.info { color: black; }
+.warn { color: black; background-color: #ffd; }
+.eror { color: black; background-color: #fdd; }
+.mesg { color: green; }
+.dbug { color: black; background-color: #ddf;} /* Blue */
+
+/* Try to get the icons to flush right in the cell */
+
+.sortheader {
+    color: black; 
+    text-decoration: none; 
+    position: relative;
+    border:none;   /* Jim's commented out */
+}
+
+.colclose { float: right; color: #aaa } /* Should be 67% transp black */
+.sortarrow { float: left; color: #aaa; border: none;}
+
+
+/* CSS Stuff for tabbed Views.. */
+table.viewTable {
+    padding: 0;
+    margin: 0;
+    border-style: none;
+    border-width: 0;
+    height: 40em;
+    width: 100%;
+    border-spacing: 0;
+}
+
+div.viewTabs {
+    background-color: #fff;
+    padding:0;
+}
+
+div.viewWindows {
+    width: 100%;
+    height:100%;
+    overflow: auto;
+    margin: 0em;
+    padding:0em;
+    border-right: solid #aaa 0.1em;  /* was 2px */
+    border-left: solid #aaa 0.1em;
+    border-bottom: solid #aaa 0.1em;
+    background-color: #ccc;
+}
+
+div.querySelect {
+    background-color: #ccc;
+    width:100%;
+    height:100%;
+    border-left: solid #aaa 0.1em;
+    border-bottom: solid #aaa 0.1em;
+    overflow:auto;
+    margin: 0em;
+    padding:0em;
+}
+
+td.viewTableData {
+    padding: 0em;
+    margin: 0em;
+    height:100%;
+    width:80%;
+}
+
+td.queryTableData {
+    padding: 0em;
+    margin: 0em;
+    border-width: 0em;
+    height:100%;
+    width:20%;
+    border-style:none;
+}
+
+table.viewTable tr {
+    height: 100%;
+    margin: 0em;
+    padding: 0em;
+    border-style:none;
+}
+
+
+a {
+    color: #3B5998;
+    text-decoration: none;
+    cursor: pointer;
+}
+a.inactive{
+    background-color: #eee;
+    border-right:solid #ddd 0.1em;
+    border-top:solid #aaa 0.1em;
+    border-left:solid #aaa 0.1em;
+    padding-top: 0.3em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    padding-bottom: 0em;
+    margin-right: 0.1em;
+    color: #99f;
+    text-decoration:none;
+}
+
+a.active{
+    background-color: #ccc;
+    border-right:solid #ddd 0.1em;
+    border-top:solid #aaa 0.1em;
+    border-left:solid #aaa 0.1em;
+    padding-top: 0.3em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    padding-bottom:0em;
+    margin-right:0.1em;
+    color: #22f;
+    text-decoration:none;
+}
+
+input.tabQueryName {
+    border: solid #aaa 0.1em;
+    width:100%;
+    padding:0em;
+}
+
+input.delQueryButton {
+    border:none;
+    color:#c00;
+    background-color:#ccc;
+    cursor:pointer;
+    padding:0em;
+}
+
+td.checkboxTD {
+    padding-right:0.5em;
+}
+
+.sourceHighlight {
+    background-color:yellow;
+}
+
+#MenuBar {
+    padding: 0.5em;
+    position: fixed;
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    background-color: #eee;
+    border: 0.1em solid #aaa;
+}
+
+#TabulatorStatusWidget {
+    position: fixed;
+    top: 0;
+    bottom: auto;
+    left: auto;
+    right: 0;
+}
+
+div.mapKeyDiv {
+    position:relative;
+    float:right;
+    margin: 0.3em;
+    color: #777;
+    background:#fff;
+    border:solid #777 0.1em;
+    padding:0.1em;
+}
+
+span.closeQuerySpan {
+    float:right;
+    text-align:right;
+    height: 0.1em;
+    overflow:visible;
+}
+
+span.openQuerySpan {
+    float:left;
+    overflow:visible;
+    height:0em;
+    text-align:left;
+    position:relative;
+    top:0em;
+    z-index:1;
+}
+
+input.textinput{
+    width: 100%;
+    border: none;
+    font-size:95%;
+    padding: 0em;
+    margin: 0;
+}
+
+textarea.textinput{
+    border: none;
+}
+
+.pendingedit {
+    color: #bbb;
+}
+
+td.undetermined{
+   color: gray;
+   font-style: italic; 
+}
+
+/*revert back*/
+td.undetermined table{
+    color: black;
+    font-style: normal;
+}
+
+/*color style from http://developer.yahoo.com/yui/docs/module_menu.html*/
+.outlineMenu{
+    position:absolute;
+    /*width:10em;*/
+    height:10em;  /*   Jim's commented out */
+    background: #FFFFFF none repeat scroll 0%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid;
+    /*padding:.2em;*/
+}
+.outlineMenu table{cursor:default;width:100%;text-align:left;padding:5px 5px;}
+.outlineMenu div{/*width:6em;*/ overflow:auto; white-space:nowrap;}
+.outlineMenu td{color:#654d6c;}
+.outlineMenu .activeItem{background: #D1C6DA;}  /* @@ Jim's: #f4e8fc; */
+.outlineMenu input{margin: 0.2em;}
+
+div.bottom-border{
+    border: .2em solid transparent;
+    width: 100%;
+}
+
+div.bottom-border-active{
+    cursor: copy;
+    border: .2em solid;
+    border-color: rgb(100%,65%,0%);
+}   
+
+/* The thing below was for the kenny's orange bar*/ 
+/* @@@ This is not specific enough 
+td{
+    margin: 0;
+    padding: 0;
+}
+*/
+
+.deleteIcon {
+    margin-left: 0.1em;
+}
+
+.deleteCol {
+    float: right;
+    display: inline;
+}
+
+ .suggestion_list
+ {
+ background: white;
+ border: 1px solid;
+ padding: 4px;
+ }
+
+ .suggestion_list ul
+ {
+ padding: 0;
+ margin: 0;
+ list-style-type: none;
+ }
+
+ .suggestion_list a
+ {
+ text-decoration: none;
+ color: navy;
+ }
+
+ .suggestion_list .selected
+ {
+ background: navy;
+ color: white;
+ }
+
+ .suggestion_list .selected a
+ {
+ color: white;
+ }
+
+ #autosuggest
+ {
+ display: none;
+ }
+
+
+
+/*
+Start of styles for the photoPane, by albert08@csail.mit.edu
+*/
+div.PhotoContentPane {
+    float: left;
+    width: 900px;
+    border: 1px solid #AAAAAA;
+    padding: 10px;
+}
+div.PhotoListPanel {
+    float: left;
+    padding: 5px ;
+    border: 1px solid #AAAAAA;
+    width: 540px;
+    min-height: 300px;;
+}
+div.PhotoInfoPanel {
+    float: left;
+    padding: 10px;
+    border: 1px solid #AAAAAA;
+    width: 300px;
+    text-align: center;
+    margin: 0px 0px 10px 10px;
+}
+div.TagMenu {
+    float: left;
+    padding: 10px;
+    border: 1px solid #AAAAAA;
+    width: 300px;
+    margin: 0px 0px 0px 10px;
+    text-align: justify;
+}
+.tagItem {
+    float: left;
+    padding: 2px;
+    margin: 2px;
+    cursor:pointer;
+}
+.tagItem_h {
+    float: left;
+    padding: 2px;
+    margin: 1px;
+    border: 1px solid #DDBB99;
+    background-color: #DDEEFF;
+    cursor:pointer;
+}
+div.photoItem {
+    float: left;
+    width: 100%;
+}
+div.photoFrame {
+    border-right: 1px solid #AAAAAA;
+    width: 260px;
+    padding: 10px;
+    margin: 10px 10px 10px 10px;
+    text-align: center;
+    float: left;
+}
+img.photoThumbnail {
+    border: 1px solid #CCCCCC;
+    margin: auto auto auto auto;
+}
+.photoListTags {
+    width:200px;
+    margin-top: 10px;
+    padding-top: 10px;
+    float: left;
+}
+.photoList_tag {
+	background: transparent url(icons/tag_tiny.png) 0px 1px no-repeat;
+	padding: 1px 0px 1px 18px;
+	margin-left: 5px;
+}
+.TagMenu_tag {
+	background: transparent url(icons/tag_tiny.png) 0px 1px no-repeat;
+	padding: 1px 0px 1px 18px;
+	margin-left: 5px;
+}
+div.photoImportContentPane {
+    float: left;
+    padding: 0px;
+    width: 930px;
+    border: 1px solid #AAAAAA;
+    padding: 10px;
+}
+.photoImportTitle {
+    font-size: 16px;
+    font-weight: bold;
+}
+.photoItemPanel {
+    width: 260px;
+    height: 300px;
+    float: left;
+    padding: 10px;
+    border: 1px solid #AAAAAA;
+    margin: 0px 10px 10px 0px; 
+}
+.photoControlImg {
+    border: 0px;
+    cursor: pointer;
+}
+.photoControlImgInactive {
+    opacity: .5;
+	border: 0px;
+}
+#photoPageInfo {
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+}
+.controls {
+    clear: both;
+    text-align: right;
+    margin: 15px 15px 0px 0px;
+}
+.controlButton {
+    margin: 0px 0px 0px 10px;
+}
+div.TagPane {
+    min-width: 500px;
+    border: 1px solid #AAAAAA;
+    padding: 10px;
+}
+div.TagSemanticsPanel {
+    margin: 5px 0px 20px 0px;
+}
+div.TagSemanticsTable {
+    width: 100%;
+    font-family: Arial;
+    font-size: 12px;    
+}
+div.AddTagSemantics {
+    margin: 50px 0px 10px 0px;
+}
+.controlSelect {
+    margin: 5px;
+    font-family: Arial;
+    font-size: 12px;
+}
+.tagURIInput {
+    margin: 5px;
+    font-family: Arial;
+    font-size: 12px;
+    width: 300px;
+}
+div.TagPane hr{
+    border: 1px solid #AAAAAA;
+}
+/*
+End of styles for the photoPane
+*/
+
+/*
+Styles for tableViewPane
+*/
+
+.tableViewPane table th {
+    background-color: #eee;
+    color: black;
+}
+
+.tableViewPane table th a {
+    color: #555;
+}
+
+.tableViewPane table .selectors td {
+    background-color: #ccc;
+}
+
+.tableViewPane table td {
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.tableViewPane .toolbar td {
+    border: none;
+}
+
+.tableViewPane .sparqlButton {
+    width: 16px;
+    height: 16px;
+    border: 1px solid black;
+}
+
+.tableViewPane .sparqlDialog {
+        position: fixed;
+        top: 40px;
+        left: 100px;
+        width: 600px;
+        background: white;
+        border: 1px solid black;
+        padding: 5px;
+}
+
+.tableViewPane .sparqlDialog textarea {
+        width: 590px;
+        height: 250px;
+}
+
+/* These should be the same as with hthe dataContentPane */
+.tableViewPane a         { color: #3B5998; text-decoration: none; font-weight: bold}
+.tableViewPane a:link    { color: #3B5998; text-decoration: none; font-weight: bold}
+.tableViewPane a:visited { color: #3B5998; text-decoration: none; font-weight: bold}
+.tableViewPane a:hover   { color: #3B5998; text-decoration: underline; font-weight: bold}
+.tableViewPane a:active  { color: #888; text-decoration: none; }
+
+.tableViewPane tr {border-color: #444; padding-left: 0.3em; padding-right: 0.3em  } 
+
+
+
+/*The 'display explanation' feature*/
+.inquiry {
+    padding-left: 0.2em;
+    color: red;
+    font-family: Arial;
+    font-weight: bold;
+}
+
+/*
+End of styles for tableViewPane 
+*/
+
+
+
+/* Styles for   FORM PANE
+**
+** Colors from data cotent pane
+*/
+
+.formPane a      { color: #3B5998; text-decoration: none; }
+.formPane a:link { color: #3B5998; text-decoration: none; }
+.formPane a:visited { color: #3B5998; text-decoration: none; }
+.formPane a:hover { color: #3B5998; font-weight: bold}  /* was  text-decoration: underline; */
+.formPane a:active { color: #888; text-decoration: none; }
+
+/* ends */
