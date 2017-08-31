@@ -36,17 +36,17 @@
   },
   "homepage": "https://github.com/linkeddata/mashlib",
   "dependencies": {
-    "rdflib": "^0.16.2",
-    "solid-ui": "^0.5.0",
-    "solid-app-set": "^0.5.0"
+    "rdflib": "^0.16.3",
+    "solid-ui": "^0.6.0",
+    "solid-app-set": "^0.6.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
-    "webpack": "^2.5.1"
+    "webpack": "^3.5.5"
   },
   "standard": {
     "globals": [

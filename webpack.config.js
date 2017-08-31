@@ -19,10 +19,6 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /^.*\/oidc-rp\/.*\.js$/,
-        loader: 'babel-loader'
-      },
-      {
         test: /^.*\/solid-app-set\/.*\.js$/,
         loader: 'babel-loader'
       }
@@ -32,17 +28,6 @@ module.exports = {
     new webpack.DefinePlugin({ 'global.IS_BROWSER': true })
     // new webpack.optimize.UglifyJsPlugin()
   ],
-  // module: {
-  //   loaders: [
-  //     {
-  //       test: /\.js$/,
-  //       loader: 'babel-loader',
-  //       query: {
-  //         presets: ['es2015']
-  //       }
-  //     }
-  //   ]
-  // },
   externals: {
     'node-fetch': 'fetch',
     'isomorphic-fetch': 'fetch',
@@ -50,7 +35,7 @@ module.exports = {
     'xmlhttprequest': 'XMLHttpRequest',
     'xhr2': 'XMLHttpRequest',
     'text-encoding': 'TextEncoder',
-    'urlutils': 'URL',
+    'whatwg-url': 'window',
     '@trust/webcrypto': 'crypto',
     'webcrypto': 'crypto'
   },
