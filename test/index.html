@@ -4,10 +4,21 @@
   <meta charset='UTF-8'>
 <!--<link type="text/css" rel="stylesheet" href="/timbl/Automation/Library/Mashup/tabbedtab.css" />-->
   <link type="text/css" rel="stylesheet" href="./mash.css" />
+  <script>
+    var $SOLID_GLOBAL_config = {
+      popupUri:  './popup.html'
+    }
+  </script>
 <script type="text/javascript" src="./mashlib-prealpha.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-  UI = window.Mashlib
+  var UI = window.Mashlib
+
+  UI.config = {
+    //  idpSelectUri:  './idp-select-ui.html',
+    callbackUri:  './idp-callback.html'
+  }
+
   UI.rdf.Fetcher.crossSiteProxyTemplate = 'https://databox.me/,proxy?uri={uri}'
 
   UI.authn.checkUser()
