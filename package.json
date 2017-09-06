@@ -37,8 +37,8 @@
   "homepage": "https://github.com/linkeddata/mashlib",
   "dependencies": {
     "rdflib": "^0.16.3",
-    "solid-ui": "^0.6.0",
-    "solid-app-set": "^0.6.0"
+    "solid-ui": "^0.7.1",
+    "solid-app-set": "^0.7.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
