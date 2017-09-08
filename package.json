@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --progress --colors",
     "standard": "standard *.js",
-    "start": "webpack-dev-server -d --env development --https",
+    "start": "webpack-dev-server --env development --https",
     "test": "echo 'No unit tests'"
   },
   "repository": {
