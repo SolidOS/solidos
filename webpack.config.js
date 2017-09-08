@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const MinifyPlugin = require('babel-minify-webpack-plugin')
 
 module.exports = {
   entry: [
@@ -26,9 +27,9 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({ 'global.IS_BROWSER': true })
-    // new webpack.optimize.UglifyJsPlugin()
   ],
   externals: {
+    'fs': 'null',
     'node-fetch': 'fetch',
     'isomorphic-fetch': 'fetch',
     'xmldom': 'window',
@@ -39,5 +40,8 @@ module.exports = {
     '@trust/webcrypto': 'crypto',
     'webcrypto': 'crypto'
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+  plugins: [
+    new MinifyPlugin()
+  ]
 }

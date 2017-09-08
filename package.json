@@ -4,13 +4,7 @@
   "description": "Data mashup library",
   "main": "./index.js",
   "scripts": {
-    "build-browserified": "npm run build",
-    "build-browserified-old": "browserify -r ./index.js:mashlib --debug -t babelify --exclude 'xmldom' --exclude 'node-fetch' > dist/mashlib-prealpha.js",
-    "build-minified": "browserify -r ./index.js:mashlib  -t babelify --exclude 'xmldom' --exclude 'node-fetch' -d -p [minifyify --no-map] > dist/mashlib.min.js",
-    "build-old": "npm run clean && mkdir -p dist/ && npm run build-browserified && npm run build-minified",
-    "build-dist": "webpack --progress --colors",
-    "build": "npm run build-dist",
-    "clean": "rm -rf dist/",
+    "build": "webpack --progress --colors",
     "standard": "standard *.js",
     "test": "echo 'No unit tests'"
   },
@@ -44,6 +38,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-minify-webpack-plugin": "^0.2.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "webpack": "^3.5.5"
