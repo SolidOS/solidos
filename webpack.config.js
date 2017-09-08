@@ -46,7 +46,7 @@ module.exports = (env) => {
     },
     devtool: 'source-map',
     plugins: development ? [] : [
-      new MinifyPlugin()
+      new MinifyPlugin({ deadcode: false })
     ]
   }
 }
