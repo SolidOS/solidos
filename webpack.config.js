@@ -8,7 +8,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, '/dist/'),
-    filename: 'mashlib-prealpha.js',
+    filename: 'mashlib.min.js',
     library: 'Mashlib',
     libraryTarget: 'umd'
   },
