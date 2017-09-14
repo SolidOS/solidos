@@ -33,7 +33,7 @@
   "dependencies": {
     "rdflib": "^0.16.3",
     "solid-app-set": "^0.7.1",
-    "solid-ui": "^0.7.2"
+    "solid-ui": "^0.8.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
