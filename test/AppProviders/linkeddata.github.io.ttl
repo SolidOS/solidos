@@ -1,0 +1,9 @@
+# Experimental app provider
+#
+
+@prefix solid: <https://www.w3.org/ns/solid/terms#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+<#provider> a solid:AppProvider;
+  solid:origin "https://linkeddata.github.io";
+  rdfs:label "The linkeddata project on github.io".

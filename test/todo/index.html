@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset='UTF-8'>
+<title>ToDo -- test mashlib</title>
+<link type="text/css" rel="stylesheet" href="../../dist/mash.css" />
+<script type="text/javascript" src="../../dist/mashup-node-2.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var uri = window.location.href;
+    var data_uri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + 'config.ttl#tracker';
+    var kb = UI.store;
+
+    //var path = uri.indexOf('/', uri.indexOf('//') +2) + 1;
+    //var origin = uri.slice(0, path);
+
+    var subject = kb.sym(data_uri);
+    UI.outline.GotoSubject(subject, true, undefined, true, undefined);
+});
+</script>
+</head>
+<body>
+<div class="TabulatorOutline" id="DummyUUID">
+    <table id="outline"></table>
+</div>
+</body>
+</html>

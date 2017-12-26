@@ -1,0 +1,8 @@
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#>.
+
+<#this>
+    a    vcard:Individual;
+    vcard:fn
+       "Bertram Brighton";
+    vcard:note
+       "Another happy contact.".

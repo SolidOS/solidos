@@ -1,0 +1,56 @@
+{
+  "name": "mashlib",
+  "version": "0.7.1",
+  "description": "Data mashup library",
+  "main": "./index.js",
+  "scripts": {
+    "build": "webpack --progress --colors",
+    "standard": "standard *.js",
+    "start": "webpack-dev-server --env development --https",
+    "test": "echo 'No unit tests'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linkeddata/mashlib"
+  },
+  "keywords": [
+    "solid",
+    "decentralized",
+    "widgets",
+    "ui",
+    "web",
+    "rdf",
+    "ldp",
+    "linked",
+    "data"
+  ],
+  "author": "Tim Berners-Lee <timbl@mit.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/linkeddata/mashlib/issues"
+  },
+  "homepage": "https://github.com/linkeddata/mashlib",
+  "dependencies": {
+    "rdflib": "^0.16.3",
+    "solid-app-set": "^0.7.1",
+    "solid-ui": "^0.8.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1",
+    "webpack-sources": "1.0.1"
+  },
+  "standard": {
+    "globals": [
+      "$rdf",
+      "tabulator",
+      "QUnit"
+    ]
+  }
+}
