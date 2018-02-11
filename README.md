@@ -7,10 +7,10 @@ use of it is as a data bowser for a personal data store.
 
 How does the data browser work?
 
-- The user goes with a normal web browser to access some data object (like an to-do list, say)
-- The server sees the browser doesn't understand the data natively
-- The server send back a little placeholder HTML file, `databrowser.html` instead of the data
-- The databrowser.html file loads the mashlib.js Javascript library, which can now understand the data
+- The user goes with a normal web browser to access some data object (like a to-do list, say).
+- The server sees the browser doesn't understand the data natively.
+- The server send back a little placeholder HTML file, `databrowser.html` instead of the data.
+- The databrowser.html file loads the mashlib.js Javascript library, which can now understand the data.
 - The mashlib.js then re-requests the original data, but accepting data formats.
 - The server supplies the actual data of the to-do list or whatever it was.
 - The mashlib.js code provides an editable visualization on the data.
@@ -28,15 +28,14 @@ https://en.wikipedia.org/wiki/Mashup_%28web_application_hybrid%29
  has some examples.
 
  Mashups are important because they are fun but because fundamentally the value
- of data is much greater when data of one source is combined with lined data from another,  
+ of data is much greater when data of one source is combined with linked data from another,  
  because that is where you can get extra insights.
   [My TED talk on open data examples](https://www.ted.com/talks/tim_berners_lee_the_year_open_data_went_worldwide#t-81407)
   has some examples.
-Data mashups used to be all the range back 2012-2017 although the browser's [Same Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy) in many cases makes them hard to do or impossible in a web app, as the data access are blocked by the browser code.
+Data mashups used to be all the rage back 2012-2017 although the browser's [Same Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy) in many cases makes them hard to do or impossible in a web app, as the data access are blocked by the browser code.
 
-The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore,  and so  the relationships between different things can be visualized.  The "tabulator" project developed the original mashlib.
-Progressively the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos)
-and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing).
+The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore, and so the relationships between different things can be visualized.  The "tabulator" project developed the original mashlib.
+Progressively the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos) and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing).
 
 ## Goals
 
