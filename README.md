@@ -7,7 +7,7 @@ use of it is as a data bowser for a personal data store.
 
 How does the data browser work?
 
-- The user goes with a normal web browser to access some data object (like an issue list)
+- The user goes with a normal web browser to access some data object (like an to-do list, say)
 - The server sees the browser doesn't understand the data natively
 - The server send back a little placeholder HTML file, `databrowser.html` instead of the data
 - The databrowser.html file loads the mashlib.js Javascript library, which can now understand the data
