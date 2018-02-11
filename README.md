@@ -30,18 +30,22 @@ https://en.wikipedia.org/wiki/Mashup_%28web_application_hybrid%29
  Mashups are important because they are fun but because fundamentally the value
  of data is much greater when data of one source is combined with lined data from another,  
  because that is where you can get extra insights.
-  [My TED tallk on open data examples](https://www.ted.com/talks/tim_berners_lee_the_year_open_data_went_worldwide#t-81407)
+  [My TED talk on open data examples](https://www.ted.com/talks/tim_berners_lee_the_year_open_data_went_worldwide#t-81407)
   has some examples.
 Data mashups used to be all the range back 2012-2017 although the browser's [Same Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy) in many cases makes them hard to do or impossible in a web app, as the data access are blocked by the browser code.
 
-The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore,  and so  the relationships between different things can be visualized.  
-Progressively the mashlib evolved to allow types of data for personal information management (contacts, financial) and social (chat, shared documents, issue tracking, music, photos)
+The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore,  and so  the relationships between different things can be visualized.  The "tabulator" project developed the original mashlib.
+Progressively the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos)
 and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing).
-
-The mashlib solid-compaitible, and allows
 
 ## Goals
 
 - The data bowser should be a complete web-based operating system for any new computer or data store.
 
-- You should be able to set the data browser
+- You should be able to set the data browser up for any existing folders you have full of things like photos and music, and it should let you listen to them look at them, and share them very flexibly with anyone in the world.
+
+- The data browser should be modular, loading new code modules in real time as a function of a user's preferences for handling different types of data with different new data bowser applets, be it finance, fitness, or fishing.
+
+- The data browser should allow people to create, bit by bit, a web of social linked data of their work and their play, and their lives.
+
+timbl 2018
