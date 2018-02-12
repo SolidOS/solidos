@@ -19,10 +19,10 @@ The mashlib human interface is *read-write*: where the user is allowed to edit: 
 
 ## History: Why "Mashlib"?
 
-What is a data mashup?  A mashup is a web page which is build to out of data coming
-from more that one source.  
+What is a data mashup?  [A mashup](https://en.wikipedia.org/wiki/Mashup_%28web_application_hybrid%29) 
+is a web page which is built out of data coming from more than one source.  
 
-https://en.wikipedia.org/wiki/Mashup_%28web_application_hybrid%29
+
 
  Mashups are important because they are fun but because fundamentally the value
  of data is much greater when data of one source is combined with linked data from another,  
@@ -33,7 +33,7 @@ Data mashups were all the rage back 2012-2017, although the browser's [Same Orig
 
 The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore, so the relationships between different things can be visualized.  The "tabulator" project developed the original mashlib.
 
-Progressively, the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos) and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing). So the now the mashlib is a general-purpose tool for doing all kinds of useful things.
+Progressively, the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos) and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing). Now, the mashlib is a general-purpose tool for doing all kinds of useful things.
 It is an extensible platform, and is never finished.
 
 ## Goals
