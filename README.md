@@ -10,7 +10,7 @@ How does the data browser work?
 1. The user goes with a normal web browser to access some data object (like a to-do list, say).
 1. The server sees the browser doesn't understand the data natively.
 1. The server sends back a little placeholder HTML file, `databrowser.html`, instead of the data.
-1. The `databrowser.html` file loads the m`ashlib.js` Javascript library, which can now understand the data.
+1. The `databrowser.html` file loads the `mashlib.js` Javascript library, which can now understand the data.
 1. The `mashlib.js` then re-requests the original data, but accepting data formats.
 1. The server supplies the actual data of the to-do list or whatever it was.
 1. The `mashlib.js` code provides an editable visualization on the data.
