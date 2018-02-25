@@ -37,6 +37,8 @@ Data mashups used to be all the range back 2012-2017 although the browser's [Sam
 The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore,  and so  the relationships between different things can be visualized.  The "tabulator" project developed the original mashlib.
 Progressively the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos)
 and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing).
+So the now the mashlib is a general-purpose tool for doing all kinds of useful things.
+It is an extensible platform, and is never finished.
 
 ## Goals
 

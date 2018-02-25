@@ -5,14 +5,16 @@
     <script type="text/javascript" src="https://linkeddata.github.io/mashlib/dist/mashlib.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var UI = require('mashlib')
-    var $rdf = UI.rdf
+    const panes = require('mashlib')
+    const UI = panes.UI
+    const $rdf = UI.rdf
     $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss?uri={uri}';
     var uri = window.location.href;
     window.document.title = uri;
     var kb = UI.store;
     var subject = kb.sym(uri);
-    UI.outline.GotoSubject(subject, true, undefined, true, undefined);
+    var outliner = panes.getOutliner()
+    outliner.GotoSubject(subject, true, undefined, true, undefined);
 });
 </script>
 </head>
