@@ -2,28 +2,22 @@
  *
  *     MASHLIB      Data Mashup library
  *
+ *  Solid-compatible User Interface library
+ *  for the databrowser, etc
  */
-
-// var dump, UI, $rdf
 
 function dump (msg) {
   console.log(msg.slice(0, -1))
 }
 global.dump = dump
 
-// var events = require('events') // load in the order which they are npm installed
-// var http = require('http-browserify')
 
-//  Solid-compatible UI module
-// try global
-
-const UI = require('solid-ui')
+const panes = require('solid-panes') // applets
+const UI = require('solid-ui') // widgets etc
 const $rdf = UI.rdf
 global.$rdf = $rdf
 
 $rdf.log = UI.log
-
-var panes = require('solid-app-set')
 
 if (typeof window !== 'undefined') {
   window.UI = UI
@@ -32,16 +26,7 @@ if (typeof window !== 'undefined') {
 
 panes.UI = UI
 
-// UI.OutlineObject = require('solid-app-set/outline/manager.js')
-
-// later in the context of a window and a document:
-/*
-if (typeof window !== 'undefined') {
-  var dom = window.document
-  dom.outline = UI.outline = new UI.OutlineObject(dom)
-}
-*/
-//  What does this fix?
+//  Allow require('mashlib') in the databrowser
 global.require = function require (lib) {
   if (lib === 'mashlib') {
     return panes

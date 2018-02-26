@@ -35,20 +35,20 @@
   "dependenciesFile": {
     "rdflib": "file://../../linkeddata/rdflib.js",
     "solid-auth-client": "file://../../solid/solid-auth-client",
-    "solid-app-set": "file://../../linkeddata/solid-app-set",
+    "solid-panes": "file://../../solid/solid-panes",
     "solid-ui": "file://../../linkeddata/solid-ui"
   },
   "dependencies": {
     "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.16.6",
-    "solid-app-set": "^0.7.1",
+    "solid-panes": ">=1.1.0",
     "solid-auth-client": ">=0.9.2",
     "solid-ui": ">=0.5.1"
   },
   "dependenciesReal": {
     "rdflib": ">=0.16.6",
     "solid-auth-client": ">=0.9.2",
-    "solid-app-set": ">=1.0.2",
+    "solid-panes": ">=1.1.0",
     "solid-ui": ">=0.5.1"
   },
   "devDependencies": {
