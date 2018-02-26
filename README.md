@@ -3,6 +3,14 @@
 The mashlib (`mashlib.js`) is a solid-compatible data mashup library.  One major
 use of it is as a data browser for a personal data store.
 
+## Typical uses
+
+The mashlib has been used before originally in various apps in specific data interaction in different domains.
+It has been used in a browser extension (in Firefox and later Chrome) to add data-handling capacity
+as native to the browser itself. Currently it is used as the core as  aort or poor persons
+browser extension, the data browser, which loads the library and then tries to work as though the
+browser had been extended to understand data
+
 ## The data browser
 
 How does the data browser work?
@@ -19,10 +27,8 @@ The mashlib human interface is *read-write*: where the user is allowed to edit: 
 
 ## History: Why "Mashlib"?
 
-What is a data mashup?  [A mashup](https://en.wikipedia.org/wiki/Mashup_%28web_application_hybrid%29) 
+What is a data mashup?  [A mashup](https://en.wikipedia.org/wiki/Mashup_%28web_application_hybrid%29)
 is a web page which is built out of data coming from more than one source.  
-
-
 
  Mashups are important because they are fun but because fundamentally the value
  of data is much greater when data of one source is combined with linked data from another,  
@@ -35,7 +41,7 @@ The mashlib started life motivated by the drive to build quick visualizations of
 
 Progressively, the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos) and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing). Now, the mashlib is a general-purpose tool for doing all kinds of useful things.
 
-It is an extensible platform, and is never finished.
+It is an extensible platform, and is never finished.  Do help!  
 
 ## Goals
 
