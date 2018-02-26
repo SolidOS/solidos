@@ -31,16 +31,10 @@ is a web page which is built out of data coming from more than one source.
   has some examples.
 Data mashups were all the rage back 2012-2017, although the browser's [Same Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy) in many cases makes them hard to do or impossible in a web app, as the data access is blocked by the browser code.
 
-<<<<<<< HEAD
-The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore,  and so  the relationships between different things can be visualized.  The "tabulator" project developed the original mashlib.
-Progressively the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos)
-and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing).
-So the now the mashlib is a general-purpose tool for doing all kinds of useful things.
-=======
 The mashlib started life motivated by the drive to build quick visualizations of data from different sources.   Typically, documents or query results are all loaded into the quadstore, so the relationships between different things can be visualized.  The "tabulator" project developed the original mashlib.
 
 Progressively, the mashlib evolved to allow types of data for personal information management (contacts, etc) and social (chat, shared documents, issue tracking, music, photos) and also as a file browser for a Solid-compatible personal data store (files, folders, and sharing). Now, the mashlib is a general-purpose tool for doing all kinds of useful things.
->>>>>>> 477a04376a1f1523d102c9cbd0b8828d63f350b6
+
 It is an extensible platform, and is never finished.
 
 ## Goals
