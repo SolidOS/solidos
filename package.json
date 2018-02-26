@@ -41,7 +41,7 @@
   "dependencies": {
     "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.16.6",
-    "solid-app-set": "file://../../linkeddata/solid-app-set",
+    "solid-app-set": "^0.7.1",
     "solid-auth-client": ">=0.9.2",
     "solid-ui": ">=0.5.1"
   },
