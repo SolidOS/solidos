@@ -8,6 +8,7 @@ module.exports = (env) => {
   return [
 
     {
+      mode: "development",
       entry: [
         './index.js'
       ],
@@ -53,6 +54,7 @@ module.exports = (env) => {
     },
 
     {
+      mode: "production",
       entry: [
         './index.js'
       ],

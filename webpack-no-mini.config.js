@@ -1,6 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
-const MinifyPlugin = require('babel-minify-webpack-plugin')
+// const MinifyPlugin = require('babel-minify-webpack-plugin')
 
 module.exports = (env) => {
   const development = env === 'development'
@@ -8,6 +8,7 @@ module.exports = (env) => {
   return [
 
     {
+      mode: 'development',
       entry: [
         './index.js'
       ],
