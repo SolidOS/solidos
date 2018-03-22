@@ -54,3 +54,5 @@ It is an extensible platform, and is never finished.  Do help!
 - The data browser should allow people to create, bit by bit, a web of social linked data of their work and their play, and their lives.
 
 timbl 2018
+
+- Here is the [Travis build space](https://travis-ci.org/linkeddata/mashlib/builds)
