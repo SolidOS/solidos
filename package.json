@@ -1,6 +1,6 @@
 {
   "name": "mashlib",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Data mashup library",
   "main": "./index.js",
   "scripts": {
