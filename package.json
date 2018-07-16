@@ -37,21 +37,21 @@
     "rdflib": "file://../../linkeddata/rdflib.js",
     "solid-auth-client": "file://../../solid/solid-auth-client",
     "solid-panes": "file://../../solid/solid-panes",
-    "solid-ui": "file://../../linkeddata/solid-ui"
+    "solid-ui": "file://../../solid/solid-ui"
   },
   "dependencies": {
     "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.16.8",
-    "solid-panes": ">=1.1.6",
-    "solid-auth-client": ">=0.9.2",
-    "solid-ui": ">=0.10.5"
+    "solid-auth-client": ">=2.0.0",
+    "solid-panes": "1.1.14",
+    "solid-ui": ">=0.11.4"
   },
-  "dependenciesReal": {
+  "dependenciesBackup": {
     "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.16.8",
-    "solid-panes": ">=1.1.6",
-    "solid-auth-client": ">=0.9.2",
-    "solid-ui": ">=0.10.5"
+    "solid-auth-client": ">=2.0.0",
+    "solid-panes": ">=1.1.14",
+    "solid-ui": ">=0.11.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
