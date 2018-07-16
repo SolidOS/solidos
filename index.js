@@ -24,6 +24,10 @@ if (typeof window !== 'undefined') {
   window.panes = panes
 }
 
+window.onpopstate = function(event) {
+  window.document.outline.GotoSubject($rdf.sym(window.document.location.href), true, undefined, true, undefined)
+}
+
 panes.UI = UI
 
 //  Allow require('mashlib') in the databrowser
