@@ -6,6 +6,8 @@ node_js:
   - "6.0"
   - "8.4"
   - "node"
+before_install:
+  - npm install -g npm@latest
 before_script:
   - npm run build
 after_success:
