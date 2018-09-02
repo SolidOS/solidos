@@ -35,21 +35,18 @@
   "homepage": "https://github.com/linkeddata/mashlib",
   "dependenciesFile": {
     "rdflib": "file://../../linkeddata/rdflib.js",
-    "solid-auth-client": "file://../../solid/solid-auth-client",
     "solid-panes": "file://../../solid/solid-panes",
     "solid-ui": "file://../../solid/solid-ui"
   },
   "dependencies": {
     "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.17.0",
-    "solid-auth-client": ">=2.0.0",
     "solid-panes": ">=1.1.15",
     "solid-ui": ">=0.11.5"
   },
   "dependenciesBackup": {
     "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.17.0",
-    "solid-auth-client": ">=2.0.0",
     "solid-panes": ">=1.1.15",
     "solid-ui": ">=0.11.5"
   },
