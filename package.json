@@ -4,10 +4,12 @@
   "description": "Data mashup library",
   "main": "./index.js",
   "scripts": {
-    "build": "webpack --progress --colors",
-    "build-no-min": "webpack --config webpack-no-mini.config.js --progress --colors",
+    "build": "npm run build:dev && npm run build:prod",
+    "build:dev": "webpack --progress",
+    "build:prod": "webpack --progress --mode=production",
+    "build-no-min": "npm run build:dev",
     "standard": "standard *.js",
-    "start": "webpack-dev-server --env development --https",
+    "start": "webpack-dev-server --https",
     "test": "echo 'No unit tests'"
   },
   "repository": {
@@ -39,28 +41,26 @@
     "solid-ui": "file://../../solid/solid-ui"
   },
   "dependencies": {
-    "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.17.0",
     "solid-panes": ">=1.1.15",
     "solid-ui": ">=0.11.5"
   },
   "dependenciesBackup": {
-    "babel-preset-metalab": "^1.0.0",
     "rdflib": ">=0.17.0",
     "solid-panes": ">=1.1.15",
     "solid-ui": ">=0.11.5"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-minify-webpack-plugin": "^0.2.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-es2015": "^6.24.1",
-    "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.10",
-    "webpack-dev-server": "^3.1.4",
-    "webpack-sources": "1.0.1"
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.1",
+    "@babel/preset-env": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-loader": "^8.0.2",
+    "babel-minify-webpack-plugin": "^0.3.1",
+    "webpack": "^4.20.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.9",
+    "webpack-sources": "^1.0.1"
   },
   "standard": {
     "globals": [
