@@ -3,11 +3,16 @@
   "version": "0.7.11",
   "description": "Data mashup library",
   "main": "./index.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
   "scripts": {
     "build": "npm run build:dev && npm run build:prod",
     "build:dev": "webpack --progress",
     "build:prod": "webpack --progress --mode=production",
     "build-no-min": "npm run build:dev",
+    "prepare": "npm run build",
     "standard": "standard *.js",
     "start": "webpack-dev-server --https",
     "test": "echo 'No unit tests'"

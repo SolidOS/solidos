@@ -7,8 +7,6 @@ node_js:
   - "node"
 before_install:
   - npm install -g npm@latest
-before_script:
-  - npm run build
 after_success:
   - ./.travis_publish
 cache:
