@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const MinifyPlugin = require('babel-minify-webpack-plugin')
 
 module.exports = (env, args) => {
   const production = args.mode === 'production';
@@ -33,12 +32,6 @@ module.exports = (env, args) => {
     plugins: [
       new webpack.DefinePlugin({ 'global.IS_BROWSER': true }),
     ],
-
-    optimization: {
-      minimizer: [
-        new MinifyPlugin({ deadcode: false }),
-      ]
-    },
 
     externals: {
       'fs': 'null',
