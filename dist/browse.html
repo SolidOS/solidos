@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const UI = panes.UI
     const $rdf = UI.rdf
     const dom = document
-    $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss?uri={uri}';
+    $rdf.Fetcher.crossSiteProxyTemplate = self.origin + '/xss?uri={uri}';
     var uri = window.location.href;
     window.document.title = 'Data browser: ' + uri;
     var kb = UI.store;
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, false)
 
     goButton.addEventListener('click', go, false);
-    let initial = new URLSearchParams(document.location.search).get("uri")
+    let initial = new URLSearchParams(self.location.search).get("uri")
     if (initial) {
       uriField.value = initial
       go()

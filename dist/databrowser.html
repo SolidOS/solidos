@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const panes = require('mashlib')
     const UI = panes.UI
     const $rdf = UI.rdf
-    $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss?uri={uri}';
+    $rdf.Fetcher.crossSiteProxyTemplate = self.origin + '/xss?uri={uri}';
     var uri = window.location.href;
     window.document.title = uri;
     var kb = UI.store;
