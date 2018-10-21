@@ -13,14 +13,14 @@ global.dump = dump
 
 
 const panes = require('solid-panes') // applets
-const UI = require('solid-ui') // widgets etc
-const $rdf = UI.rdf
+// const UI = require('solid-ui') // widgets etc
+const $rdf = require('rdflib')
 global.$rdf = $rdf
 
-$rdf.log = UI.log
+// $rdf.log = UI.log
 
 if (typeof window !== 'undefined') {
-  window.UI = UI
+  // window.UI = UI
   window.panes = panes
 }
 
@@ -28,7 +28,7 @@ window.onpopstate = function(event) {
   window.document.outline.GotoSubject($rdf.sym(window.document.location.href), true, undefined, true, undefined)
 }
 
-panes.UI = UI
+// panes.UI = UI
 
 //  Allow require('mashlib') in the databrowser
 global.require = function require (lib) {

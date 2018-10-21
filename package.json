@@ -42,18 +42,15 @@
   "homepage": "https://github.com/linkeddata/mashlib",
   "dependenciesFile": {
     "rdflib": "file://../../linkeddata/rdflib.js",
-    "solid-panes": "file://../../solid/solid-panes",
-    "solid-ui": "file://../../solid/solid-ui"
+    "solid-panes": "file://../../solid/solid-panes"
   },
   "dependencies": {
-    "rdflib": ">=0.17.0",
-    "solid-panes": ">=1.1.18",
-    "solid-ui": ">=0.11.5"
+    "rdflib": ">=0.19.0",
+    "solid-panes": ">=1.1.18"
   },
   "dependenciesBackup": {
     "rdflib": ">=0.17.0",
-    "solid-panes": ">=1.1.18",
-    "solid-ui": ">=0.11.5"
+    "solid-panes": ">=1.1.18"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
