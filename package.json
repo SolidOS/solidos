@@ -45,12 +45,12 @@
     "solid-panes": "file://../../solid/solid-panes"
   },
   "dependencies": {
-    "rdflib": ">=0.19.0",
-    "solid-panes": "file://../../solid/solid-panes"
+    "rdflib": ">=0.19.1",
+    "solid-panes": ">=1.1.19"
   },
   "dependenciesBackup": {
-    "rdflib": ">=0.17.0",
-    "solid-panes": ">=1.1.18"
+    "rdflib": ">=0.19.1",
+    "solid-panes": ">=1.1.19"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
