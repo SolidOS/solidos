@@ -5,17 +5,17 @@ use of it is as a data browser for a personal data store.
 
 ## Typical uses
 
-The mashlib has been used before originally in various apps in specific data interaction in different domains.
+The mashlib has been used before, originally in various apps, in specific data interactions in different domains.
 It has been used in a browser extension (in Firefox and later Chrome) to add data-handling capacity
 as native to the browser itself. Currently it is used as the core as  aort or poor persons
 browser extension, the data browser, which loads the library and then tries to work as though the
-browser had been extended to understand data
+browser had been extended to understand data.
 
 ## The data browser
 
 How does the data browser work?
 
-1. The user goes with a normal web browser to access some data object (like a to-do list, say).
+1. The user goes with a normal web browser to access some data object (like a to-do list).
 1. The server sees the browser doesn't understand the data natively.
 1. The server sends back a little placeholder HTML file, `databrowser.html`, instead of the data.
 1. The `databrowser.html` file loads the `mashlib.js` Javascript library, which can now understand the data.
@@ -30,9 +30,8 @@ The mashlib human interface is *read-write*: where the user is allowed to edit: 
 What is a data mashup?  [A mashup](https://en.wikipedia.org/wiki/Mashup_%28web_application_hybrid%29)
 is a web page which is built out of data coming from more than one source.  
 
- Mashups are important because they are fun but because fundamentally the value
- of data is much greater when data of one source is combined with linked data from another,  
- because that is where you can get extra insights.
+ Mashups are important because they are fun and because fundamentally, the value
+ of data is much greater when data of one source is combined with linked data from another, because that is where you can get extra insights.
   [My TED talk on open data examples](https://www.ted.com/talks/tim_berners_lee_the_year_open_data_went_worldwide#t-81407)
   has some examples.
 Data mashups were all the rage back 2012-2017, although the browser's [Same Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy) in many cases makes them hard to do or impossible in a web app, as the data access is blocked by the browser code.
