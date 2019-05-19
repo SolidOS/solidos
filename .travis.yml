@@ -1,16 +1,27 @@
-sudo: false
 language: node_js
-env:
-  - PUBLISH_FROM_NODE_VERSION=8.4
 node_js:
   - "8.4"
+  - "10.0"
+  - "10"
+  - "12.0"
+  - "12"
   - "node"
+
 before_install:
   - npm install -g npm@latest
 script:
   - npm run build
-after_success:
-  - ./.travis_publish
+
+before_deploy:
+  - rm .gitignore
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GH_TOKEN
+  on:
+    branch: master
+    condition: $TRAVIS_NODE_VERSION = 10.0
+
 cache:
   directories:
     - node_modules
