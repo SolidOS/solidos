@@ -60,7 +60,7 @@
     "babel-loader": "^8.0.2",
     "webpack": "^4.20.1",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.9",
+    "webpack-dev-server": "^3.4.1",
     "webpack-sources": "^1.0.1"
   },
   "standard": {
