@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/linkeddata/mashlib"
+    "url": "https://github.com/solid/mashlib"
   },
   "keywords": [
     "solid",
@@ -37,11 +37,11 @@
   "author": "Tim Berners-Lee <timbl@mit.edu>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/linkeddata/mashlib/issues"
+    "url": "https://github.com/solid/mashlib/issues"
   },
-  "homepage": "https://github.com/linkeddata/mashlib",
+  "homepage": "https://github.com/solid/mashlib",
   "dependenciesFile": {
-    "rdflib": "file://../../linkeddata/rdflib.js",
+    "rdflib": "file://../../solid/rdflib.js",
     "solid-panes": "file://../../solid/solid-panes"
   },
   "dependencies": {
