@@ -45,8 +45,8 @@
     "solid-panes": "file://../../solid/solid-panes"
   },
   "dependencies": {
-    "rdflib": ">=0.19.1",
-    "solid-panes": ">=1.3.1"
+    "rdflib": "^0.20.1",
+    "solid-panes": "^1.3.3"
   },
   "dependenciesBackup": {
     "rdflib": ">=0.19.1",
