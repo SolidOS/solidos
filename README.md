@@ -1,5 +1,7 @@
 # mashlib and Data Browser
 
+[![NPM Package](https://img.shields.io/npm/v/mashlib.svg)](https://www.npmjs.com/package/mashlib)
+
 The mashlib (`mashlib.js`) is a solid-compatible data mashup library.  One major
 use of it is as a data browser for a personal data store.
 
