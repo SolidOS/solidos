@@ -52,7 +52,22 @@ module.exports = (env, args) => {
             },
             'css-loader'
           ],
-        }
+        },
+        {
+          test: /\.(eot|ttf|woff2?)$/i,
+          loader: 'file-loader'
+        },
+        {
+          test: /\.(png|jpg|gif|svg)$/i,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 8192,
+              },
+            },
+          ],
+        },
       ]
     },
 
