@@ -49,6 +49,7 @@
   "dependencies": {
     "@inrupt/solid-style-guide": "^0.1.34",
     "rdflib": "^0.20.1",
+    "solid-namespace": "^0.2.0",
     "solid-panes": "^1.3.3"
   },
   "dependenciesBackup": {

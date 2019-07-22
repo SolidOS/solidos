@@ -1,0 +1,24 @@
+.header-aside {
+  @include box-shadow(0px, 1px, 4px, rgba(0, 0, 0, 0.2));
+  background-color: #eee;
+  font-size: 0.9em;
+  padding: 0.25em 1.5em 0.5em;
+  margin-bottom: 4px;
+}
+
+.header-banner {
+  @include box-shadow(0px, 1px, 4px, rgba(0, 0, 0, 0.2));
+  padding: 0 1.5em;
+  margin-bottom: 4px;
+
+  &__icon {
+    $icon-size: 60px;
+    height: $icon-size;
+    width: round($icon-size * 352 / 322);
+    width: $icon-size * 352 / 322;
+  }
+
+  &__link {
+    display: block;
+  }
+}
