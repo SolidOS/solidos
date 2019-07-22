@@ -1,6 +1,6 @@
-import $rdf, { IndexedFormula } from 'rdflib'
+import $rdf, { IndexedFormula, NamedNode } from 'rdflib'
 import panes from 'solid-panes'
-import './index.scss'
+import './styles/index.scss'
 import { initHeader } from './global/header'
 
 const global: any = window
@@ -14,18 +14,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Authenticate the user
   const UI = panes.UI
-  UI.authn
-    .checkUser()
-    .then(function () {
-      // Set up the view for the current subject
-      const kb = (UI as any).store
-      const uri = window.location.href
-      const subject = kb.sym(uri)
-      const outliner = panes.getOutliner(document)
-      outliner.GotoSubject(subject, true, undefined, true, undefined)
-      return kb
-    })
-    .then((kb: IndexedFormula) => initHeader(kb, (kb as any).fetcher))
+  UI.authn.checkUser().then(function (profile: NamedNode | null) {
+    // Set up the view for the current subject
+    const kb = (UI as any).store
+    const uri = window.location.href
+    const subject = kb.sym(uri)
+    const outliner = panes.getOutliner(document)
+    outliner.GotoSubject(subject, true, undefined, true, undefined)
+    return initHeader(kb, (kb as any).fetcher, profile)
+  })
 })
 
 window.onpopstate = function (event) {
