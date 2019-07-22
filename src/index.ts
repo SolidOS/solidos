@@ -1,4 +1,4 @@
-import $rdf, { IndexedFormula, NamedNode } from 'rdflib'
+import $rdf, { NamedNode } from 'rdflib'
 import panes from 'solid-panes'
 import './styles/index.scss'
 import { initHeader } from './global/header'
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const subject = kb.sym(uri)
     const outliner = panes.getOutliner(document)
     outliner.GotoSubject(subject, true, undefined, true, undefined)
-    return initHeader(kb, (kb as any).fetcher, profile)
+    return initHeader(kb, (kb as any).fetcher)
   })
 })
 
