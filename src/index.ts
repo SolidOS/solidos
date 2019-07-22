@@ -23,8 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
     outliner.GotoSubject(subject, true, undefined, true, undefined)
     return initHeader(kb, (kb as any).fetcher)
   })
-
-  console.log(UI.authn.solidAuthClient.trackSession)
 })
 
 window.onpopstate = function (event) {
