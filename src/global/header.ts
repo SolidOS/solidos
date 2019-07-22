@@ -17,12 +17,12 @@ export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
 
   panes.UI.authn.solidAuthClient.trackSession(function(session: SolidSession | null) {
     const profile = session ? sym(session.webId) : null
-    header.innerHTML = ''
+    header.innerHTML = ""
     buildHeader(header, store, profile, pod, podOwnerProfile)
   })
 }
 
-function buildHeader(header: HTMLElement, store: IndexedFormula, profile: NamedNode | null, pod: NamedNode, podOwnerProfile: NamedNode) {
+function buildHeader (header: HTMLElement, store: IndexedFormula, profile: NamedNode | null, pod: NamedNode, podOwnerProfile: NamedNode) {
   header.appendChild(createPodLink(pod))
   if (!profile || (profile && !profile.equals(podOwnerProfile))) {
     header.appendChild(createProfileLink(store, podOwnerProfile))
@@ -51,10 +51,20 @@ function createProfileLink (store: IndexedFormula, profile: NamedNode): HTMLElem
   profileLink.classList.add("header-aside__link")
   profileLink.innerText = getName(store, profile)
 
+  const profileLoginButtonPre = document.createElement("span")
+  profileLoginButtonPre.innerText = " - "
+
+  const profileLoginButton = document.createElement("button")
+  profileLoginButton.type = "button"
+  profileLoginButton.innerText = "Log in"
+  profileLoginButton.addEventListener("click", () => panes.UI.authn.solidAuthClient.popupLogin())
+
   const profileLinkContainer = document.createElement("aside")
   profileLinkContainer.classList.add("header-aside")
   profileLinkContainer.appendChild(profileLinkPre)
   profileLinkContainer.appendChild(profileLink)
+  profileLinkContainer.appendChild(profileLoginButtonPre)
+  profileLinkContainer.appendChild(profileLoginButton)
   return profileLinkContainer
 }
 
