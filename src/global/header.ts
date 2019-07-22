@@ -27,7 +27,7 @@ export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
 function buildHeader (header: HTMLElement, store: IndexedFormula, profile: NamedNode | null, pod: NamedNode, podOwnerProfile: NamedNode) {
   header.appendChild(createBanner(store, pod, profile))
   if (!profile || (profile && !profile.equals(podOwnerProfile))) {
-    header.appendChild(createSubBanner(store, podOwnerProfile))
+    header.appendChild(createSubBanner(store, profile, podOwnerProfile))
   }
 }
 
@@ -51,22 +51,22 @@ function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement
   const profileImg = getProfileImg(store, profile)
 
   const menuProfileLink = document.createElement("a")
-  menuProfileLink.classList.add('header-user-menu__link')
+  menuProfileLink.classList.add("header-user-menu__link")
   menuProfileLink.href = profile.uri
   menuProfileLink.innerText = "Profile"
 
   const menuProfileItem = document.createElement("li")
-  menuProfileItem.classList.add('header-user-menu__list-item')
+  menuProfileItem.classList.add("header-user-menu__list-item")
   menuProfileItem.appendChild(menuProfileLink)
 
   const menuLogoutButton = document.createElement("button")
-  menuLogoutButton.classList.add('header-user-menu__button')
+  menuLogoutButton.classList.add("header-user-menu__button")
   menuLogoutButton.type = "button"
   menuLogoutButton.addEventListener("click", () => panes.UI.authn.solidAuthClient.logout())
   menuLogoutButton.innerText = "Log out"
 
   const menuLogoutItem = document.createElement("li")
-  menuLogoutItem.classList.add('header-user-menu__list-item')
+  menuLogoutItem.classList.add("header-user-menu__list-item")
   menuLogoutItem.appendChild(menuLogoutButton)
 
   const loggedInMenuList = document.createElement("ul")
@@ -74,21 +74,21 @@ function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement
   loggedInMenuList.appendChild(menuLogoutItem)
 
   const loggedInMenu = document.createElement("nav")
-  loggedInMenu.classList.add('header-user-menu__navigation-menu')
+  loggedInMenu.classList.add("header-user-menu__navigation-menu")
   loggedInMenu.setAttribute("aria-hidden", "true")
   loggedInMenu.appendChild(loggedInMenuList)
 
   const loggedInMenuTrigger = document.createElement("button")
-  loggedInMenuTrigger.classList.add('header-user-menu__trigger')
+  loggedInMenuTrigger.classList.add("header-user-menu__trigger")
   loggedInMenuTrigger.type = "button"
-  if (typeof profileImg === 'string') {
+  if (typeof profileImg === "string") {
     loggedInMenuTrigger.innerHTML = profileImg
   } else {
     loggedInMenuTrigger.appendChild(profileImg)
   }
 
   const loggedInMenuContainer = document.createElement("div")
-  loggedInMenuContainer.classList.add('header-banner__user-menu', 'header-user-menu')
+  loggedInMenuContainer.classList.add("header-banner__user-menu", "header-user-menu")
   loggedInMenuContainer.appendChild(loggedInMenuTrigger)
   loggedInMenuContainer.appendChild(loggedInMenu)
 
@@ -100,7 +100,7 @@ function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement
   return loggedInMenuContainer
 }
 
-function createSubBanner (store: IndexedFormula, powOwnerProfile: NamedNode): HTMLElement {
+function createSubBanner (store: IndexedFormula, profile: NamedNode | null, powOwnerProfile: NamedNode): HTMLElement {
   const profileLinkPre = document.createElement("span")
   profileLinkPre.innerText = "You're visiting the Pod controlled by "
 
@@ -109,20 +109,23 @@ function createSubBanner (store: IndexedFormula, powOwnerProfile: NamedNode): HT
   profileLink.classList.add("header-aside__link")
   profileLink.innerText = getName(store, powOwnerProfile)
 
-  const profileLoginButtonPre = document.createElement("span")
-  profileLoginButtonPre.innerText = " - "
-
-  const profileLoginButton = document.createElement("button")
-  profileLoginButton.type = "button"
-  profileLoginButton.innerText = "Log in"
-  profileLoginButton.addEventListener("click", () => panes.UI.authn.solidAuthClient.popupLogin())
-
   const profileLinkContainer = document.createElement("aside")
   profileLinkContainer.classList.add("header-aside")
   profileLinkContainer.appendChild(profileLinkPre)
   profileLinkContainer.appendChild(profileLink)
-  profileLinkContainer.appendChild(profileLoginButtonPre)
-  profileLinkContainer.appendChild(profileLoginButton)
+
+  if (!profile) {
+    const profileLoginButtonPre = document.createElement("span")
+    profileLoginButtonPre.innerText = " - "
+
+    const profileLoginButton = document.createElement("button")
+    profileLoginButton.type = "button"
+    profileLoginButton.innerText = "Log in"
+    profileLoginButton.addEventListener("click", () => panes.UI.authn.solidAuthClient.popupLogin())
+
+    profileLinkContainer.appendChild(profileLoginButtonPre)
+    profileLinkContainer.appendChild(profileLoginButton)
+  }
   return profileLinkContainer
 }
 
@@ -148,7 +151,7 @@ function getProfileImg (store: IndexedFormula, profile: NamedNode): string | HTM
     return emptyProfile
   }
   const profileImage = document.createElement("div")
-  profileImage.classList.add('header-user-menu__photo')
+  profileImage.classList.add("header-user-menu__photo")
   profileImage.style.backgroundImage = `url("${hasPhoto}")`
   return profileImage
 }
