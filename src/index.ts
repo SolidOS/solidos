@@ -1,19 +1,19 @@
-require('./index.scss')
-const $rdf = require('rdflib')
-const panes = require('solid-panes')
-const UI = panes.UI
+import $rdf from 'rdflib'
+import panes from 'solid-panes'
+import './index.scss'
 
-window.$rdf = $rdf
+(window as any).$rdf = $rdf
 
 document.addEventListener('DOMContentLoaded', function () {
   // Set up cross-site proxy
-  $rdf.Fetcher.crossSiteProxyTemplate = window.origin + '/xss/?uri={uri}'
+  ($rdf.Fetcher as any).crossSiteProxyTemplate = window.origin + '/xss/?uri={uri}';
 
   // Authenticate the user
+  const UI = panes.UI
   UI.authn.checkUser()
     .then(function () {
       // Set up the view for the current subject
-      const kb = UI.store
+      const kb = (UI as any).store
       const uri = window.location.href
       const subject = kb.sym(uri)
       const outliner = panes.getOutliner(document)
@@ -21,12 +21,13 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 })
 
-window.onpopstate = function(event) {
-  window.document.outline.GotoSubject($rdf.sym(window.document.location.href), true, undefined, true, undefined)
+window.onpopstate = function (event) {
+  (window.document as any).outline.GotoSubject($rdf.sym(window.document.location.href), true, undefined, true, undefined)
 }
 
 // It's not clear where this function is used, so unfortunately we cannot remove it:
-function dump (msg) {
+function dump (msg: string[]) {
   console.log(msg.slice(0, -1))
 }
-window.dump = dump
+
+(window as any).dump = dump
