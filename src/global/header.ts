@@ -47,31 +47,33 @@ function createBanner (store: IndexedFormula, pod: NamedNode, profile: NamedNode
   return banner
 }
 
+function openDashboardPane(pane: string) {
+  const outliner = panes.getOutliner(document)
+  const rows = document.querySelectorAll('#outline > tr > td > table > tr')
+  if (rows.length < 2 && rows[0].parentNode) {
+    const row = document.createElement('tr')
+    const container = row.appendChild(document.createElement('td'))
+    rows[0].parentNode.appendChild(row)
+    return outliner.showDashboard(container, true)
+  }
+  const container = rows[rows.length - 1].childNodes[0]
+  return outliner.showDashboard(container, true, pane)
+}
+
+function createUserMenuButton (label: string, onClick: EventListenerOrEventListenerObject): HTMLElement {
+  const button = document.createElement('button')
+  button.classList.add('header-user-menu__button')
+  button.addEventListener('click', onClick)
+  button.innerText = label
+  return button
+}
+
 function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement {
-  const profileImg = getProfileImg(store, profile)
-
-  const menuProfileLink = document.createElement("a")
-  menuProfileLink.classList.add("header-user-menu__link")
-  menuProfileLink.href = profile.uri
-  menuProfileLink.innerText = "Profile"
-
-  const menuProfileItem = document.createElement("li")
-  menuProfileItem.classList.add("header-user-menu__list-item")
-  menuProfileItem.appendChild(menuProfileLink)
-
-  const menuLogoutButton = document.createElement("button")
-  menuLogoutButton.classList.add("header-user-menu__button")
-  menuLogoutButton.type = "button"
-  menuLogoutButton.addEventListener("click", () => panes.UI.authn.solidAuthClient.logout())
-  menuLogoutButton.innerText = "Log out"
-
-  const menuLogoutItem = document.createElement("li")
-  menuLogoutItem.classList.add("header-user-menu__list-item")
-  menuLogoutItem.appendChild(menuLogoutButton)
-
   const loggedInMenuList = document.createElement("ul")
-  loggedInMenuList.appendChild(menuProfileItem)
-  loggedInMenuList.appendChild(menuLogoutItem)
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Your stuff", () => openDashboardPane("home"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Preferences", () => openDashboardPane("trustedApplications"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Edit your profile", () => openDashboardPane("profile"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton('Log out', () => panes.UI.authn.solidAuthClient.logout())))
 
   const loggedInMenu = document.createElement("nav")
   loggedInMenu.classList.add("header-user-menu__navigation-menu")
@@ -81,6 +83,7 @@ function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement
   const loggedInMenuTrigger = document.createElement("button")
   loggedInMenuTrigger.classList.add("header-user-menu__trigger")
   loggedInMenuTrigger.type = "button"
+  const profileImg = getProfileImg(store, profile)
   if (typeof profileImg === "string") {
     loggedInMenuTrigger.innerHTML = profileImg
   } else {
@@ -98,6 +101,13 @@ function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement
   loggedInMenuContainer.addEventListener("mouseout", throttledMenuToggle)
 
   return loggedInMenuContainer
+}
+
+function createUserMenuItem (child: HTMLElement): HTMLElement {
+  const menuProfileItem = document.createElement("li")
+  menuProfileItem.classList.add("header-user-menu__list-item")
+  menuProfileItem.appendChild(child)
+  return menuProfileItem
 }
 
 function createSubBanner (store: IndexedFormula, profile: NamedNode | null, powOwnerProfile: NamedNode): HTMLElement {
