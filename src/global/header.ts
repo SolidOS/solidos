@@ -71,7 +71,7 @@ function createUserMenuButton (label: string, onClick: EventListenerOrEventListe
 function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement {
   const loggedInMenuList = document.createElement("ul")
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Your stuff", () => openDashboardPane("home"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Web apps you trust", () => openDashboardPane("trustedApplications"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Preferences", () => openDashboardPane("trustedApplications"))))
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Edit your profile", () => openDashboardPane("profile"))))
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton('Log out', () => panes.UI.authn.solidAuthClient.logout())))
 
