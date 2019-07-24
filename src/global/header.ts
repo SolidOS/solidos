@@ -57,7 +57,7 @@ function openDashboardPane(pane: string) {
     return outliner.showDashboard(container, true)
   }
   const container = rows[rows.length - 1].childNodes[0]
-  return outliner.showDashboard(container, true)
+  return outliner.showDashboard(container, true, pane)
 }
 
 function createUserMenuButton (label: string, onClick: EventListenerOrEventListenerObject): HTMLElement {
@@ -77,7 +77,7 @@ function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement
 
   const loggedInMenu = document.createElement("nav")
   loggedInMenu.classList.add("header-user-menu__navigation-menu")
-  loggedInMenu.setAttribute("aria-hidden", "false")
+  loggedInMenu.setAttribute("aria-hidden", "true")
   loggedInMenu.appendChild(loggedInMenuList)
 
   const loggedInMenuTrigger = document.createElement("button")
