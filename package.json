@@ -10,6 +10,7 @@
   "scripts": {
     "build": "npm run build:dev && npm run build:prod",
     "build:dev": "webpack --progress",
+    "build:dev:local": "webpack --config-name local-webpack.config.js --progress",
     "build:prod": "webpack --progress --mode=production",
     "build-no-min": "npm run build:dev",
     "prepublishOnly": "npm run build",

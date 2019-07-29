@@ -11,7 +11,12 @@ const ns = namespace($rdf)
 export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
   const pod = getPod()
   const podOwnerProfile = getProfile(pod)
-  await fetcher.load(podOwnerProfile)
+  try {
+    await fetcher.load(podOwnerProfile)
+    // TODO: check back links to storage
+  } catch (err) {
+    alert('Didn\'t find pod owners profile at ' + podOwnerProfile)
+  }
   const header = document.getElementById("PageHeader")
   if (!header) {
     return
@@ -128,13 +133,24 @@ function createSubBanner (store: IndexedFormula, profile: NamedNode | null, powO
     const profileLoginButtonPre = document.createElement("span")
     profileLoginButtonPre.innerText = " - "
 
-    const profileLoginButton = document.createElement("button")
+    panes.UI.authn.logIn({div: profileLinkContainer, dom: document})
+      .then(context => {
+        alert('logged in  ' + context.me)
+        const header = document.getElementById("PageHeader")
+        if (!header) alert('No headeer')
+        header.innerHTML = ""
+        buildHeader(header, store, context.me, getPod(), getProfile(getPod()))
+        // TODO
+      })
+    /*
+    const profileLoginButton  = document.createElement("button")
     profileLoginButton.type = "button"
     profileLoginButton.innerText = "Log in"
     profileLoginButton.addEventListener("click", () => panes.UI.authn.solidAuthClient.popupLogin())
+    */
 
     profileLinkContainer.appendChild(profileLoginButtonPre)
-    profileLinkContainer.appendChild(profileLoginButton)
+    // profileLinkContainer.appendChild(profileLoginButton)
   }
   return profileLinkContainer
 }
