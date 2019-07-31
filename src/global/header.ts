@@ -10,12 +10,19 @@ const ns = namespace($rdf)
 
 export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
   const pod = getPod()
-  const podOwnerProfile = getProfile(pod)
+  var podOwner = getPodOwner(pod)
   try {
-    await fetcher.load(podOwnerProfile)
+    await fetcher.load(podOwner.doc())
     // TODO: check back links to storage
   } catch (err) {
-    alert('Didn\'t find pod owners profile at ' + podOwnerProfile)
+    console.log('Did NOT find pod owners profile at ' + podOwner)
+    podOwner = null
+  }
+  if (podOwner) {
+    if (!store.holds(podOwner, ns.space('storage'), pod, podOwner.doc())) {
+      console.log(`** Pod owner ${podOwner} does NOT list pod ${pod} as storage`)
+      podOwner = null
+    }
   }
   const header = document.getElementById("PageHeader")
   if (!header) {
@@ -23,26 +30,26 @@ export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
   }
 
   panes.UI.authn.solidAuthClient.trackSession(function(session: SolidSession | null) {
-    const profile = session ? sym(session.webId) : null
+    const user = session ? sym(session.webId) : null
     header.innerHTML = ""
-    buildHeader(header, store, profile, pod, podOwnerProfile)
+    buildHeader(header, store, user, pod, podOwner)
   })
 }
 
-function buildHeader (header: HTMLElement, store: IndexedFormula, profile: NamedNode | null, pod: NamedNode, podOwnerProfile: NamedNode) {
-  header.appendChild(createBanner(store, pod, profile))
-  if (!profile || (profile && !profile.equals(podOwnerProfile))) {
-    header.appendChild(createSubBanner(store, profile, podOwnerProfile))
+function buildHeader (header: HTMLElement, store: IndexedFormula, user: NamedNode | null, pod: NamedNode, podOwner: NamedNode) {
+  header.appendChild(createBanner(store, pod, user))
+  if (!user || (user && !user.equals(podOwner))) {
+    header.appendChild(createSubBanner(store, user, podOwner))
   }
 }
 
-function createBanner (store: IndexedFormula, pod: NamedNode, profile: NamedNode | null): HTMLElement {
+function createBanner (store: IndexedFormula, pod: NamedNode, user: NamedNode | null): HTMLElement {
   const podLink = document.createElement("a")
   podLink.href = pod.uri
   podLink.classList.add("header-banner__link")
   podLink.innerHTML = icon
 
-  const userMenu = profile ? createUserMenu(store, profile) : document.createElement("span")
+  const userMenu = user ? createUserMenu(store, user) : document.createElement("span")
 
   const banner = document.createElement("div")
   banner.classList.add("header-banner")
@@ -52,7 +59,7 @@ function createBanner (store: IndexedFormula, pod: NamedNode, profile: NamedNode
   return banner
 }
 
-function openDashboardPane(pane: string) {
+async function openDashboardPane(pane: string) {
   const outliner = panes.getOutliner(document)
   const rows = document.querySelectorAll('#outline > tr > td > table > tr')
   if (rows.length < 2 && rows[0].parentNode) {
@@ -73,7 +80,7 @@ function createUserMenuButton (label: string, onClick: EventListenerOrEventListe
   return button
 }
 
-function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement {
+function createUserMenu (store: IndexedFormula, user: NamedNode): HTMLElement {
   const loggedInMenuList = document.createElement("ul")
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Your stuff", () => openDashboardPane("home"))))
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Preferences", () => openDashboardPane("trustedApplications"))))
@@ -88,7 +95,7 @@ function createUserMenu (store: IndexedFormula, profile: NamedNode): HTMLElement
   const loggedInMenuTrigger = document.createElement("button")
   loggedInMenuTrigger.classList.add("header-user-menu__trigger")
   loggedInMenuTrigger.type = "button"
-  const profileImg = getProfileImg(store, profile)
+  const profileImg = getProfileImg(store, user)
   if (typeof profileImg === "string") {
     loggedInMenuTrigger.innerHTML = profileImg
   } else {
@@ -115,31 +122,37 @@ function createUserMenuItem (child: HTMLElement): HTMLElement {
   return menuProfileItem
 }
 
-function createSubBanner (store: IndexedFormula, profile: NamedNode | null, powOwnerProfile: NamedNode): HTMLElement {
-  const profileLinkPre = document.createElement("span")
-  profileLinkPre.innerText = "You're visiting the Pod controlled by "
-
-  const profileLink = document.createElement("a")
-  profileLink.href = powOwnerProfile.uri
-  profileLink.classList.add("header-aside__link")
-  profileLink.innerText = getName(store, powOwnerProfile)
-
+function createSubBanner (store: IndexedFormula, user: NamedNode | null, podOwner: NamedNode): HTMLElement {
   const profileLinkContainer = document.createElement("aside")
   profileLinkContainer.classList.add("header-aside")
-  profileLinkContainer.appendChild(profileLinkPre)
-  profileLinkContainer.appendChild(profileLink)
 
-  if (!profile) {
+  const profileLinkPre = document.createElement("span")
+  profileLinkContainer.appendChild(profileLinkPre)
+
+  if (!podOwner) {
+    profileLinkPre.innerText = "(Unable to guess pod owner) "
+  } else {
+    profileLinkPre.innerText = "You're visiting the Pod controlled by "
+
+    const profileLink = document.createElement("a")
+    profileLink.href = podOwner.uri
+    profileLink.classList.add("header-aside__link")
+    profileLink.innerText = getName(store, podOwner)
+    profileLinkContainer.appendChild(profileLink)
+  }
+
+
+  if (!user) {
     const profileLoginButtonPre = document.createElement("span")
     profileLoginButtonPre.innerText = " - "
 
     panes.UI.authn.logIn({div: profileLinkContainer, dom: document})
       .then(context => {
-        alert('logged in  ' + context.me)
+        alert('logged in from header ' + context.me)
         const header = document.getElementById("PageHeader")
         if (!header) alert('No headeer')
         header.innerHTML = ""
-        buildHeader(header, store, context.me, getPod(), getProfile(getPod()))
+        buildHeader(header, store, context.me, getPod(), getPodOwner(getPod()))
         // TODO
       })
     /*
@@ -155,10 +168,10 @@ function createSubBanner (store: IndexedFormula, profile: NamedNode | null, powO
   return profileLinkContainer
 }
 
-function getName (store: IndexedFormula, profile: NamedNode): string {
-  return (store.anyValue as any)(profile, ns.vcard("fn"), null, profile.doc()) ||
-    (store.anyValue as any)(profile, ns.foaf("name"), null, profile.doc()) ||
-    profile.uri
+function getName (store: IndexedFormula, user: NamedNode): string {
+  return (store.anyValue as any)(user, ns.vcard("fn"), null, user.doc()) ||
+    (store.anyValue as any)(user, ns.foaf("name"), null, user.doc()) ||
+    user.uri
 }
 
 function getPod (): NamedNode {
@@ -166,13 +179,13 @@ function getPod (): NamedNode {
   return sym(document.location.origin)
 }
 
-function getProfile (origin: NamedNode): NamedNode {
+function getPodOwner (origin: NamedNode): NamedNode {
   // TODO: This is given the structure that NSS provides - might need to change for other Pod servers
   return sym(`${origin.uri}/profile/card#me`)
 }
 
-function getProfileImg (store: IndexedFormula, profile: NamedNode): string | HTMLElement {
-  const hasPhoto = (store.anyValue as any)(profile, ns.vcard("hasPhoto"), null, profile.doc())
+function getProfileImg (store: IndexedFormula, user: NamedNode): string | HTMLElement {
+  const hasPhoto = (store.anyValue as any)(user, ns.vcard("hasPhoto"), null, user.doc())
   if (!hasPhoto) {
     return emptyProfile
   }
