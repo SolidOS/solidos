@@ -21,6 +21,15 @@ $divider-color: rgba(0, 0, 0, 0.2);
     width: $icon-size * 352 / 322;
   }
 
+  &__login {
+    margin-left: auto;
+    input {
+      // hacks to override the default style of login and signup button from solid-ui
+      margin: 0.75em 0 0.75em 0.5em !important;
+      padding: 0.5em !important;
+    }
+  }
+
   &__link {
     display: block;
   }
