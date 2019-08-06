@@ -10,7 +10,7 @@ const ns = namespace($rdf)
 
 export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
   const pod = getPod()
-  var podOwner = getPodOwner(pod)
+  let podOwner: NamedNode | null = getPodOwner(pod)
   try {
     await fetcher.load(podOwner.doc())
     // TODO: check back links to storage
@@ -36,9 +36,9 @@ export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
   })
 }
 
-function buildHeader (header: HTMLElement, store: IndexedFormula, user: NamedNode | null, pod: NamedNode, podOwner: NamedNode) {
+function buildHeader (header: HTMLElement, store: IndexedFormula, user: NamedNode | null, pod: NamedNode, podOwner: NamedNode | null) {
   header.appendChild(createBanner(store, pod, user))
-  if (!user || (user && !user.equals(podOwner))) {
+  if (!user || !podOwner || (user && podOwner && !user.equals(podOwner))) {
     header.appendChild(createSubBanner(store, user, podOwner))
   }
 }
@@ -122,7 +122,7 @@ function createUserMenuItem (child: HTMLElement): HTMLElement {
   return menuProfileItem
 }
 
-function createSubBanner (store: IndexedFormula, user: NamedNode | null, podOwner: NamedNode): HTMLElement {
+function createSubBanner (store: IndexedFormula, user: NamedNode | null, podOwner: NamedNode | null): HTMLElement {
   const profileLinkContainer = document.createElement("aside")
   profileLinkContainer.classList.add("header-aside")
 
@@ -147,10 +147,12 @@ function createSubBanner (store: IndexedFormula, user: NamedNode | null, podOwne
     profileLoginButtonPre.innerText = " - "
 
     panes.UI.authn.logIn({div: profileLinkContainer, dom: document})
-      .then(context => {
+      .then((context: any) => {
         alert('logged in from header ' + context.me)
         const header = document.getElementById("PageHeader")
-        if (!header) alert('No headeer')
+        if (!header) {
+          return alert('No header')
+        }
         header.innerHTML = ""
         buildHeader(header, store, context.me, getPod(), getPodOwner(getPod()))
         // TODO
