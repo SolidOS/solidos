@@ -19,7 +19,8 @@ export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
     podOwner = null
   }
   if (podOwner) {
-    if (!store.holds(podOwner, ns.space('storage'), pod, podOwner.doc())) {
+    const storageIsListedInPodOwnersProfile = store.holds(podOwner, ns.space('storage'), pod, podOwner.doc())
+    if (!storageIsListedInPodOwnersProfile) {
       console.log(`** Pod owner ${podOwner} does NOT list pod ${pod} as storage`)
       podOwner = null
     }
@@ -29,11 +30,15 @@ export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
     return
   }
 
-  panes.UI.authn.solidAuthClient.trackSession(function(session: SolidSession | null) {
+  panes.UI.authn.solidAuthClient.trackSession(rebuildHeader(header, store, pod, podOwner))
+}
+
+function rebuildHeader(header: HTMLElement, store: IndexedFormula, pod: NamedNode, podOwner: NamedNode | null) {
+  return (session: SolidSession | null) => {
     const user = session ? sym(session.webId) : null
     header.innerHTML = ""
     buildHeader(header, store, user, pod, podOwner)
-  })
+  }
 }
 
 function buildHeader (header: HTMLElement, store: IndexedFormula, user: NamedNode | null, pod: NamedNode, podOwner: NamedNode | null) {
@@ -49,14 +54,23 @@ function createBanner (store: IndexedFormula, pod: NamedNode, user: NamedNode | 
   podLink.classList.add("header-banner__link")
   podLink.innerHTML = icon
 
-  const userMenu = user ? createUserMenu(store, user) : document.createElement("span")
+  const menu = user
+    ? createUserMenu(store, user)
+    : createLoginSignUpButtons()
 
   const banner = document.createElement("div")
   banner.classList.add("header-banner")
   banner.appendChild(podLink)
-  banner.appendChild(userMenu)
+  banner.appendChild(menu)
 
   return banner
+}
+
+function createLoginSignUpButtons() {
+  const profileLoginButtonPre = document.createElement("div")
+  profileLoginButtonPre.classList.add('header-banner__login')
+  profileLoginButtonPre.appendChild(panes.UI.authn.loginStatusBox(document, null, {}))
+  return profileLoginButtonPre
 }
 
 async function openDashboardPane(pane: string) {
@@ -141,32 +155,6 @@ function createSubBanner (store: IndexedFormula, user: NamedNode | null, podOwne
     profileLinkContainer.appendChild(profileLink)
   }
 
-
-  if (!user) {
-    const profileLoginButtonPre = document.createElement("span")
-    profileLoginButtonPre.innerText = " - "
-
-    panes.UI.authn.logIn({div: profileLinkContainer, dom: document})
-      .then((context: any) => {
-        alert('logged in from header ' + context.me)
-        const header = document.getElementById("PageHeader")
-        if (!header) {
-          return alert('No header')
-        }
-        header.innerHTML = ""
-        buildHeader(header, store, context.me, getPod(), getPodOwner(getPod()))
-        // TODO
-      })
-    /*
-    const profileLoginButton  = document.createElement("button")
-    profileLoginButton.type = "button"
-    profileLoginButton.innerText = "Log in"
-    profileLoginButton.addEventListener("click", () => panes.UI.authn.solidAuthClient.popupLogin())
-    */
-
-    profileLinkContainer.appendChild(profileLoginButtonPre)
-    // profileLinkContainer.appendChild(profileLoginButton)
-  }
   return profileLinkContainer
 }
 
