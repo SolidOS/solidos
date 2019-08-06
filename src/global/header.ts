@@ -178,12 +178,12 @@ function getName (store: IndexedFormula, user: NamedNode): string {
 
 function getPod (): NamedNode {
   // TODO: This is given that mashlib runs on NSS - might need to change when we want it to run on other Pod servers
-  return sym(document.location.origin)
+  return sym(document.location.origin).site()
 }
 
 function getPodOwner (origin: NamedNode): NamedNode {
   // TODO: This is given the structure that NSS provides - might need to change for other Pod servers
-  return sym(`${origin.uri}/profile/card#me`)
+  return sym(`${origin.uri}profile/card#me`)
 }
 
 function getProfileImg (store: IndexedFormula, user: NamedNode): string | HTMLElement {
