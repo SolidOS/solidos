@@ -97,9 +97,11 @@ function createUserMenuButton (label: string, onClick: EventListenerOrEventListe
 function createUserMenu (store: IndexedFormula, user: NamedNode): HTMLElement {
   const loggedInMenuList = document.createElement("ul")
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Your stuff", () => openDashboardPane("home"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Preferences", () => openDashboardPane("trustedApplications"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Edit your profile", () => openDashboardPane("profile"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton('Log out', () => panes.UI.authn.solidAuthClient.logout())))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Preferences", () => openDashboardPane("basicPreferences"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Trusted Apps", () => openDashboardPane("trustedApplications"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Edit your profile", () => openDashboardPane("editProfile"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Your storage", () => openDashboardPane("folder"))))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Log out", () => panes.UI.authn.solidAuthClient.logout())))
 
   const loggedInMenu = document.createElement("nav")
   loggedInMenu.classList.add("header-user-menu__navigation-menu")
