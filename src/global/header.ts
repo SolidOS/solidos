@@ -41,21 +41,21 @@ function rebuildHeader(header: HTMLElement, store: IndexedFormula, pod: NamedNod
   }
 }
 
-function buildHeader (header: HTMLElement, store: IndexedFormula, user: NamedNode | null, pod: NamedNode, podOwner: NamedNode | null) {
-  header.appendChild(createBanner(store, pod, user))
+async function buildHeader (header: HTMLElement, store: IndexedFormula, user: NamedNode | null, pod: NamedNode, podOwner: NamedNode | null) {
+  header.appendChild(await createBanner(store, pod, user))
   if (!user || !podOwner || (user && podOwner && !user.equals(podOwner))) {
     header.appendChild(createSubBanner(store, user, podOwner))
   }
 }
 
-function createBanner (store: IndexedFormula, pod: NamedNode, user: NamedNode | null): HTMLElement {
+async function createBanner (store: IndexedFormula, pod: NamedNode, user: NamedNode | null): Promise<HTMLElement> {
   const podLink = document.createElement("a")
   podLink.href = pod.uri
   podLink.classList.add("header-banner__link")
   podLink.innerHTML = icon
 
   const menu = user
-    ? createUserMenu(store, user)
+    ? await createUserMenu(store, user)
     : createLoginSignUpButtons()
 
   const banner = document.createElement("div")
@@ -73,8 +73,7 @@ function createLoginSignUpButtons() {
   return profileLoginButtonPre
 }
 
-async function openDashboardPane(pane: string) {
-  const outliner = panes.getOutliner(document)
+async function openDashboardPane (outliner: any, pane: string) {
   const rows = document.querySelectorAll('#outline > tr > td > table > tr')
   if (rows.length < 2 && rows[0].parentNode) {
     const row = document.createElement('tr')
@@ -94,13 +93,14 @@ function createUserMenuButton (label: string, onClick: EventListenerOrEventListe
   return button
 }
 
-function createUserMenu (store: IndexedFormula, user: NamedNode): HTMLElement {
+async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<HTMLElement> {
+  const outliner = panes.getOutliner(document)
+
   const loggedInMenuList = document.createElement("ul")
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Your stuff", () => openDashboardPane("home"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Preferences", () => openDashboardPane("basicPreferences"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Trusted Apps", () => openDashboardPane("trustedApplications"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Edit your profile", () => openDashboardPane("editProfile"))))
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Your storage", () => openDashboardPane("folder"))))
+  const menuItems = await getMenuItems(outliner)
+  menuItems.forEach(item => {
+    loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton(item.label, () => openDashboardPane(outliner, item.tabName || item.paneName))))
+  })
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Log out", () => panes.UI.authn.solidAuthClient.logout())))
 
   const loggedInMenu = document.createElement("nav")
@@ -158,6 +158,17 @@ function createSubBanner (store: IndexedFormula, user: NamedNode | null, podOwne
   }
 
   return profileLinkContainer
+}
+
+type DashboardItem = {
+  paneName: string;
+  tabName?: string;
+  label: string;
+  icon: string;
+}
+
+async function getMenuItems (outliner: any): Promise<DashboardItem[]> {
+  return await outliner.getDashboardItems()
 }
 
 function getName (store: IndexedFormula, user: NamedNode): string {
