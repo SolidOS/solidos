@@ -1,0 +1,106 @@
+$icon-size: 60px;
+$divider-color: rgba(0, 0, 0, 0.2);
+
+.header-aside {
+  @include box-shadow(0px, 1px, 4px, $divider-color);
+  background-color: #eee;
+  font-size: 0.9em;
+  padding: 0.25em 1.5em 0.5em;
+  margin-bottom: 4px;
+}
+
+.header-banner {
+  @include box-shadow(0px, 1px, 4px, $divider-color);
+  display: flex;
+  padding: 0 1.5em;
+  margin-bottom: 4px;
+
+  &__icon {
+    height: $icon-size;
+    width: round($icon-size * 352 / 322);
+    width: $icon-size * 352 / 322;
+  }
+
+  &__login {
+    margin-left: auto;
+    input {
+      // hacks to override the default style of login and signup button from solid-ui
+      margin: 0.75em 0 0.75em 0.5em !important;
+      padding: 0.5em !important;
+    }
+  }
+
+  &__link {
+    display: block;
+  }
+
+  &__user-menu {
+    border-left: solid 1px $divider-color;
+    margin-left: auto;
+  }
+}
+
+.header-user-menu {
+  &__button,
+  &__link {
+    background: none;
+    border: 0;
+    color: black;
+    cursor: pointer;
+    display: block;
+    font-family: Arial;
+    font-size: 1em;
+    text-align: left;
+    padding: 1em;
+    width: 100%;
+    &:focus,
+    &:hover {
+      background-color: #eee;
+    }
+  }
+
+  &__list-item {
+    border-bottom: solid 1px $divider-color;
+
+    &:last-child {
+      border: 0;
+    }
+  }
+
+  &__navigation-menu {
+    background: white;
+    border: solid 1px $divider-color;
+    border-right: 0;
+    position: absolute;
+    right: 0;
+    top: $icon-size;
+    width: 200px;
+
+    &[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  &__photo {
+    $image-margin: 5px;
+    $image-size: $icon-size - $image-margin * 2;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-size: $image-size;
+    margin: $image-margin;
+    height: $image-size;
+    width: $image-size;
+  }
+
+  &__trigger {
+    background: none;
+    border: 0;
+    width: $icon-size;
+    height: $icon-size;
+    img {
+      border-radius: 50%;
+      height: $icon-size - 4px;
+      width: $icon-size - 4px;
+    }
+  }
+}
