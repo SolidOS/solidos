@@ -50,7 +50,7 @@
   "dependencies": {
     "rdflib": "^0.21.1",
     "solid-namespace": "^0.2.0",
-    "solid-panes": "^1.3.16-5"
+    "solid-panes": "^1.4.0"
   },
   "dependenciesBackup": {
     "rdflib": ">=0.19.1",
