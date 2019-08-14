@@ -1,6 +1,10 @@
+@import "colors";
 @import "mixin";
 @import "reset";
+
+@import "footer";
 @import "header";
+@import "layout";
 
 body {
   font-family: sans-serif;

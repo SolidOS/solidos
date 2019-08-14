@@ -2,6 +2,7 @@ import $rdf, { NamedNode } from 'rdflib'
 import panes from 'solid-panes'
 import './styles/index.scss'
 import { initHeader } from './global/header'
+import { initFooter } from './global/footer'
 
 const global: any = window
 
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const subject = kb.sym(uri)
     const outliner = panes.getOutliner(document)
     outliner.GotoSubject(subject, true, undefined, true, undefined)
-    return initHeader(kb, (kb as any).fetcher)
+    return Promise.all([initHeader(kb), initFooter(kb, (kb as any).fetcher)])
   })
 })
 

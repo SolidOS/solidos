@@ -5,11 +5,12 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
     <link type="text/css" rel="stylesheet" href="https://solid.github.io/solid-panes/style/tabbedtab.css" />
   </head>
-  <body>
+  <body class="db-layout">
     <!-- solid-panes' OutlineManager injects into this element -->
-    <header id="PageHeader"></header>
-    <div class="TabulatorOutline" id="DummyUUID">
+    <header class="db-layout__header header" id="PageHeader"></header>
+    <div class="TabulatorOutline db-layout__content" id="DummyUUID">
         <table id="outline"></table>
     </div>
+    <footer class="db-layout__footer footer" id="PageFooter"></footer>
   </body>
 </html>
