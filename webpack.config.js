@@ -82,7 +82,9 @@ module.exports = (env, args) => {
         title: 'Solid Data Browser',
         template: './src/index.html'
       }),
-      new MiniCssExtractPlugin({})
+      new MiniCssExtractPlugin({
+        filename: 'mash.css'
+      })
     ],
 
     externals: {
