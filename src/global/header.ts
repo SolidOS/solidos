@@ -1,50 +1,29 @@
-import $rdf, { Fetcher, IndexedFormula, NamedNode, sym } from "rdflib"
+import $rdf, { IndexedFormula, NamedNode, sym } from "rdflib"
 import namespace from "solid-namespace"
 import panes from "solid-panes"
 import { icon } from "./icon"
 import { SolidSession } from "../../typings/solid-auth-client"
 import { emptyProfile } from "./empty-profile"
 import { throttle } from "../helpers/throttle"
+import { getPod } from "./metadata"
 
 const ns = namespace($rdf)
 
-export async function initHeader (store: IndexedFormula, fetcher: Fetcher) {
-  const pod = getPod()
-  let podOwner: NamedNode | null = getPodOwner(pod)
-  try {
-    await fetcher.load(podOwner.doc())
-    // TODO: check back links to storage
-  } catch (err) {
-    console.log('Did NOT find pod owners profile at ' + podOwner)
-    podOwner = null
-  }
-  if (podOwner) {
-    const storageIsListedInPodOwnersProfile = store.holds(podOwner, ns.space('storage'), pod, podOwner.doc())
-    if (!storageIsListedInPodOwnersProfile) {
-      console.log(`** Pod owner ${podOwner} does NOT list pod ${pod} as storage`)
-      podOwner = null
-    }
-  }
+export async function initHeader (store: IndexedFormula) {
   const header = document.getElementById("PageHeader")
   if (!header) {
     return
   }
 
-  panes.UI.authn.solidAuthClient.trackSession(rebuildHeader(header, store, pod, podOwner))
+  const pod = getPod()
+  panes.UI.authn.solidAuthClient.trackSession(rebuildHeader(header, store, pod))
 }
 
-function rebuildHeader(header: HTMLElement, store: IndexedFormula, pod: NamedNode, podOwner: NamedNode | null) {
-  return (session: SolidSession | null) => {
+function rebuildHeader (header: HTMLElement, store: IndexedFormula, pod: NamedNode) {
+  return async (session: SolidSession | null) => {
     const user = session ? sym(session.webId) : null
     header.innerHTML = ""
-    buildHeader(header, store, user, pod, podOwner)
-  }
-}
-
-async function buildHeader (header: HTMLElement, store: IndexedFormula, user: NamedNode | null, pod: NamedNode, podOwner: NamedNode | null) {
-  header.appendChild(await createBanner(store, pod, user))
-  if (!user || !podOwner || (user && podOwner && !user.equals(podOwner))) {
-    header.appendChild(createSubBanner(store, user, podOwner))
+    header.appendChild(await createBanner(store, pod, user))
   }
 }
 
@@ -66,18 +45,18 @@ async function createBanner (store: IndexedFormula, pod: NamedNode, user: NamedN
   return banner
 }
 
-function createLoginSignUpButtons() {
+function createLoginSignUpButtons () {
   const profileLoginButtonPre = document.createElement("div")
-  profileLoginButtonPre.classList.add('header-banner__login')
+  profileLoginButtonPre.classList.add("header-banner__login")
   profileLoginButtonPre.appendChild(panes.UI.authn.loginStatusBox(document, null, {}))
   return profileLoginButtonPre
 }
 
 async function openDashboardPane (outliner: any, pane: string) {
-  const rows = document.querySelectorAll('#outline > tr > td > table > tr')
+  const rows = document.querySelectorAll("#outline > tr > td > table > tr")
   if (rows.length < 2 && rows[0].parentNode) {
-    const row = document.createElement('tr')
-    const container = row.appendChild(document.createElement('td'))
+    const row = document.createElement("tr")
+    const container = row.appendChild(document.createElement("td"))
     rows[0].parentNode.appendChild(row)
     return outliner.showDashboard(container, true)
   }
@@ -86,9 +65,9 @@ async function openDashboardPane (outliner: any, pane: string) {
 }
 
 function createUserMenuButton (label: string, onClick: EventListenerOrEventListenerObject): HTMLElement {
-  const button = document.createElement('button')
-  button.classList.add('header-user-menu__button')
-  button.addEventListener('click', onClick)
+  const button = document.createElement("button")
+  button.classList.add("header-user-menu__button")
+  button.addEventListener("click", onClick)
   button.innerText = label
   return button
 }
@@ -138,53 +117,13 @@ function createUserMenuItem (child: HTMLElement): HTMLElement {
   return menuProfileItem
 }
 
-function createSubBanner (store: IndexedFormula, user: NamedNode | null, podOwner: NamedNode | null): HTMLElement {
-  const profileLinkContainer = document.createElement("aside")
-  profileLinkContainer.classList.add("header-aside")
-
-  const profileLinkPre = document.createElement("span")
-  profileLinkContainer.appendChild(profileLinkPre)
-
-  if (!podOwner) {
-    profileLinkPre.innerText = "(Unable to guess pod owner) "
-  } else {
-    profileLinkPre.innerText = "You're visiting the Pod controlled by "
-
-    const profileLink = document.createElement("a")
-    profileLink.href = podOwner.uri
-    profileLink.classList.add("header-aside__link")
-    profileLink.innerText = getName(store, podOwner)
-    profileLinkContainer.appendChild(profileLink)
-  }
-
-  return profileLinkContainer
-}
-
-type DashboardItem = {
+async function getMenuItems (outliner: any): Promise<Array<{
   paneName: string;
   tabName?: string;
   label: string;
   icon: string;
-}
-
-async function getMenuItems (outliner: any): Promise<DashboardItem[]> {
+}>> {
   return await outliner.getDashboardItems()
-}
-
-function getName (store: IndexedFormula, user: NamedNode): string {
-  return (store.anyValue as any)(user, ns.vcard("fn"), null, user.doc()) ||
-    (store.anyValue as any)(user, ns.foaf("name"), null, user.doc()) ||
-    user.uri
-}
-
-function getPod (): NamedNode {
-  // TODO: This is given that mashlib runs on NSS - might need to change when we want it to run on other Pod servers
-  return sym(document.location.origin).site()
-}
-
-function getPodOwner (origin: NamedNode): NamedNode {
-  // TODO: This is given the structure that NSS provides - might need to change for other Pod servers
-  return sym(`${origin.uri}profile/card#me`)
 }
 
 function getProfileImg (store: IndexedFormula, user: NamedNode): string | HTMLElement {
