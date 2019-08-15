@@ -66,6 +66,7 @@ $icon-size: 60px;
     right: 0;
     top: $icon-size;
     width: 200px;
+    z-index: 1;
 
     &[aria-hidden='true'] {
       display: none;
