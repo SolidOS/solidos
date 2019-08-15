@@ -5,7 +5,7 @@ import { icon } from "./icon"
 import { SolidSession } from "../../typings/solid-auth-client"
 import { emptyProfile } from "./empty-profile"
 import { throttle } from "../helpers/throttle"
-import { getPod } from "./utils"
+import { getPod } from "./metadata"
 
 const ns = namespace($rdf)
 

@@ -1,7 +1,7 @@
 import { Fetcher, IndexedFormula, NamedNode, sym } from "rdflib"
 import panes from "solid-panes"
 import { SolidSession } from "../../typings/solid-auth-client"
-import { getName, getPod, getPodOwner } from "./utils"
+import { getName, getPod, getPodOwner } from "./metadata"
 
 export async function initFooter (store: IndexedFormula, fetcher: Fetcher) {
   const footer = document.getElementById("PageFooter")
@@ -23,32 +23,27 @@ function rebuildFooter (footer: HTMLElement, store: IndexedFormula, pod: NamedNo
 }
 
 function createControllerInfoBlock (store: IndexedFormula, user: NamedNode | null, pod: NamedNode | null, podOwner: NamedNode | null): HTMLElement {
-  const profileLinkContainer = document.createElement("span")
-  profileLinkContainer.classList.add("footer-pod-info")
+  const profileLinkContainer = document.createElement("div")
 
-  if (pod && podOwner) {
-    const podLinkPre = document.createElement("span")
-    podLinkPre.innerText = "You're visiting "
-
-    const podLink = document.createElement("a")
-    podLink.href = pod.uri
-    podLink.innerText = "the Pod"
-
-    const profileLinkPre = document.createElement("span")
-    profileLinkPre.innerText = " controlled by "
-
-    const profileLink = document.createElement("a")
-    profileLink.href = podOwner.uri
-    profileLink.innerText = getName(store, podOwner)
-    profileLinkContainer.appendChild(podLinkPre)
-    profileLinkContainer.appendChild(podLink)
-    profileLinkContainer.appendChild(profileLinkPre)
-    profileLinkContainer.appendChild(profileLink)
-  } else {
-    const podOwnerNotFoundInfo = document.createElement("span")
-    podOwnerNotFoundInfo.innerText = "Unable to guess pod owner.."
-    profileLinkContainer.appendChild(podOwnerNotFoundInfo)
+  if (!pod || !podOwner || user && user.equals(podOwner)) {
+    return profileLinkContainer
   }
+
+  profileLinkContainer.classList.add("footer-pod-info", "footer")
+
+  const podLinkPre = document.createElement("span")
+  podLinkPre.innerText = "You're visiting "
+
+  const podLink = document.createElement("a")
+  podLink.href = pod.uri
+  podLink.innerText = "the Pod"
+
+  const profileLinkPre = document.createElement("span")
+  profileLinkPre.innerText = " controlled by "
+
+  const profileLink = document.createElement("a")
+  profileLink.href = podOwner.uri
+  profileLink.innerText = getName(store, podOwner)
 
   const solidProjectLinkPre = document.createElement("span")
   solidProjectLinkPre.innerText = ". For more info, check out "
@@ -60,6 +55,10 @@ function createControllerInfoBlock (store: IndexedFormula, user: NamedNode | nul
   const solidProjectLinkPost = document.createElement("span")
   solidProjectLinkPost.innerText = "."
 
+  profileLinkContainer.appendChild(podLinkPre)
+  profileLinkContainer.appendChild(podLink)
+  profileLinkContainer.appendChild(profileLinkPre)
+  profileLinkContainer.appendChild(profileLink)
   profileLinkContainer.appendChild(solidProjectLinkPre)
   profileLinkContainer.appendChild(solidProjectLink)
   profileLinkContainer.appendChild(solidProjectLinkPost)
