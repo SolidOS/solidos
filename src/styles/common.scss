@@ -1,17 +1,12 @@
-/*  Some style for the tabulator
+/*  Some common style for the Solid Data Browser
 **
 **
 **  Do NOT use physical measures, but font-relative measures.
-**  2006-10-21  timbl  cconverted px to em at approx 1em = 12px
+**  2006-10-21  timbl  converted px to em at approx 1em = 12px
 **
 */
 
 /*  If you need style in a pane, insert it in the dom (2016)*/
-
-/* @import url("js/panes/microblogPane/mbStyle.css"); /*microblog pane  */
-/* @import url("js/panes/social/style.css"); /*social pane*/
-/* @import url("chrome://tabulator/content/js/panes/microblogPane/mbStyle.css"); /*microblog pane*/
-/* @import url("chrome://tabulator/content/js/panes/social/style.css"); /*social pane*/
 
 /* I couldn't find the code for the collapse image. this is a quick work around
 to make the collapsing easier to use ( the triangles dont jump 20 pixels). ~cm2
