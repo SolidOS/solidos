@@ -125,8 +125,14 @@ async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<
 
   const throttledMenuToggle = throttle((event: Event) => toggleMenu(event, loggedInMenuTrigger, loggedInMenu), 50)
   loggedInMenuTrigger.addEventListener("click", throttledMenuToggle)
-  loggedInMenuContainer.addEventListener("mouseover", throttledMenuToggle)
-  loggedInMenuContainer.addEventListener("mouseout", throttledMenuToggle)
+  let timer = setTimeout(() => null, 0)
+  loggedInMenuContainer.addEventListener("mouseover", event => {
+    clearTimeout(timer)
+    throttledMenuToggle(event)
+  })
+  loggedInMenuContainer.addEventListener("mouseout", event => {
+    timer = setTimeout(() => throttledMenuToggle(event), 200)
+  })
 
   return loggedInMenuContainer
 }

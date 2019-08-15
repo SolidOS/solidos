@@ -75,6 +75,7 @@ $divider-color: rgba(0, 0, 0, 0.2);
     right: 0;
     top: $icon-size;
     width: 200px;
+    z-index: 1;
 
     &[aria-hidden='true'] {
       display: none;
