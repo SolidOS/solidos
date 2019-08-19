@@ -72,10 +72,19 @@ function createUserMenuButton (label: string, onClick: EventListenerOrEventListe
   return button
 }
 
+function createUserMenuLink (label: string, href: string): HTMLElement {
+  const link = document.createElement("a")
+  link.classList.add("header-user-menu__link")
+  link.href = href
+  link.innerText = label
+  return link
+}
+
 async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<HTMLElement> {
   const outliner = panes.getOutliner(document)
 
   const loggedInMenuList = document.createElement("ul")
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuLink("Show your profile", user.uri)))
   const menuItems = await getMenuItems(outliner)
   menuItems.forEach(item => {
     loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton(item.label, () => openDashboardPane(outliner, item.tabName || item.paneName))))
