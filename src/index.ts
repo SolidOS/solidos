@@ -1,8 +1,9 @@
-import $rdf, { NamedNode } from 'rdflib'
+import * as $rdf from 'rdflib'
 import panes from 'solid-panes'
 import './styles/index.scss'
 import { initHeader } from './global/header'
 import { initFooter } from './global/footer'
+import { NamedNode } from 'rdflib'
 
 const global: any = window
 
