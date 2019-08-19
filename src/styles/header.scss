@@ -77,8 +77,9 @@ $icon-size: 60px;
     $image-margin: 5px;
     $image-size: $icon-size - $image-margin * 2;
     border-radius: 50%;
+    background-position: center;
     background-repeat: no-repeat;
-    background-size: $image-size;
+    background-size: cover;
     margin: $image-margin;
     height: $image-size;
     width: $image-size;
@@ -87,6 +88,7 @@ $icon-size: 60px;
   &__trigger {
     background: none;
     border: 0;
+    cursor: pointer;
     width: $icon-size;
     height: $icon-size;
     img {
