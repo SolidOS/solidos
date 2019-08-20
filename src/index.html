@@ -3,6 +3,11 @@
   <head>
     <meta charset="utf-8"/>
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        UI.initialize()
+      })
+    </script>
   </head>
   <body class="db-layout">
     <!-- solid-panes' OutlineManager injects into this element -->

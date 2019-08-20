@@ -8,7 +8,7 @@ const global: any = window
 
 global.$rdf = $rdf
 
-document.addEventListener('DOMContentLoaded', function () {
+global.UI.initialize = function () {
   // Set up cross-site proxy
   const fetcher: any = $rdf.Fetcher
   fetcher.crossSiteProxyTemplate = window.origin + '/xss/?uri={uri}'
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     outliner.GotoSubject(subject, true, undefined, true, undefined)
     return Promise.all([initHeader(kb), initFooter(kb, (kb as any).fetcher)])
   })
-})
+}
 
 window.onpopstate = function (event) {
   global.document.outline.GotoSubject(
