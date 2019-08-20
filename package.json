@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run build:dev && npm run build:prod && cp static/* dist",
+    "build": "npm run build:dev && npm run build:prod",
     "build:dev": "webpack --progress",
     "build:dev:local": "webpack --config-name local-webpack.config.js --progress",
     "build:prod": "webpack --progress --mode=production",
@@ -65,6 +65,7 @@
     "@types/rdflib": "^0.20.1",
     "babel-core": "^6.24.0",
     "babel-loader": "^8.0.2",
+    "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^2.1.1",
     "file-loader": "^4.0.0",
     "font-awesome": "^4.7.0",

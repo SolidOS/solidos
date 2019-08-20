@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = (env, args) => {
   const production = args.mode === 'production';
@@ -84,7 +85,10 @@ module.exports = (env, args) => {
       }),
       new MiniCssExtractPlugin({
         filename: 'mash.css'
-      })
+      }),
+      new CopyPlugin([
+        { from: 'static', to: '.' }
+      ])
     ],
 
     externals: {
