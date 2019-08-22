@@ -7,8 +7,9 @@ import { initFooter } from './global/footer'
 const global: any = window
 
 global.$rdf = $rdf
+global.panes = panes
 
-global.UI.initialize = function () {
+global.panes.runDataBrowser = function () {
   // Set up cross-site proxy
   const fetcher: any = $rdf.Fetcher
   fetcher.crossSiteProxyTemplate = window.origin + '/xss/?uri={uri}'
