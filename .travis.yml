@@ -31,6 +31,7 @@ deploy:
     tag: "$TRAVIS_BRANCH"
     on:
       all_branches: true
+      condition: $TRAVIS_NODE_VERSION = "node"
 
 cache:
   directories:
