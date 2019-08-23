@@ -80,7 +80,8 @@ module.exports = (env, args) => {
       new webpack.DefinePlugin({ 'global.IS_BROWSER': true }),
       new HtmlWebpackPlugin({
         title: 'Solid Data Browser',
-        template: './src/index.html'
+        template: './src/databrowser.html',
+        filename: 'databrowser.html'
       }),
       new MiniCssExtractPlugin({
         filename: 'mash.css'

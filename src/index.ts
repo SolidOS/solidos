@@ -8,8 +8,9 @@ import { NamedNode } from 'rdflib'
 const global: any = window
 
 global.$rdf = $rdf
+global.panes = panes
 
-document.addEventListener('DOMContentLoaded', function () {
+global.panes.runDataBrowser = function () {
   // Set up cross-site proxy
   const fetcher: any = $rdf.Fetcher
   fetcher.crossSiteProxyTemplate = window.origin + '/xss/?uri={uri}'
@@ -25,7 +26,23 @@ document.addEventListener('DOMContentLoaded', function () {
     outliner.GotoSubject(subject, true, undefined, true, undefined)
     return Promise.all([initHeader(kb), initFooter(kb, (kb as any).fetcher)])
   })
-})
+}
+
+if (typeof global.require === 'undefined') {
+  console.warn(
+    "Warning: mashlib's custom implementation of `require` will be deprecated in the future. Please import mashlib using a build-time bundler, or access the global `panes` variable when including it as a script."
+  )
+  //  Allow require('mashlib') in the databrowser
+  global.require = function require (lib: string) {
+    if (lib === 'mashlib') {
+      return panes
+    } else {
+      throw new Error(
+        'Cannot require (this is a Mashlib-specific require stub)'
+      )
+    }
+  }
+}
 
 window.onpopstate = function (event) {
   global.document.outline.GotoSubject(

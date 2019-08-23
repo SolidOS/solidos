@@ -11,7 +11,7 @@
     "build": "npm run build:dev && npm run build:prod",
     "build:dev": "webpack --progress",
     "build:dev:local": "webpack --config-name local-webpack.config.js --progress",
-    "build:prod": "webpack --progress --mode=production",
+    "build:prod": "webpack --progress --mode=production; echo 'Copying databrowser.html to index.html for backwards compatibility; can be removed when Node Solid Server is updated.'; cp dist/databrowser.html dist/index.html",
     "build-no-min": "npm run build:dev",
     "prepublishOnly": "npm run build",
     "standard": "standard *.js",
