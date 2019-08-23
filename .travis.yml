@@ -14,13 +14,24 @@ script:
 
 before_deploy:
   - echo node_modules > .gitignore
+  - node ./travis/bumpversion.js
 deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GH_TOKEN
-  on:
-    branch: master
-    condition: $TRAVIS_NODE_VERSION = 10.0
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GH_TOKEN
+    on:
+      branch: master
+      condition: $TRAVIS_NODE_VERSION = 10.0
+  - provider: npm
+    # Do not throw away the updated package.json we generated in `before_deploy`:
+    skip_cleanup: true
+    email: "$NPM_EMAIL"
+    api_key: "$NPM_TOKEN"
+    # Note: do not deploy on pull request, because $TRAVIS_BRANCH will be the target branch.
+    tag: "$TRAVIS_BRANCH"
+    on:
+      all_branches: true
+      condition: $TRAVIS_NODE_VERSION = "node"
 
 cache:
   directories:
