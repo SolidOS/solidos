@@ -29,12 +29,12 @@ global.panes.runDataBrowser = function () {
 }
 
 if (typeof global.require === 'undefined') {
-  console.warn(
-    "Warning: mashlib's custom implementation of `require` will be deprecated in the future. Please import mashlib using a build-time bundler, or access the global `panes` variable when including it as a script."
-  )
   //  Allow require('mashlib') in the databrowser
   global.require = function require (lib: string) {
     if (lib === 'mashlib') {
+      console.warn(
+        "Warning: mashlib's custom implementation of `require` will be deprecated in the future. Please import mashlib using a build-time bundler, or access the global `panes` variable when including it as a script."
+      )
       return panes
     } else {
       throw new Error(
