@@ -78,6 +78,7 @@ async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<
   const outliner = panes.getOutliner(document)
 
   const loggedInMenuList = document.createElement("ul")
+  loggedInMenuList.classList.add('header-user-menu__list')
   loggedInMenuList.appendChild(createUserMenuItem(createUserMenuLink("Show your profile", user.uri)))
   const menuItems = await getMenuItems(outliner)
   menuItems.forEach(item => {
