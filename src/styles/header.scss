@@ -50,6 +50,12 @@ $icon-size: 60px;
     }
   }
 
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
   &__list-item {
     border-bottom: solid 1px $divider-color;
 
