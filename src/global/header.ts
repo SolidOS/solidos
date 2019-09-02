@@ -52,16 +52,10 @@ function createLoginSignUpButtons () {
   return profileLoginButtonPre
 }
 
-async function openDashboardPane (outliner: any, pane: string) {
-  const rows = document.querySelectorAll("#outline > tr > td > table > tr")
-  if (rows.length < 2 && rows[0].parentNode) {
-    const row = document.createElement("tr")
-    const container = row.appendChild(document.createElement("td"))
-    rows[0].parentNode.appendChild(row)
-    return outliner.showDashboard(container, true)
-  }
-  const container = rows[rows.length - 1].childNodes[0]
-  return outliner.showDashboard(container, true, pane)
+async function openDashboardPane (outliner: any, pane: string): Promise<void> {
+  outliner.showDashboard({
+    pane
+  })
 }
 
 function createUserMenuButton (label: string, onClick: EventListenerOrEventListenerObject): HTMLElement {
