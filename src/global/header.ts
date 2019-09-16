@@ -1,6 +1,7 @@
 import $rdf, { IndexedFormula, NamedNode, sym } from "rdflib"
 import namespace from "solid-namespace"
 import panes from "solid-panes"
+import solidUI from "solid-ui"
 import { icon } from "./icon"
 import { SolidSession } from "../../typings/solid-auth-client"
 import { emptyProfile } from "./empty-profile"
@@ -137,13 +138,13 @@ async function getMenuItems (outliner: any): Promise<Array<{
 }
 
 function getProfileImg (store: IndexedFormula, user: NamedNode): string | HTMLElement {
-  const hasPhoto = (store.anyValue as any)(user, ns.vcard("hasPhoto"), null, user.doc())
-  if (!hasPhoto) {
+  const profileUrl = solidUI.authn.findProfileImage(user)
+  if (!profileUrl) {
     return emptyProfile
   }
   const profileImage = document.createElement("div")
   profileImage.classList.add("header-user-menu__photo")
-  profileImage.style.backgroundImage = `url("${hasPhoto}")`
+  profileImage.style.backgroundImage = `url("${profileUrl}")`
   return profileImage
 }
 
