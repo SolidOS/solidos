@@ -76,6 +76,11 @@ function createUserMenuLink (label: string, href: string): HTMLElement {
 }
 
 async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<HTMLElement> {
+  const fetcher = (<any>store).fetcher
+  if (fetcher) {
+    // Making sure that Profile is loaded before building menu
+    await fetcher.load(user)
+  }
   const outliner = panes.getOutliner(document)
 
   const loggedInMenuList = document.createElement("ul")
