@@ -57,3 +57,7 @@ It is an extensible platform, and is never finished.  Do help!
 timbl 2018
 
 - Here is the [Travis build space](https://travis-ci.org/solid/mashlib/builds)
+
+## Local development
+
+For local development, go to [mashlib-deb](https://github.com/inrupt/mashlib-dev).
