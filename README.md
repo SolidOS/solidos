@@ -60,4 +60,4 @@ timbl 2018
 
 ## Local development
 
-For local development, go to [mashlib-deb](https://github.com/inrupt/mashlib-dev).
+For local development, we recommend using [mashlib-dev](https://github.com/inrupt/mashlib-dev) to set up your development environment.
