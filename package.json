@@ -45,10 +45,10 @@
   "homepage": "https://github.com/solid/mashlib",
   "dependencies": {
     "normalize.css": "^8.0.1",
-    "rdflib": "^1.0.4",
+    "rdflib": "^1.0.6",
     "solid-namespace": "^0.2.0",
-    "solid-panes": "^2.0.2",
-    "solid-ui": "^1.2.2"
+    "solid-panes": "^2.0.3",
+    "solid-ui": "^1.2.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
