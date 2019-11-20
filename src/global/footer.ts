@@ -1,5 +1,5 @@
 import { Fetcher, IndexedFormula, NamedNode, sym } from "rdflib"
-import panes from "solid-panes"
+import { authn } from "solid-ui"
 import { SolidSession } from "../../typings/solid-auth-client"
 import { getName, getPod, getPodOwner } from "./metadata"
 
@@ -11,7 +11,7 @@ export async function initFooter (store: IndexedFormula, fetcher: Fetcher) {
 
   const pod = getPod()
   const podOwner = await getPodOwner(pod, store, fetcher)
-  panes.UI.authn.solidAuthClient.trackSession(rebuildFooter(footer, store, pod, podOwner))
+  authn.solidAuthClient.trackSession(rebuildFooter(footer, store, pod, podOwner))
 }
 
 function rebuildFooter (footer: HTMLElement, store: IndexedFormula, pod: NamedNode | null, podOwner: NamedNode | null) {

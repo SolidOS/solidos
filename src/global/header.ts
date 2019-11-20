@@ -1,14 +1,11 @@
-import $rdf, { IndexedFormula, NamedNode, sym } from "rdflib"
-import namespace from "solid-namespace"
-import panes from "solid-panes"
-import UI from "solid-ui"
+import { IndexedFormula, NamedNode, sym } from "rdflib"
+import { authn, widgets } from "solid-ui"
 import { icon } from "./icon"
 import { SolidSession } from "../../typings/solid-auth-client"
 import { emptyProfile } from "./empty-profile"
 import { throttle } from "../helpers/throttle"
 import { getPod } from "./metadata"
-
-const ns = namespace($rdf)
+import { getOutliner } from "solid-panes"
 
 export async function initHeader (store: IndexedFormula) {
   const header = document.getElementById("PageHeader")
@@ -17,7 +14,7 @@ export async function initHeader (store: IndexedFormula) {
   }
 
   const pod = getPod()
-  panes.UI.authn.solidAuthClient.trackSession(rebuildHeader(header, store, pod))
+  authn.solidAuthClient.trackSession(rebuildHeader(header, store, pod))
 }
 
 function rebuildHeader (header: HTMLElement, store: IndexedFormula, pod: NamedNode) {
@@ -49,7 +46,7 @@ async function createBanner (store: IndexedFormula, pod: NamedNode, user: NamedN
 function createLoginSignUpButtons () {
   const profileLoginButtonPre = document.createElement("div")
   profileLoginButtonPre.classList.add("header-banner__login")
-  profileLoginButtonPre.appendChild(panes.UI.authn.loginStatusBox(document, null, {}))
+  profileLoginButtonPre.appendChild(authn.loginStatusBox(document, null, {}))
   return profileLoginButtonPre
 }
 
@@ -81,7 +78,7 @@ async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<
     // Making sure that Profile is loaded before building menu
     await fetcher.load(user)
   }
-  const outliner = panes.getOutliner(document)
+  const outliner = getOutliner(document)
 
   const loggedInMenuList = document.createElement("ul")
   loggedInMenuList.classList.add('header-user-menu__list')
@@ -90,7 +87,7 @@ async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<
   menuItems.forEach(item => {
     loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton(item.label, () => openDashboardPane(outliner, item.tabName || item.paneName))))
   })
-  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Log out", () => panes.UI.authn.solidAuthClient.logout())))
+  loggedInMenuList.appendChild(createUserMenuItem(createUserMenuButton("Log out", () => authn.solidAuthClient.logout())))
 
   const loggedInMenu = document.createElement("nav")
   loggedInMenu.classList.add("header-user-menu__navigation-menu")
@@ -98,7 +95,7 @@ async function createUserMenu (store: IndexedFormula, user: NamedNode): Promise<
   loggedInMenu.appendChild(loggedInMenuList)
 
   const loggedInMenuTrigger = document.createElement("button")
-  loggedInMenuTrigger.classList.add("header-user-menu__trigger")
+  loggedInMenuTrigger.classList.add('header-user-menu__trigger')
   loggedInMenuTrigger.type = "button"
   const profileImg = getProfileImg(store, user)
   if (typeof profileImg === "string") {
@@ -143,7 +140,7 @@ async function getMenuItems (outliner: any): Promise<Array<{
 }
 
 function getProfileImg (store: IndexedFormula, user: NamedNode): string | HTMLElement {
-  const profileUrl = UI.widgets.findImage(user)
+  const profileUrl = widgets.findImage(user)
   if (!profileUrl) {
     return emptyProfile
   }

@@ -1,9 +1,11 @@
 import * as $rdf from 'rdflib'
-import panes from 'solid-panes'
+import * as panes from 'solid-panes'
 import './styles/index.scss'
 import { initHeader } from './global/header'
 import { initFooter } from './global/footer'
 import { NamedNode } from 'rdflib'
+
+import { authn, store } from 'solid-ui'
 
 const global: any = window
 
@@ -16,15 +18,15 @@ global.panes.runDataBrowser = function () {
   fetcher.crossSiteProxyTemplate = window.origin + '/xss/?uri={uri}'
 
   // Authenticate the user
-  const UI = panes.UI
-  UI.authn.checkUser().then(function (profile: NamedNode | null) {
+  authn.checkUser().then(function (profile: NamedNode | null) {
     // Set up the view for the current subject
-    const kb = (UI as any).store
     const uri = window.location.href
-    const subject = kb.sym(uri)
+    const subject = store.sym(uri)
     const outliner = panes.getOutliner(document)
     outliner.GotoSubject(subject, true, undefined, true, undefined)
-    return Promise.all([initHeader(kb), initFooter(kb, (kb as any).fetcher)])
+    const header = initHeader(store)
+    const footer = initFooter(store, (store as any).fetcher)
+    return Promise.all([header, footer])
   })
 }
 
@@ -44,7 +46,7 @@ if (typeof global.require === 'undefined') {
   }
 }
 
-window.onpopstate = function (event) {
+window.onpopstate = function (_event: any) {
   global.document.outline.GotoSubject(
     $rdf.sym(window.document.location.href),
     true,
