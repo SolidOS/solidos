@@ -20,6 +20,11 @@ module.exports = (env, args) => {
     },
     resolve: {
       extensions: ['.js', '.ts'],
+      alias: production ? {} : {
+        'rdflib': path.resolve('./node_modules/rdflib'),
+        'solid-auth-client': path.resolve('./node_modules/solid-auth-client'),
+        'solid-ui': path.resolve('./node_modules/solid-ui')
+      }
     },
     module: {
       rules: [
@@ -91,7 +96,6 @@ module.exports = (env, args) => {
         { from: 'static', to: '.' }
       ])
     ],
-
     externals: {
       'fs': 'null',
       'node-fetch': 'fetch',
