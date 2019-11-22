@@ -1,11 +1,11 @@
-import $rdf, { Fetcher, IndexedFormula, NamedNode, sym } from "rdflib"
-import namespace from "solid-namespace"
+import $rdf, { Fetcher, IndexedFormula, NamedNode, sym } from 'rdflib'
+import namespace from 'solid-namespace'
 
 const ns = namespace($rdf)
 
 export function getName (store: IndexedFormula, user: NamedNode): string {
-  return (store.anyValue as any)(user, ns.vcard("fn"), null, user.doc()) ||
-    (store.anyValue as any)(user, ns.foaf("name"), null, user.doc()) ||
+  return (store.anyValue as any)(user, ns.vcard('fn'), null, user.doc()) ||
+    (store.anyValue as any)(user, ns.foaf('name'), null, user.doc()) ||
     user.uri
 }
 
@@ -22,11 +22,11 @@ export async function getPodOwner (pod: NamedNode, store: IndexedFormula, fetche
     await fetcher.load(podOwner.doc())
     // @@ TODO: check back links to storage
   } catch (err) {
-    console.log("Did NOT find pod owners profile at " + podOwner)
+    console.log('Did NOT find pod owners profile at ' + podOwner)
     return null
   }
   if (podOwner) {
-    const storageIsListedInPodOwnersProfile = store.holds(podOwner, ns.space("storage"), pod, podOwner.doc())
+    const storageIsListedInPodOwnersProfile = store.holds(podOwner, ns.space('storage'), pod, podOwner.doc())
     if (!storageIsListedInPodOwnersProfile) {
       console.log(`** Pod owner ${podOwner} does NOT list pod ${pod} as storage`)
       return null

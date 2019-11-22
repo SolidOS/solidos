@@ -3,7 +3,6 @@ import * as panes from 'solid-panes'
 import './styles/index.scss'
 import { initHeader } from './global/header'
 import { initFooter } from './global/footer'
-import { NamedNode } from 'rdflib'
 
 import { authn, store } from 'solid-ui'
 
@@ -18,7 +17,7 @@ global.panes.runDataBrowser = function () {
   fetcher.crossSiteProxyTemplate = window.origin + '/xss/?uri={uri}'
 
   // Authenticate the user
-  authn.checkUser().then(function (profile: NamedNode | null) {
+  authn.checkUser().then(function (_profile: $rdf.NamedNode | null) {
     // Set up the view for the current subject
     const uri = window.location.href
     const subject = store.sym(uri)

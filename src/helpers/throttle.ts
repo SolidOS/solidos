@@ -10,13 +10,13 @@ export function throttle (func: Function, wait: number, options: ThrottleOptions
     result: any
   let timeout: any = null
   let previous = 0
-  const later = function() {
+  const later = function () {
     previous = !options.leading ? 0 : Date.now()
     timeout = null
     result = func.apply(context, args)
     if (!timeout) context = args = null
   }
-  return function() {
+  return function () {
     const now = Date.now()
     if (!previous && !options.leading) previous = now
     const remaining = wait - (now - previous)
