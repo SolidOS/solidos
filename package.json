@@ -14,11 +14,11 @@
     "build:prod": "webpack --progress --mode=production; echo 'Copying databrowser.html to index.html for backwards compatibility; can be removed when Node Solid Server is updated.'; cp dist/databrowser.html dist/index.html",
     "build-no-min": "npm run build:dev",
     "prepublishOnly": "npm run build",
-    "standard": "standard *.js",
     "start": "webpack-dev-server --https",
-    "test": "echo 'No unit tests'",
-    "watch": "webpack --watch",
-    "format": "prettier-standard 'src/*.ts' 'src/**/*.ts'"
+    "lint": "eslint 'src/**/*.ts'",
+    "lint-fix": "eslint 'src/**/*.ts' --fix",
+    "test": "npm run lint",
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -57,10 +57,13 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@types/rdflib": "^0.20.1",
+    "@typescript-eslint/eslint-plugin": "^2.8.0",
+    "@typescript-eslint/parser": "^2.8.0",
     "babel-core": "^6.24.0",
     "babel-loader": "^8.0.2",
     "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^2.1.1",
+    "eslint": "^6.6.0",
     "file-loader": "^4.2.0",
     "font-awesome": "^4.7.0",
     "html-webpack-plugin": "^3.2.0",
@@ -68,8 +71,8 @@
     "lint-staged": "^9.2.5",
     "mini-css-extract-plugin": "^0.7.0",
     "node-sass": "^4.12.0",
-    "prettier-standard": "^9.1.1",
     "sass-loader": "^7.3.1",
+    "standard": "^14.3.1",
     "typescript": "^3.6.2",
     "url-loader": "^2.0.0",
     "webpack": "^4.39.3",
@@ -77,22 +80,14 @@
     "webpack-dev-server": "^3.8.0",
     "webpack-sources": "^1.4.3"
   },
-  "standard": {
-    "globals": [
-      "$rdf",
-      "tabulator",
-      "QUnit"
-    ]
-  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
-    "src/*.ts": [
-      "prettier-standard",
-      "git add"
+    "src/**/*.ts": [
+      "eslint"
     ]
   }
 }
