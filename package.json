@@ -12,7 +12,7 @@
     "build-dev": "webpack --progress",
     "build-dist": "webpack --progress --mode=production; echo 'Copying databrowser.html to index.html for backwards compatibility; can be removed when Node Solid Server is updated.'; cp dist/databrowser.html dist/index.html",
     "build-version": "./timestamp.sh > src/versionInfo.ts  && eslint 'src/versionInfo.ts' --fix",
-    "watch": "npm run version && webpack --watch",
+    "watch": "npm run build-version && webpack --watch",
     "clean": "rm -rf dist",
     "lint": "eslint 'src/**/*.ts'",
     "lint-fix": "eslint 'src/**/*.ts' --fix",
