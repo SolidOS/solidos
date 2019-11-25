@@ -34,3 +34,6 @@ node_modules
 
 # JavaScript distribution
 dist
+
+# Built files
+src/versionInfo.ts

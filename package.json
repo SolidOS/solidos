@@ -8,17 +8,17 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run build:dev && npm run build:prod",
-    "build:dev": "webpack --progress",
-    "build:dev:local": "webpack --config-name local-webpack.config.js --progress",
-    "build:prod": "webpack --progress --mode=production; echo 'Copying databrowser.html to index.html for backwards compatibility; can be removed when Node Solid Server is updated.'; cp dist/databrowser.html dist/index.html",
-    "build-no-min": "npm run build:dev",
-    "prepublishOnly": "npm run build",
-    "start": "webpack-dev-server --https",
+    "build": "npm run clean && npm run build-version && npm run build-dev && npm run build-dist",
+    "build-dev": "webpack --progress",
+    "build-dist": "webpack --progress --mode=production; echo 'Copying databrowser.html to index.html for backwards compatibility; can be removed when Node Solid Server is updated.'; cp dist/databrowser.html dist/index.html",
+    "build-version": "./timestamp.sh > src/versionInfo.ts  && eslint 'src/versionInfo.ts' --fix",
+    "watch": "npm run version && webpack --watch",
+    "clean": "rm -rf dist",
     "lint": "eslint 'src/**/*.ts'",
     "lint-fix": "eslint 'src/**/*.ts' --fix",
     "test": "npm run lint",
-    "watch": "webpack --watch"
+    "prepublishOnly": "npm test && npm run build",
+    "postpublish": "git push origin master --follow-tags"
   },
   "repository": {
     "type": "git",
@@ -77,7 +77,6 @@
     "url-loader": "^2.0.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.8.0",
     "webpack-sources": "^1.4.3"
   },
   "husky": {
