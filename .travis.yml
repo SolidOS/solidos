@@ -8,8 +8,6 @@ node_js:
   - "12"
   - "lts/*"
   - "node"
-env:
-  - DEFAULT_NODE_VERSION=12
 
 before_install:
   - npm install -g npm@latest
