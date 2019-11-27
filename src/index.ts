@@ -3,13 +3,16 @@ import * as panes from 'solid-panes'
 import './styles/index.scss'
 import { initHeader } from './global/header'
 import { initFooter } from './global/footer'
-
 import { authn, store } from 'solid-ui'
+import versionInfo from './versionInfo'
 
 const global: any = window
 
 global.$rdf = $rdf
 global.panes = panes
+global.mashlib = {
+  versionInfo
+}
 
 global.panes.runDataBrowser = function () {
   // Set up cross-site proxy
@@ -34,7 +37,7 @@ if (typeof global.require === 'undefined') {
   global.require = function require (lib: string) {
     if (lib === 'mashlib') {
       console.warn(
-        "Warning: mashlib's custom implementation of `require` will be deprecated in the future. Please import mashlib using a build-time bundler, or access the global `panes` variable when including it as a script."
+        'Warning: mashlib\'s custom implementation of `require` will be deprecated in the future. Please import mashlib using a build-time bundler, or access the global `panes` variable when including it as a script.'
       )
       return panes
     } else {
@@ -61,3 +64,7 @@ function dump (msg: string[]) {
 }
 
 global.dump = dump
+
+export {
+  versionInfo
+}
