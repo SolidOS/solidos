@@ -9,7 +9,7 @@ node_js:
   - "lts/*"
   - "node"
 
-before_install:
+install:
   - npm ci
 script:
   - npm run build
