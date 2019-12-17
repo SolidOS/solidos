@@ -9,7 +9,7 @@ use of it is as a data browser for a personal data store.
 
 The mashlib has been used before, originally in various apps, in specific data interactions in different domains.
 It has been used in a browser extension (in Firefox and later Chrome) to add data-handling capacity
-as native to the browser itself. Currently it is used as the core as  aort or poor persons
+as native to the browser itself. It's the html view that several (personal) data stores will serve, as a sort or poor person's
 browser extension, the data browser, which loads the library and then tries to work as though the
 browser had been extended to understand data.
 
