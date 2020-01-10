@@ -46,7 +46,7 @@
   "dependencies": {
     "normalize.css": "^8.0.1",
     "rdflib": "^1.0.4",
-    "solid-namespace": "^0.2.0",
+    "solid-namespace": "^0.3.0",
     "solid-panes": "^3.0.1",
     "solid-ui": "^2.0.1"
   },
