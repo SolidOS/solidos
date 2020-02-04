@@ -1,4 +1,4 @@
-# mashlib and Data Browser
+# mashlib and Data Browser - An Operating System for Solid
 
 [![NPM Package](https://img.shields.io/npm/v/mashlib.svg)](https://www.npmjs.com/package/mashlib)
 
@@ -52,10 +52,14 @@ It is an extensible platform, and is never finished.  Do help!
 
 - The data browser should be modular, loading new code modules in real time as a function of a user's preferences for handling different types of data with different new data browser applets, be it finance, fitness, or fishing.
 
+- A module providing new functionality in a new domain should be able to appear as a module in the datab browser or as a stand-alomne app, or both.
+
+- The modularity of the system should allow you set youself up with any set of apps, or indeed the userr should be able to configure the data browsder tpo replace itself with the user's own choice of alternative databrowser.  All data browsers should allow the user to change this selection.
+
 - The data browser should allow people to create, bit by bit, a web of social linked data of their work and their play, and their lives.
 
-- Here is the [Travis build space](https://travis-ci.org/solid/mashlib/builds)
 
 ## Local development
+- Here is the [Travis build space](https://travis-ci.org/solid/mashlib/builds)
 
 For local development, we recommend using [mashlib-dev](https://github.com/inrupt/mashlib-dev) to set up your development environment.
