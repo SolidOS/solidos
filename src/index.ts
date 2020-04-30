@@ -27,7 +27,7 @@ global.panes.runDataBrowser = function () {
     const outliner = panes.getOutliner(document)
     outliner.GotoSubject(subject, true, undefined, true, undefined)
     const header = initHeader(store)
-    const footer = initFooter(store, (store as any).fetcher)
+    const footer = initFooter(store, store.fetcher)
     return Promise.all([header, footer])
   })
 }

@@ -45,7 +45,7 @@
   "homepage": "https://github.com/solid/mashlib",
   "dependencies": {
     "normalize.css": "^8.0.1",
-    "rdflib": "^1.0.4",
+    "rdflib": "^1.2.1",
     "solid-namespace": "^0.3.0",
     "solid-panes": "^3.0.1",
     "solid-ui": "^2.0.1"
@@ -56,7 +56,6 @@
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
-    "@types/rdflib": "^0.20.1",
     "@typescript-eslint/eslint-plugin": "^2.8.0",
     "@typescript-eslint/parser": "^2.8.0",
     "babel-core": "^6.24.0",
