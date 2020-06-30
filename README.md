@@ -1,4 +1,4 @@
-# mashlib and Data Browser - An Operating System for Solid
+#An Operating System for Solid
 
 [![NPM Package](https://img.shields.io/npm/v/mashlib.svg)](https://www.npmjs.com/package/mashlib)
 
