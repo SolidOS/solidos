@@ -1,7 +1,7 @@
 {
-  "name": "mashlib",
-  "version": "1.2.1",
-  "description": "Data mashup library",
+  "name": "solidos",
+  "version": "1.0.0",
+  "description": "Operating System for Solid",
   "main": "./index.js",
   "files": [
     "index.js",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/solid/mashlib"
+    "url": "https://github.com/solid/solidos"
   },
   "keywords": [
     "solid",
@@ -40,15 +40,11 @@
   "author": "Tim Berners-Lee <timbl@mit.edu>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/solid/mashlib/issues"
+    "url": "https://github.com/solid/solidos/issues"
   },
-  "homepage": "https://github.com/solid/mashlib",
+  "homepage": "https://github.com/solid/solidos",
   "dependencies": {
-    "normalize.css": "^8.0.1",
-    "rdflib": "^1.2.1",
-    "solid-namespace": "^0.3.0",
-    "solid-panes": "^3.0.1",
-    "solid-ui": "^2.0.1"
+    "mashlib": "^1.2.1",
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
