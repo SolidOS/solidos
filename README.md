@@ -1,4 +1,4 @@
-#An Operating System for Solid
+# An Operating System for Solid
 
 When you get a new Mac, it is immediately usable because it has Mac Os on it.  When you get a new phone, PC, or tablet, they come with or you quickly install an operating system which provides some basic functionality, and, more importantly, a framework for extending what you can do with it.  When you get a Solid pod -- a chunk of data storage somewhere that you control -- then you should have an operating system which allows you to make immediate use of it, but also provides a framework for you to do more and more things with more and more people.
 
