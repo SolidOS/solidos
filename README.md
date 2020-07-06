@@ -34,9 +34,23 @@ The current main way of getting SolidOS is as a big JS package, [mashlib.js](htt
 The mashlib can be used as the core of a native application.  It has been tried on Mac OS using **electron**.
 The mashlib has been used before, originally in various apps, in specific data interactions in different
 domains. It has been used in a **browser extension** (in Firefox and later Chrome) to add data-handling
-capacity as native to the browser itself. Several (personal) data stores will serve this HTML view as a
-sort of poor person's data browser extension, which loads the library and then tries to work as though
-the browser had been extended to understand data.
+capacity as native to the browser itself.
+
+## As a stand-alone web app
+
+Here SolidOS some of the functionality is availble as a [stand-alone web app](https://solid.github.io/mashlib/dist/browse.html). 
+This app allows you to look at what a given thing, like a folder in someone's pod,  looks like in SolidOS.  It doesn't have the general navigation, preferences, etc.
+
+## SolidOS as a Mac App: Data Kitchen
+
+The data kitchen is native Mac App which provides the SolidOS functionality to your solid pods, but also your local Mac files on your laptop.  Your Documents folder can be a Solid pod too!  This is very much in early experimental stage.  [JeffX's version on github](https://github.com/jeff-zucker/data-kitchen)
+
+## SolidOS served from solid pod servers
+
+Solid pod servers can serve this HTML view as a
+sort ad-hoc rather crude browser extension, which loads the library and then tries to work as though
+the browser had been extended to understand data.  This has been done by solid servers for
+several years.
 
 ## The data browser hack: upgrading your browser
 
@@ -56,14 +70,7 @@ The mashlib human interface is *read-write*: where the user is allowed to edit: 
 
 A major limitation of their data browser hack is that current web browsers are made to distrust any code loaded from one domain that uses data from another domain.  This makes it hard, strangely complicated, and sometimes impossible to do some things.
 
-## Local development
-- Here is the [Travis build space](https://travis-ci.org/solid/mashlib/builds)
-
-For local development, we recommend using [mashlib-dev](https://github.com/inrupt/mashlib-dev) to set up your development environment.
 
 There are many ways of developing with SolidOS and the mashlib
 
-## SolidOS as a Mac App: Data Kitchen
-
-The data kitchen is native Mac App which provides the SolidOS functionality to your solid pods, but also your local Mac files on your laptop.  Your Documents folder can be a Solid pod too!
 
