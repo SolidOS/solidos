@@ -70,7 +70,9 @@ The mashlib human interface is *read-write*: where the user is allowed to edit: 
 
 A major limitation of their data browser hack is that current web browsers are made to distrust any code loaded from one domain that uses data from another domain.  This makes it hard, strangely complicated, and sometimes impossible to do some things.
 
-
 There are many ways of developing with SolidOS and the mashlib
 
-
+Do join helping us develop SolidOS. 
+PRs are always welcome.
+We can add you to the [solidOS team](https://solidos.solid.community/profile/card#me), which has a [pod](https://solidos.solid.community/) and some [solid space](https://solidos.solid.community/Team/) to worl.
+There is a solid pod the SolidOS 
