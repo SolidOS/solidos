@@ -72,7 +72,9 @@ A major limitation of their data browser hack is that current web browsers are m
 
 There are many ways of developing with SolidOS and the mashlib
 
+## Help wanted
+
 Do join helping us develop SolidOS. 
 PRs are always welcome.
-We can add you to the [solidOS team](https://solidos.solid.community/profile/card#me), which has a [pod](https://solidos.solid.community/) and some [solid space](https://solidos.solid.community/Team/) to worl.
+We can add you to the [solidOS team](https://solidos.solid.community/profile/card#me), which has a [pod](https://solidos.solid.community/) and some [solid space](https://solidos.solid.community/Team/) to work.
 There is a solid pod the SolidOS 
