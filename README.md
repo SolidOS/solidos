@@ -41,9 +41,9 @@ capacity as native to the browser itself.
 Here SolidOS some of the functionality is availble as a [stand-alone web app](https://solid.github.io/mashlib/dist/browse.html). 
 This app allows you to look at what a given thing, like a folder in someone's pod,  looks like in SolidOS.  It doesn't have the general navigation, preferences, etc.
 
-## SolidOS as a Mac App: Data Kitchen
+## SolidOS as a native App: Data Kitchen
 
-The data kitchen is native Mac App which provides the SolidOS functionality to your solid pods, but also your local Mac files on your laptop.  Your Documents folder can be a Solid pod too!  This is very much in early experimental stage.  [JeffX's version on github](https://github.com/jeff-zucker/data-kitchen)
+The data kitchen is a native Mac/Windows/Linux App which provides the SolidOS functionality to your solid pods, but also your local  files on your laptop/desktop.  Your Documents folder can be a Solid pod too!  This is very much in early experimental stage.  [Jeff's version on github](https://github.com/jeff-zucker/data-kitchen)
 
 ## SolidOS served from solid pod servers
 
