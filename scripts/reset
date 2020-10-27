@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo ">>>>> SETTING UP/RESETTING PROJECT"
+rm -rf workspaces/*
+npm run add node-solid-server
+npm run add mashlib
+npm run add solid-panes
+npm run add solid-ui
+npm run add rdflib
+npx lerna run build
+
+openssl req -outform PEM -keyform PEM -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout workspaces/privkey.pem -days 365 -out workspaces/fullchain.pem -subj "/C=RO/ST=Bucharest/L=Bucharest/O=IT/CN=localhost"

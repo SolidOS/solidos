@@ -1,0 +1,19 @@
+{
+  "name": "solidos",
+  "private": true,
+  "scripts": {
+    "start": "scripts/start",
+    "watch": "scripts/watch",
+    "add": "scripts/add",
+    "addPanes": "npm run add chat && npm run add contacts && npm run add folder && npm run add issue && npm run add meeting && npm run add registry && npm run add source",
+    "delete": "scripts/delete",
+    "deletePanes": "npm run delete chat-pane && npm run delete contacts-pane && npm run delete folder-pane && npm run delete issue-pane && npm run delete meeting-pane && npm run delete pane-registry && npm run delete source-pane",
+    "reset": "scripts/reset",
+    "setup": "npm i && scripts/reset",
+    "bootstrap": "lerna bootstrap --force-local --scope "
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "lerna": "^3.22.1"
+  }
+}

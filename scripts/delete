@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo ">>>>> DELETING REPO - $1"
+cd workspaces
+rm -rf $1
+cd ..
+npx lerna clean --yes

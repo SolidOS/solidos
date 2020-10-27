@@ -1,0 +1,122 @@
+#!/bin/bash
+
+FOLDER=$1
+GIT_URL=$2
+case $1 in
+  'acl-check')
+    GIT_URL='https://github.com/solid/acl-check.git'
+    ;;
+  'activitystreams' | 'activitystreams-pane')
+    FOLDER='activitystreams-pane'
+    GIT_URL='https://github.com/solid/activitystreams-pane'
+    ;;
+  'chat' | 'chat-pane')
+    FOLDER='chat-pane'
+    GIT_URL='https://github.com/solid/chat-pane'
+    ;;
+  'contacts' | 'contacts-pane')
+    FOLDER='contacts-pane'
+    GIT_URL='https://github.com/solid/contacts-pane'
+    ;;
+  'folder' | 'folder-pane')
+    FOLDER='folder-pane'
+    GIT_URL='https://github.com/solid/folder-pane'
+    ;;
+  'issue' | 'issue-pane')
+    FOLDER='issue-pane'
+    GIT_URL='https://github.com/solid/issue-pane'
+    ;;
+  'jose')
+    GIT_URL='https://github.com/solid/jose'
+    ;;
+  'keychain')
+    GIT_URL='https://github.com/solid/keychain'
+    ;;
+  'mashlib')
+    GIT_URL='https://github.com/solid/mashlib'
+    ;;
+  'meeting' | 'meeting-pane')
+    FOLDER='meeting-pane'
+    GIT_URL='https://github.com/solid/meeting-pane'
+    ;;
+  'node-solid-server')
+    GIT_URL='https://github.com/solid/node-solid-server'
+    ;;
+  'node-solid-ws')
+    GIT_URL='https://github.com/solid/node-solid-ws.git'
+    ;;
+  'oidc-auth-manager')
+    GIT_URL='https://github.com/solid/oidc-auth-manager.git'
+    ;;
+  'oidc-op')
+    GIT_URL='https://github.com/solid/oidc-op'
+    ;;
+  'oidc-rp')
+    GIT_URL='https://github.com/solid/oidc-rp'
+    ;;
+  'pane-registry' | 'registry')
+    GIT_URL='https://github.com/solid/pane-registry'
+    ;;
+  'rdflib')
+    GIT_URL='https://github.com/linkeddata/rdflib.js.git'
+    ;;
+  'solid-auth-cli')
+    GIT_URL='https://github.com/jeff-zucker/solid-auth-cli.git'
+    ;;
+  'solid-auth-client')
+    GIT_URL='https://github.com/solid/solid-auth-client.git'
+    ;;
+  'solid-auth-fetcher')
+    GIT_URL='https://github.com/solid/solid-auth-fetcher.git'
+    ;;
+  'solid-auth-oidc')
+    GIT_URL='https://github.com/solid/solid-auth-oidc.git'
+    ;;
+  'solid-auth-tls')
+    GIT_URL='https://github.com/solid/solid-auth-tls.git'
+    ;;
+  'solid-cli')
+    GIT_URL='https://github.com/solid/solid-cli.git'
+    ;;
+  'solid-crud-tests')
+    GIT_URL='https://github.com/solid/solid-crud-tests.git'
+    ;;
+  'solid-multi-rp-client')
+    GIT_URL='https://github.com/solid/solid-multi-rp-client.git'
+    ;;
+  'solid-namespace')
+    GIT_URL='https://github.com/solid/solid-namespace'
+    ;;
+  'solid-panes')
+    GIT_URL='https://github.com/solid/solid-panes'
+    ;;
+  'solid-rest')
+    GIT_URL='https://github.com/jeff-zucker/solid-rest.git'
+    ;;
+  'solid-ui')
+    GIT_URL='https://github.com/solid/solid-ui'
+    ;;
+  'source' | 'source-pane')
+    FOLDER='source-pane'
+    GIT_URL='https://github.com/solid/source-pane'
+    ;;
+  'web-access-control-tests')
+    GIT_URL='https://github.com/solid/web-access-control-tests.git'
+    ;;
+esac
+
+if test -z "$GIT_URL"
+then
+  echo "repo not recognized, please provide URL to Git repo"
+  exit 1
+fi
+
+echo $GIT_URL
+
+echo ">>>>> ADDING REPO - $GIT_URL to $FOLDER"
+cd workspaces
+git clone $GIT_URL $FOLDER
+cd $FOLDER
+nvm use
+npm i
+cd ../..
