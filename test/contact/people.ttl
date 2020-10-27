@@ -1,9 +1,0 @@
-@prefix bdc: <Person/bdcf64d3-392d-404b-bff4-0ab69740d72a.ttl#>.
-@prefix n: <http://www.w3.org/2006/vcard/ns#>.
-@prefix boo: <book.ttl#>.
-@prefix n0: <Person/aa43a662-d5c6-49bd-adbc-ed97008d43e7.ttl#>.
-@prefix n1: <Person/79669bf1-4a6b-4e0c-a21a-6e8268f5e701.ttl#>.
-
-   bdc:this n:fn "Albert Aarvard"; n:inAddressBook boo:this .
-   n0:this n:fn "Bertram Brighton"; n:inAddressBook boo:this .
-   n1:this n:fn "Albert"; n:inAddressBook boo:this .
