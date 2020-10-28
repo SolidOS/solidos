@@ -282,4 +282,5 @@ Temporary Items
 # End of https://www.gitignore.io/api/git,osx,node,webstorm,intellij,visualstudiocode
 
 .idea
-workspaces
+workspaces/*
+!workspaces/.gitkeep
