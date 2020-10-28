@@ -1,6 +1,0 @@
-@mixin box-shadow($x-axis: 0, $y-axis: 1px, $blur: 4px, $color: $default) {
-  box-shadow: $x-axis $y-axis $blur $color;
-  -webkit-box-shadow: $x-axis $y-axis $blur $color;
-  -moz-box-shadow: $x-axis $y-axis $blur $color;
-  -o-box-shadow: $x-axis $y-axis $blur $color;
-}

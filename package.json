@@ -1,87 +1,19 @@
 {
   "name": "solidos",
-  "version": "1.0.0",
-  "description": "Operating System for Solid",
-  "main": "./index.js",
-  "files": [
-    "index.js",
-    "dist"
-  ],
+  "private": true,
   "scripts": {
-    "build": "npm run clean && npm run build-version && npm run build-dev && npm run build-dist",
-    "build-dev": "webpack --progress",
-    "build-dist": "webpack --progress --mode=production; echo 'Copying databrowser.html to index.html for backwards compatibility; can be removed when Node Solid Server is updated.'; cp dist/databrowser.html dist/index.html",
-    "build-version": "./timestamp.sh > src/versionInfo.ts  && eslint 'src/versionInfo.ts' --fix",
-    "watch": "npm run build-version && webpack --watch",
-    "clean": "rm -rf dist",
-    "lint": "eslint 'src/**/*.ts'",
-    "lint-fix": "eslint 'src/**/*.ts' --fix",
-    "test": "npm run lint",
-    "prepublishOnly": "npm test && npm run build",
-    "postpublish": "git push origin master --follow-tags"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/solid/solidos"
-  },
-  "keywords": [
-    "solid",
-    "decentralized",
-    "widgets",
-    "ui",
-    "web",
-    "rdf",
-    "ldp",
-    "panes",
-    "linked",
-    "data",
-    "browser"
-  ],
-  "author": "Tim Berners-Lee <timbl@mit.edu>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/solid/solidos/issues"
-  },
-  "homepage": "https://github.com/solid/solidos",
-  "dependencies": {
-    "mashlib": "^1.2.1",
+    "start": "scripts/start",
+    "watch": "scripts/watch",
+    "add": "scripts/add",
+    "addPanes": "npm run add chat && npm run add contacts && npm run add folder && npm run add issue && npm run add meeting && npm run add registry && npm run add source",
+    "delete": "scripts/delete",
+    "deletePanes": "npm run delete chat-pane && npm run delete contacts-pane && npm run delete folder-pane && npm run delete issue-pane && npm run delete meeting-pane && npm run delete pane-registry && npm run delete source-pane",
+    "reset": "scripts/reset",
+    "setup": "npm i && scripts/reset",
+    "bootstrap": "lerna bootstrap --force-local --scope "
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.1",
-    "@babel/plugin-transform-runtime": "^7.5.5",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-typescript": "^7.3.3",
-    "@typescript-eslint/eslint-plugin": "^2.8.0",
-    "@typescript-eslint/parser": "^2.8.0",
-    "babel-core": "^6.24.0",
-    "babel-loader": "^8.0.2",
-    "copy-webpack-plugin": "^5.0.4",
-    "css-loader": "^2.1.1",
-    "eslint": "^6.6.0",
-    "file-loader": "^4.2.0",
-    "font-awesome": "^4.7.0",
-    "html-webpack-plugin": "^3.2.0",
-    "husky": "^3.0.5",
-    "lint-staged": "^9.2.5",
-    "mini-css-extract-plugin": "^0.7.0",
-    "node-sass": "^4.12.0",
-    "sass-loader": "^7.3.1",
-    "standard": "^14.3.1",
-    "typescript": "^3.6.2",
-    "url-loader": "^2.0.0",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
-    "webpack-sources": "^1.4.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "eslint"
-    ]
+    "concurrently": "^5.3.0",
+    "lerna": "^3.22.1"
   }
 }

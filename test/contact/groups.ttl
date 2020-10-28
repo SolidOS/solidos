@@ -1,8 +1,0 @@
-@prefix boo: <book.ttl#>.
-@prefix n: <http://www.w3.org/2006/vcard/ns#>.
-@prefix Hom: <Group/Home.ttl#>.
-@prefix Wor: <Group/Work.ttl#>.
-
-   boo:this n:includesGroup Hom:this, Wor:this .
-   Hom:this a n:Group; n:fn "Home" .
-   Wor:this a n:Group; n:fn "Work" .

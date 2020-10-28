@@ -1,0 +1,8 @@
+#!/bin/bash
+
+npx lerna bootstrap --force-local
+
+# Concurrently start a `watch` task for solid-ui, solid-panes, and mashlib, and start Node Solid Server.
+# Note that mashlib chokes if the watch task of solid-panes is still starting up while it's running;
+# a hacky workaround to that is to delay it by 20 seconds before starting (`sleep 20`).
+npx concurrently --names "rdflib,solid-ui,solid-panes,mashlib,node-solid-server" "cd workspaces/rdflib; npm run watch" "cd workspaces/solid-ui; npm run watch" "cd workspaces/solid-panes; npm run watch" "cd workspaces/mashlib; sleep 20; npm run watch" "cd workspaces/node-solid-server; ./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem --multiuser"

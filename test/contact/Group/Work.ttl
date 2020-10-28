@@ -1,5 +1,0 @@
-@prefix n: <http://www.w3.org/2006/vcard/ns#>.
-@prefix n0: <../Person/aa43a662-d5c6-49bd-adbc-ed97008d43e7.ttl#>.
-
-   <#this> n:hasMember n0:this .
-   n0:this n:fn "Bertram Brighton" .

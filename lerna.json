@@ -1,0 +1,6 @@
+{
+  "packages": [
+    "workspaces/*"
+  ],
+  "version": "independent"
+}

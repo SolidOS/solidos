@@ -1,0 +1,6 @@
+#!/bin/bash
+
+npx lerna bootstrap --force-local
+
+cd workspaces/node-solid-server
+./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem
