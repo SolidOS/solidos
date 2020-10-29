@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo ">>>>> SETTING UP/RESETTING PROJECT"
+mkdir -p workspaces
 rm -rf workspaces/*
 npm run add node-solid-server
 npm run add mashlib
