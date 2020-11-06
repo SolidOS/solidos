@@ -76,7 +76,7 @@ There are many ways of developing with SolidOS and the mashlib
 
 Do join helping us develop SolidOS. 
 PRs are always welcome.
-We can add you to the [solidOS team](https://solidos.solid.community/profile/card#me), which has a [pod](https://solidos.solid.community/) and some [solid space](https://solidos.solid.community/Team/) to work.
+We can add you to the [solidOS team](https://solidos.solidcommunity.net/profile/card#me), which has a [pod](https://solidos.solidcommunity.net/) and some [solid space](https://solidos.solidcommunity.net/Team/) to work.
 There is a solid pod the SolidOS 
 
 # Development
