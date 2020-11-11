@@ -238,6 +238,6 @@ Log in to npm with your npm account and add the SSH public key to your GitHub ac
 git clone https://github.com/solid/solidos
 cd solidos
 npm install
-sh scripts/prepare
-sh scripts/update-tree
+npm run prepare
+npm run release
 ```
