@@ -81,6 +81,9 @@ case $1 in
   'solid-crud-tests')
     GIT_URL='https://github.com/solid/solid-crud-tests.git'
     ;;
+  'solid-logic')
+    GIT_URL='https://github.com/solid/solid-logic.git'
+    ;;
   'solid-multi-rp-client')
     GIT_URL='https://github.com/solid/solid-multi-rp-client.git'
     ;;
