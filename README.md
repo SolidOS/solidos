@@ -213,6 +213,7 @@ When you made a change in one of the repositories and you want that change to be
 * make sure you have access to all the github repo's and all the npm package (ask Tim or Michiel if needed)
 * get a VPS running Ubuntu, for instance at https://digitalocean.com, and ssh into it as root
 ```sh
+tmux new
 adduser --shell /bin/bash --home /home/build --ingroup sudo build
 su - build
 whoami
