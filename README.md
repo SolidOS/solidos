@@ -224,13 +224,13 @@ Then:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+nvm install 15
+nvm use 15
 
 ssh-keygen -t ed25519 -C "michiel+build@unhosted.org"
 git config --global user.name "Solid OS Build (Michiel)"
 git config --global user.email "michiel+build@unhosted.org"
 cat .ssh/id_ed25519.pub
-nvm install 15
-nvm use 15
 npm login
 ```
 
@@ -238,7 +238,6 @@ Log in to npm with your npm account and add the SSH public key to your GitHub ac
 ```sh
 git clone https://github.com/solid/solidos
 cd solidos
-npm install
 npm run prepare
 npm run release
 ```
