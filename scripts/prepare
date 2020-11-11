@@ -24,6 +24,7 @@ npm run add node-solid-ws
 npm run add oidc-auth-manager
 npm run add oidc-op
 npm run add oidc-rp
+npm run add oidc-rs
 npm run add pane-registry
 npm run add rdflib
 npm run add solid-auth-cli

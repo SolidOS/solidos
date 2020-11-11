@@ -57,6 +57,9 @@ case $1 in
   'oidc-rp')
     GIT_URL='https://github.com/solid/oidc-rp'
     ;;
+  'oidc-rs')
+    GIT_URL='https://github.com/solid/oidc-rs'
+    ;;
   'pane-registry' | 'registry')
     GIT_URL='https://github.com/solid/pane-registry'
     ;;
