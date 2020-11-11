@@ -54,7 +54,11 @@ updateRepo rdflib # rdflib (jsonld, n3, xmldom)
 updateRepo pane-registry # pane-registry (rdflib)
 updateRepo solid-namespace # solid-namespace
 
-updateRepo solid-ui # solid-ui (pane-registry, rdflib, solid-auth-client, solid-namespace)
+updateRepo1 solid-ui # solid-ui (pane-registry, rdflib, solid-auth-client, solid-namespace)
+updateRepo2 solid-ui
+npm install --save-dev webpack@4
+npm install --save-dev webpack-cli@3
+updateRepo3 solid-ui
 
 updateRepo1 activitystreams-pane
 updateRepo2 activitystreams-pane
