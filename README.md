@@ -206,3 +206,38 @@ npm run delete <name-of-repo>
 ## Troubleshooting
 
 If you for some reason aren't able to get your setup working, you should double-check that Lerna actually manages to bootstrap the repositories. One way of doing this is to check node_modules in one of them and verify that the dependency that should be bootstrapped is actually a symlink to the corresponding repository (e.g. check that `workspaces/mashlib/node_modules/solid-ui` links to `workspaces/solid-ui` ). If it doesn't, it is usually because of different version (e.g. mashlib expects a newer version of solid-ui than the one you have locally). Make sure that these are aligned, then bootstrap again by running `npm start` or do it manually with `npx lerna bootstrap` (must be run in the root of this repo).
+
+## Release the stack
+
+When you made a change in one of the repositories and you want that change to be included in a new version of Solid OS / NSS, do the following:
+* make sure you have access to all the github repo's and all the npm package (ask Tim or Michiel if needed)
+* get a VPS running Ubuntu, for instance at https://digitalocean.com, and ssh into it as root
+```sh
+adduser --shell /bin/bash --home /home/build --ingroup sudo build
+su - build
+whoami
+sudo whoami
+```
+Then:
+```s
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+ssh-keygen -t ed25519 -C "michiel+build@unhosted.org"
+git config --global user.name "Solid OS Build (Michiel)"
+git config --global user.email "michiel+build@unhosted.org"
+cat .ssh/id_ed25519.pub
+nvm install 15
+nvm use 15
+npm login
+```
+
+Log in to npm with your npm account and add the SSH public key to your GitHub account. Then continue:
+```sh
+git clone https://github.com/solid/solidos
+cd solidos
+npm install
+sh scripts/prepare
+sh scripts/update-tree
+```
