@@ -123,6 +123,6 @@ echo ">>>>> ADDING REPO - $GIT_URL to $FOLDER"
 cd workspaces
 git clone $GIT_URL $FOLDER
 cd $FOLDER
-nvm use
+nvm use --delete-prefix
 npm i
 cd ../..
