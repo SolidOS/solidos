@@ -5,6 +5,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 nvm install 13.2.0
+nvm install 13.14.0
 nvm install v12.7.0
 nvm install v11.15.0
 nvm install v10
