@@ -123,7 +123,6 @@ rm -rf node_modules
 rm package-lock.json
 npx npm-check-updates -u
 npm install --save-dev webpack@4
-npm install --save-dev webpack-cli@3
 updateRepo3 solid-rest
 
 updateRepo solid-cli # solid-cli (@solid/oidc-rp)
