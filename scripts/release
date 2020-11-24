@@ -111,7 +111,7 @@ updateRepo keychain # @solid/keychain
 updateRepo oidc-op # @solid/oidc-op (@solid/keychain)
 updateRepo oidc-rs # @solid/oidc-rs (@solid/jose)
 updateRepo solid-multi-rp-client # @solid/solid-multi-rp-client (oidc-rp)
-updateRepo oidc-auth-manager # oidc-auth-manager (oidc-rp, oidc-op, oidc-rs, solid-multi-rp-client)
+updateRepo oidc-auth-manager # @solid/oidc-auth-manager (oidc-rp, oidc-op, oidc-rs, solid-multi-rp-client)
 updateRepo solid-auth-oidc # @solid/solid-auth-oidc (@solid/oidc-rp)
 updateRepo1 node-solid-server # solid-server (@solid/acl-check, @solid/oidc-auth-manager, rdflib, mashlib, solid-auth-client, solid-namespace, solid-ws, @solid/oidc-op, @solid/solid-auth-oidc)
 updateRepo2 node-solid-server
