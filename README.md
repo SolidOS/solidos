@@ -26,6 +26,11 @@ Some of these have been achieved but there is a huge amount of work to do.
 
 - SolidOS should allow people to create, bit by bit, a web of social linked data of their work and their play, and their lives.
 
+## Architecture overview
+
+![SolidOS architectural overview](documentation/architecture.svg)
+
+SolidOS is composed of serveral other repositories. The major ones are shown above.
 
 ## Deployment platforms
 
