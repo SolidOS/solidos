@@ -18,6 +18,10 @@ nvm install v12.7.0
 nvm use 12.7.0
 npm install -g npm-check-updates
 
+nvm install v12.19.1
+nvm use 12.19.1
+npm install -g npm-check-updates
+
 nvm install 13.14.0
 nvm use 13.14.0
 npm install -g npm-check-updates
