@@ -26,39 +26,39 @@ nvm install 14
 nvm use 14
 npm install -g npm-check-updates
 
-npm run add acl-check
-npm run add activitystreams-pane
-npm run add chat-pane
-npm run add contacts-pane
-npm run add folder-pane
-npm run add issue-pane
-npm run add jose
-npm run add keychain
-npm run add mashlib
-npm run add money-pane
-npm run add meeting-pane
-npm run add node-solid-server
-npm run add node-solid-ws
-npm run add oidc-auth-manager
-npm run add oidc-op
-npm run add oidc-rp
-npm run add oidc-rs
-npm run add pane-registry
-npm run add rdflib
-npm run add solid-auth-cli
-npm run add solid-auth-client
-npm run add solid-auth-fetcher
-npm run add solid-auth-oidc
-npm run add solid-auth-tls
-npm run add solid-crud-tests
-npm run add solid-cli
-npm run add solid-logic
-npm run add solid-panes
-npm run add solid-ui
-npm run add solid-multi-rp-client
-npm run add solid-namespace
-npm run add solid-panes
-npm run add solid-rest
-npm run add solid-ui
-npm run add source-pane
-npm run add web-access-control-tests
+# npm run add acl-check
+# npm run add activitystreams-pane
+# npm run add chat-pane
+# npm run add contacts-pane
+# npm run add folder-pane
+# npm run add issue-pane
+# npm run add jose
+# npm run add keychain
+# npm run add mashlib
+# npm run add money-pane
+# npm run add meeting-pane
+# npm run add node-solid-server
+# npm run add node-solid-ws
+# npm run add oidc-auth-manager
+# npm run add oidc-op
+# npm run add oidc-rp
+# npm run add oidc-rs
+# npm run add pane-registry
+# npm run add rdflib
+# npm run add solid-auth-cli
+# npm run add solid-auth-client
+# npm run add solid-auth-fetcher
+# npm run add solid-auth-oidc
+# npm run add solid-auth-tls
+# npm run add solid-crud-tests
+# npm run add solid-cli
+# npm run add solid-logic
+# npm run add solid-panes
+# npm run add solid-ui
+# npm run add solid-multi-rp-client
+# npm run add solid-namespace
+# npm run add solid-panes
+# npm run add solid-rest
+# npm run add solid-ui
+# npm run add source-pane
+# npm run add web-access-control-tests
