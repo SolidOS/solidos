@@ -243,6 +243,6 @@ Log in to npm with your npm account and add the SSH public key to your GitHub ac
 ```sh
 git clone https://github.com/solid/solidos
 cd solidos
-npm run prepare
+npm run install-nvm
 npm run release
 ```

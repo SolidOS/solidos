@@ -8,7 +8,7 @@
     "addPanes": "npm run add chat && npm run add contacts && npm run add folder && npm run add issue && npm run add meeting && npm run add registry && npm run add source",
     "delete": "scripts/delete",
     "deletePanes": "npm run delete chat-pane && npm run delete contacts-pane && npm run delete folder-pane && npm run delete issue-pane && npm run delete meeting-pane && npm run delete pane-registry && npm run delete source-pane",
-    "prepare": "/bin/bash scripts/prepare",
+    "install-nvm": "/bin/bash scripts/prepare",
     "reset": "scripts/reset",
     "setup": "npm i && scripts/reset",
     "release": "/bin/bash scripts/release",

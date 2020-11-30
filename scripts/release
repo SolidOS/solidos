@@ -45,21 +45,6 @@ function updateRepo {
   updateRepo3 $1
 }
 
-updateRepo jose # @solid/jose
-updateRepo oidc-rp # @solid/oidc-rp (@solid/jose)
-
-updateRepo1 solid-auth-client # solid-auth-client (@babel/runtime, auth-header, commander, isomorphic-fetch, @solid/oidc-rp)
-# updateRepo2 solid-auth-client
-npm install @solid/oidc-rp@latest
-updateRepo3 solid-auth-client
-
-updateRepo1 rdflib # rdflib (jsonld, n3, xmldom)
-updateRepo2 rdflib
-npm install --save-dev webpack@4
-updateRepo3 rdflib
-
-updateRepo pane-registry # pane-registry (rdflib)
-updateRepo solid-namespace # solid-namespace
 updateRepo solid-logic # solid-logic (rdflib, solid-namespace)
  
 updateRepo1 solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-auth-client, solid-namespace)
