@@ -1,6 +1,6 @@
 # An Operating System for [Solid](https://solidproject.org)
 
-When you get a new Mac, it is immediately usable because it has Mac Os on it.  When you get a new phone, PC, or tablet, they come with or you quickly install an operating system which provides some basic functionality, and, more importantly, a framework for extending what you can do with it.  When you get a [Solid](https://solidproject.org) pod -- a chunk of data storage somewhere that you control -- then you should have an operating system which allows you to make immediate use of it, but also provides a framework for you to do more and more things with more and more people.
+When you get a new Mac, it is immediately usable because it has macOS on it.  When you get a new phone, PC, or tablet, they come with or you quickly install an operating system which provides some basic functionality, and, more importantly, a framework for extending what you can do with it.  When you get a [Solid](https://solidproject.org) pod -- a chunk of data storage somewhere that you control -- then you should have an operating system which allows you to make immediate use of it, but also provides a framework for you to do more and more things with more and more people.
 
 ## Goals
 
@@ -10,9 +10,9 @@ Some of these have been achieved but there is a huge amount of work to do.
 
 - When running as a native app, on laptop or desktop or mobile, it should allow the user to use their own local file system in very much the same way as a solid pod. (This currently works with Electron and rdflib). Users should be able to work **Local first**.
 
-- The User Interface should accommodate a wide range of devices, screen sizes, bandwidth.  The project was originally targeted at laptop, and reactive design is important in new work.
+- The User Interface should accommodate a wide range of devices, screen sizes, bandwidth.  The project was originally targeted at laptop, and responsive and reactive design is important in new work.
 
-- SolidOS, unlike a typical set of native applications, is very interconnected.  You can do anything with anything - so data from different applications interlinks in a more powerful way so as to solve real life problems powerfully and naturally. You can start a chat about anything, with anyone or combination of people who have solid IDs.  You can adopt anything as the target of a task you want to track later. You can like, flag, keyword, bookmark anything.  So one application will use others in a recursive way to get its job done.  
+- SolidOS, unlike a typical set of native applications, is very interconnected. You can do anything with anything - so data from different applications interlinks in a more powerful way so as to solve real life problems powerfully and naturally. You can start a chat about anything, with anyone or combination of people who have solid IDs. You can adopt anything as the target of a task you want to track later. You can like, flag, keyword, bookmark anything.  So one application will use others in a recursive way to get its job done.
 
 - You should be able to set SolidOS up for any **existing** folders you have full of things like photos and music, and it should let you listen to them, look at them, and share them very flexibly with anyone in the world.
 
@@ -34,30 +34,28 @@ SolidOS is composed of serveral other repositories. The major ones are shown abo
 
 ## Deployment platforms
 
-The current main way of getting SolidOS is as a big JS package, [mashlib.js](https://github.com/solid/mashlib)
+The current main way of getting SolidOS is as a big JS package, [mashlib.js](https://github.com/solid/mashlib).
 
-The mashlib can be used as the core of a native application.  It has been tried on Mac OS using **electron**.
-The mashlib has been used before, originally in various apps, in specific data interactions in different
-domains. It has been used in a **browser extension** (in Firefox and later Chrome) to add data-handling
-capacity as native to the browser itself.
+The mashlib can be used as the core of a native application.  It has been tried on macOS using **electron**.
 
-## As a stand-alone web app
+The mashlib has been used before, originally in various apps, in specific data interactions in different domains. It has been used in a **browser extension** (in Firefox and later Chrome) to add data-handling capacity as native to the browser itself.
 
-Here SolidOS some of the functionality is availble as a [stand-alone web app](https://solid.github.io/mashlib/dist/browse.html). 
-This app allows you to look at what a given thing, like a folder in someone's pod,  looks like in SolidOS.  It doesn't have the general navigation, preferences, etc.
+### As a stand-alone web app
 
-## SolidOS as a native App: Data Kitchen
+Portions of the SolidOS functionality may be made available as a [stand-alone web app](https://solid.github.io/mashlib/dist/browse.html). This app allows you to look at what a given thing, like a folder in someone's pod, looks like in SolidOS.  It doesn't have the general navigation, preferences, etc.
 
-The data kitchen is a native Mac/Windows/Linux App which provides the SolidOS functionality to your solid pods, but also your local  files on your laptop/desktop.  Your Documents folder can be a Solid pod too!  This is very much in early experimental stage.  [Jeff's version on github](https://github.com/jeff-zucker/data-kitchen)
+### SolidOS as a native App: Data Kitchen
 
-## SolidOS served from solid pod servers
+The data kitchen is a native Mac/Windows/Linux App which provides the SolidOS functionality to your solid pods, but also your local files on your laptop/desktop.  Your Documents folder can be a Solid pod too!  This is very much in early experimental stage.  [Jeff's version on github](https://github.com/jeff-zucker/data-kitchen)
+
+### SolidOS served from solid pod servers
 
 Solid pod servers can serve this HTML view as a
-sort ad-hoc rather crude browser extension, which loads the library and then tries to work as though
+sort of ad-hoc, rather crude browser extension, which loads the library and then tries to work as though
 the browser had been extended to understand data.  This has been done by solid servers for
 several years.
 
-## The data browser hack: upgrading your browser
+#### The data browser hack: upgrading your browser
 
 This refers to a specific way in which the SolidOS is deployed for users who at first only have a conventional web browser - a hypertext browser not a data browser.  It is a hack -- in the original computing sense of a crafty, though not beautiful, little thing which gets the job done.
 
@@ -69,32 +67,46 @@ How does the data browser work?
 1. The `databrowser.html` file loads the `mashlib.js` Javascript library, which can now understand the data.
 1. The `mashlib.js` then re-requests the original data, but accepting data formats.
 1. The server supplies the actual data of the to-do list or whatever it was.
-1. The `mashlib.js` code provides an editable visualization on the data.
+1. The `mashlib.js` code provides an editable visualization of the data.
 
 The mashlib human interface is *read-write*: where the user is allowed to edit: it lets them edit the data and create new things.  It is *live*, in that often the data browser signed up (using a websocket) for any changes which other users make, so users' screens are synchronized.
 
-A major limitation of their data browser hack is that current web browsers are made to distrust any code loaded from one domain that uses data from another domain.  This makes it hard, strangely complicated, and sometimes impossible to do some things.
+A major limitation of the data browser hack is that current web browsers are made to distrust any code loaded from one domain that uses data from another domain.  This makes it hard, strangely complicated, and sometimes impossible to do some things.
 
-There are many ways of developing with SolidOS and the mashlib
+### And Many More…
+
+In addition to the well-established deployment patterns above, there are many other ways of developing with SolidOS and the mashlib and we look forward to learning what is possible and needed.
 
 ## Help wanted
 
-Do join helping us develop SolidOS. 
+Do join us by using and helping develop SolidOS.
+
 PRs are always welcome.
-We can add you to the [solidOS team](https://solidos.solidcommunity.net/profile/card#me), which has a [pod](https://solidos.solidcommunity.net/) and some [solid space](https://solidos.solidcommunity.net/Team/) to work.
-There is a solid pod the SolidOS 
+
+We can add you to the [SolidOS team](https://solidos.solidcommunity.net/profile/card#me), which has a [pod](https://solidos.solidcommunity.net/) and some [solid space](https://solidos.solidcommunity.net/Team/) to work.
+
+There is a solid pod the SolidOS ????
 
 # Development
 
 The scripts in this repository are intended to ease the development of Solid OS.
 
-It allows you to install automatically several of the component repositories of the Solid OS system, and coordinate their development.
+These scripts allow you to install automatically several of the component repositories of the Solid OS system, and coordinate their development.
 
-It uses a subset of the functionality in [Lerna](https://lerna.js.org/) to bootstrap the various projects. Do note that you cannot use it to manage multi-package repositories like you normally would want to with Lerna.
+These scripts use a subset of the functionality in [Lerna](https://lerna.js.org/) to bootstrap the various projects. Do note that you cannot use it to manage multi-package repositories like you normally would want to with Lerna.
 
-The NPM scripts are using bash scripts. These might not work if you're developing on a Windows machine. Let us know if you want support for this.
+The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know if you want support for this.
 
-Many of the repositories used in this project uses [Node Version Manager](https://github.com/nvm-sh/nvm) to maintain the Node version used to build the project. Be sure to have it installed.
+## `nvm` is required
+
+Many of the repositories used in this project rely upon [Node Version Manager](https://github.com/nvm-sh/nvm) to maintain the Node version used to build the project. Be sure to have it installed.
+
+These scripts assume that `~/.nvm/nvm.sh` is a script that is sourced and establishes the `nvm` shell functions. Depending on your `nvm` installation and OS, it may be necessary to manually create a symlink from `~/.nvm/nvm.sh` to your installed version of `nvm.sh`. For example, on macOS using [Homebrew](https://brew.sh), the following command will be sufficient to allow these SolidOS scripts to use `nvm`:
+
+```bash
+cd ~/.nvm
+ln -s /usr/local/opt/nvm/nvm.sh nvm.sh
+```
 
 ## First time setup
 
@@ -102,14 +114,14 @@ Many of the repositories used in this project uses [Node Version Manager](https:
 git clone https://github.com/solid/solidos
 cd solidos
 npm run setup
-``` 
+```
 
 Run this the first time you setup your folder. By default this sets up some repos for you:
 
 - [mashlib](https://github.com/solid/mashlib/): the glue that puts everything together
 - [node-solid-server](https://github.com/solid/node-solid-server): the server that allows you to test your changes
 - [solid-panes](https://github.com/solid/solid-panes): the part that handles everything reg panes
-- [solid-ui](https://github.com/solid/solid-ui): a lot of reusable code for solid-panes and the various pane-repos 
+- [solid-ui](https://github.com/solid/solid-ui): a lot of reusable code for solid-panes and the various pane-repos
 
 Any changes you do in this projects need to be committed to their original repos and eventually be pushed to NPM manually (this is the part of Lerna that we do not use for this project).
 
@@ -145,16 +157,16 @@ This repository is a powerful setup for developing the full stack, from rdflib, 
 
 ### using storybook
 
-To debug a component from solid-ui in isolation, when you do not need the surrounding solid-pane, you
-can [run storybook in the solid-ui repository](https://github.com/solid/solid-ui#Development).
- 
+To debug a component from solid-ui in isolation, when you do not need the surrounding solid-pane, you can [run storybook in the solid-ui repository](https://github.com/solid/solid-ui#Development).
+
 #### using Solid Pane Tester
 
-To debug solid-ui within a pane, you can combine the solid-ui to solid-panes link with the Pane Tester. For instance
- when debugging code from solid-ui that affects the Sharing pane, you might run `npm start` to set the links between the workspaces, then run `npm run watch` in the solid-ui workspace and use the [Solid Pane Tester](https://github.com/solid/solid-panes#development) in the solid-panes workspace, with the Sharing pane in workspaces/solid-panes/dev/pane/, to see how your edits in solid-ui affect the Sharing pane.
+To debug solid-ui within a pane, you can combine the solid-ui to solid-panes link with the Pane Tester. For instance, when debugging code from solid-ui that affects the Sharing pane, you might run `npm start` to set the links between the workspaces, then run `npm run watch` in the solid-ui workspace and use the [Solid Pane Tester](https://github.com/solid/solid-panes#development) in the solid-panes workspace, with the Sharing pane in workspaces/solid-panes/dev/pane/, to see how your edits in solid-ui affect the Sharing pane.
 
 ### Debugging rdflib using Solid Pane Tester
+
 Run:
+
 ```sh
 npm run add rdflib
 cd workspaces/rdflib
@@ -170,15 +182,12 @@ npm run build-lib
 In another terminal window, run `cd workspaces/solid-panes/dev/ ; npx webpack-dev-server`.
 
 Edit `workspaces/solid-panes/dev/pane/` to have the pane you want to debug.
-Open http://localhost:9000 and run `renderPane('http://example.com/#me')` in the console to check
-if your setup works.
-Then, under `workspaces/rdflib`, make your change, for instance add a console.log somewhere. It
-should then be enough to run `npm run watch` in `workspaces/rdflib` to make your changes in
-rdflib appear in the browser.
 
-You can also combine this with `cd workspaces/solid-ui ; npm run watch` so that you can combine
-edits in rdflib with edits in solid-ui, but if you're only editing rdflib, the
-`npm run watch` in `workspaces/rdflib` should be enough.
+Open http://localhost:9000 and run `renderPane('http://example.com/#me')` in the console to check if your setup works.
+
+Then, under `workspaces/rdflib`, make your change, for instance add a console.log somewhere. It should then be enough to run `npm run watch` in `workspaces/rdflib` to make your changes in rdflib appear in the browser.
+
+You can also combine this with `cd workspaces/solid-ui ; npm run watch` so that you can combine edits in rdflib with edits in solid-ui, but if you're only editing rdflib, the `npm run watch` in `workspaces/rdflib` should be enough.
 
 ### Debugging using NSS and watch scripts
 
@@ -215,8 +224,10 @@ If you for some reason aren't able to get your setup working, you should double-
 ## Release the stack
 
 When you made a change in one of the repositories and you want that change to be included in a new version of Solid OS / NSS, do the following:
+
 * make sure you have access to all the github repo's and all the npm package (ask Tim or Michiel if needed)
 * get a VPS running Ubuntu, for instance at https://digitalocean.com, and ssh into it as root
+
 ```sh
 tmux new
 adduser --shell /bin/bash --home /home/build --ingroup sudo build
@@ -224,7 +235,9 @@ su - build
 whoami
 sudo whoami
 ```
+
 Then:
+
 ```s
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
@@ -240,6 +253,7 @@ npm login
 ```
 
 Log in to npm with your npm account and add the SSH public key to your GitHub account. Then continue:
+
 ```sh
 git clone https://github.com/solid/solidos
 cd solidos
