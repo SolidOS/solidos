@@ -27,6 +27,12 @@ case $1 in
     FOLDER='folder-pane'
     GIT_URL='https://github.com/solid/folder-pane'
     ;;
+  'github-solid')
+    GIT_URL='https://github.com/solid/github-solid'
+    ;;
+  'gitter-solid')
+    GIT_URL='https://github.com/solid/gitter-solid'
+    ;;
   'issue' | 'issue-pane')
     FOLDER='issue-pane'
     GIT_URL='https://github.com/solid/issue-pane'
@@ -101,11 +107,14 @@ case $1 in
   'solid-namespace')
     GIT_URL='https://github.com/solid/solid-namespace'
     ;;
+  'solid-node-client')
+    GIT_URL='https://github.com/solid/solid-node-client'
+    ;;
   'solid-panes')
     GIT_URL='https://github.com/solid/solid-panes'
     ;;
   'solid-rest')
-    GIT_URL='https://github.com/jeff-zucker/solid-rest.git'
+    GIT_URL='https://github.com/solid/solid-rest.git'
     ;;
   'solid-ui')
     GIT_URL='https://github.com/solid/solid-ui'
@@ -116,6 +125,9 @@ case $1 in
     ;;
   'web-access-control-tests')
     GIT_URL='https://github.com/solid/web-access-control-tests.git'
+    ;;
+  'webid-provider-tests')
+    GIT_URL='https://github.com/solid/webid-provider-tests.git'
     ;;
 esac
 

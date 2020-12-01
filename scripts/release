@@ -132,13 +132,15 @@ npm install --save-dev webpack@4
 updateRepo3 solid-rest
 
 updateRepo solid-cli # solid-cli (@solid/oidc-rp)
-updateRepo solid-auth-cli # solid-auth-cli (@solid/cli, async, cross-fetch, jsonld, n3, solid-rest)
 
-updateRepo solid-auth-fetcher
+# FIXME: https://github.com/solid/solid-auth-fetcher/issues/15
+# updateRepo solid-auth-fetcher
 updateRepo solid-node-client # solid-node-client (rdflib, solid-auth-fetcher, solid-rest)
 updateRepo webid-provider-tests
 updateRepo solid-crud-tests
 updateRepo web-access-control-tests
 
-updateRepo gitter-solid
-updateRepo github-solid
+# FIXME: https://github.com/solid/github-solid/pull/2
+# updateRepo gitter-solid
+# FIXME: https://github.com/solid/gitter-solid/pull/12
+# updateRepo github-solid
