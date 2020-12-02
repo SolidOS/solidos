@@ -85,8 +85,6 @@ PRs are always welcome.
 
 We can add you to the [SolidOS team](https://solidos.solidcommunity.net/profile/card#me), which has a [pod](https://solidos.solidcommunity.net/) and some [solid space](https://solidos.solidcommunity.net/Team/) to work.
 
-There is a solid pod the SolidOS ????
-
 # Development
 
 The scripts in this repository are intended to ease the development of Solid OS.
