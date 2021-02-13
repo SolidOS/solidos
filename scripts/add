@@ -57,6 +57,9 @@ case $1 in
   'node-solid-ws')
     GIT_URL='https://github.com/solid/node-solid-ws.git'
     ;;
+  'node-webid')
+    GIT_URL='https://github.com/linkeddata/node-webid.git'
+    ;;
   'oidc-auth-manager')
     GIT_URL='https://github.com/solid/oidc-auth-manager.git'
     ;;
