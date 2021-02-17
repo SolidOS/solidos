@@ -112,6 +112,7 @@ npm install --save-dev html-webpack-plugin@4
 updateRepo3 mashlib
 
 updateRepo node-solid-ws # solid-ws ()
+updateRepo node-webid # webid (rdflib)
 updateRepo acl-check # @solid/acl-check (rdflib, solid-namespace)
 updateRepo keychain # @solid/keychain
 updateRepo oidc-op # @solid/oidc-op (@solid/keychain)
@@ -120,7 +121,7 @@ updateRepo solid-multi-rp-client # @solid/solid-multi-rp-client (oidc-rp)
 updateRepo oidc-auth-manager # @solid/oidc-auth-manager (oidc-rp, oidc-op, oidc-rs, solid-multi-rp-client)
 updateRepo solid-auth-oidc # @solid/solid-auth-oidc (@solid/oidc-rp)
 
-updateRepo1 node-solid-server # solid-server (@solid/acl-check, @solid/oidc-auth-manager, rdflib, mashlib, solid-auth-client, solid-namespace, solid-ws, @solid/oidc-op, @solid/solid-auth-oidc)
+updateRepo1 node-solid-server # solid-server (@solid/acl-check, @solid/oidc-auth-manager, rdflib, mashlib, solid-auth-client, solid-namespace, solid-ws, @solid/oidc-op, @solid/solid-auth-oidc, webid)
 updateRepo2 node-solid-server
 npm install bootstrap@3
 npm install --save-dev @solid/solid-auth-oidc@0.3.0

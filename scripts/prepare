@@ -42,6 +42,7 @@ npm install -g npm-check-updates
 # npm run add meeting-pane
 # npm run add node-solid-server
 # npm run add node-solid-ws
+# npm run add node-webid
 # npm run add oidc-auth-manager
 # npm run add oidc-op
 # npm run add oidc-rp
