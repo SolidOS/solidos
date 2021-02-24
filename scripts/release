@@ -17,8 +17,8 @@ function updateRepo1 {
   echo Updating $1
   cd workspaces/$1
   sed -i -e 's/https...github.com./git@github.com:/g' .git/config
-  git checkout master
-  git reset origin/master
+  git checkout main
+  git reset origin/main
   git checkout -- .
   git pull
 }
@@ -33,7 +33,7 @@ function updateRepo3 {
   npm test
   npm run build
   ( git commit -am"Update dependencies" && npm version patch && npm publish -timeout=9999999 ) || echo No change in $1
-  git push origin master --follow-tags
+  git push origin main --follow-tags
   cd ../..
   echo Finished $1
 }
