@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-unset PREFIX
-unset npm_config_prefix
+unset PREFIX npm_config_prefix
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
@@ -146,7 +145,6 @@ echo $GIT_URL
 echo ">>>>> ADDING REPO - $GIT_URL to $FOLDER"
 cd workspaces
 git clone $GIT_URL $FOLDER
-cat ~/.gitconfig
 cd $FOLDER
 nvm use --delete-prefix
 npm i

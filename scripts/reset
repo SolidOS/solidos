@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+unset PREFIX npm_config_prefix
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+nvm use --delete-prefix
+
 echo ">>>>> SETTING UP/RESETTING PROJECT"
 mkdir -p workspaces
 rm -rf workspaces/*
@@ -19,14 +25,6 @@ do
   echo "# Installing $package"
   npm run add $package
 done
-
-# Disabled because lerna doesn't establish Node environment via nvm reliably
-##
-## npx lerna run build
-##
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Build dependent packages, ensuring each is in proper Node environment via nvm
 for package in "${packages[@]}"
