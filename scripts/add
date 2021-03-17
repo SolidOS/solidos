@@ -37,6 +37,10 @@ case $1 in
     FOLDER='issue-pane'
     GIT_URL='https://github.com/solid/issue-pane'
     ;;
+  'profile' | 'profile-pane')
+    FOLDER='profile-pane'
+    GIT_URL='https://github.com/solid/profile-pane'
+    ;;
   'jose')
     GIT_URL='https://github.com/solid/jose'
     ;;
