@@ -111,7 +111,10 @@ ln -s /usr/local/opt/nvm/nvm.sh nvm.sh
 ```
 git clone https://github.com/solid/solidos
 cd solidos
-nvm install 12.19.1
+nvm install 12.7.0 # to satisfy https://github.com/solid/mashlib/blob/main/.nvmrc
+nvm install 12.19.1 # to satisfy https://github.com/linkeddata/rdflib.js/blob/main/.nvmrc
+nvm install 13.14.0 # to satisfy https://github.com/solid/node-solid-server/blob/main/.nvmrc
+# ... and maybe other versions if build errors tell you so ...
 npm run setup
 ```
 
