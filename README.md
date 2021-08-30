@@ -111,6 +111,7 @@ ln -s /usr/local/opt/nvm/nvm.sh nvm.sh
 ```
 git clone https://github.com/solid/solidos
 cd solidos
+nvm install 12.19.1
 npm run setup
 ```
 
