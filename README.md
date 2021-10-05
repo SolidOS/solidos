@@ -38,7 +38,10 @@ SolidOS should allow people to create, bit by bit, a web of social-linked data o
 
 Solid is not shiped with a piece of hardware (who knows, maybe in the future it will...). For now, you get into the ecosystem once you create a and provision your own personal data store (Pod) ([see getting started with Solid](https://solidproject.org/developers/tutorials/getting-started)). Immediately after getting your new Solid WebID and Pod space, SolidOS is helping you to navigate the Solid ecosytem.
 
-So, SolidOS is much more, it is showcasing the possibility of Solid for the future, and we mean: data discoverability and access, authorization control, organization of personal data, data interoperability.
+So, SolidOS is much more, it is showcasing the possibility of Solid for the future, and we mean: 
+- true data ownership through management of personal data & authorization control;
+- avoidance of vendor lock-in to services: easy moving to a different Pod or WebID provider;
+- data reuse between applications: with help of data interoperability and data discoverability.
 
 What you can do today with SolidOS:
 
