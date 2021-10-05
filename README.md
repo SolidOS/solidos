@@ -32,12 +32,13 @@ Further links:
 
 [Solid](https://solidproject.org) is developing into a booming ecosystem which involves: specifications 📃, tech stack 🛠, servers 💻 and apps 🕹. We, the SolidOS team, believe that this ecosystem needs also an Operating System.
 
-When you get a new phone, PC, or tablet, they usually come with an operating system that provides some basic functionality to just get started and be productive. And, more importantly, you can personalize your OS to your needs by installing apps and, tools and much more.
-This is what we envision for SolidOS too!
+When you get a new phone, PC, or tablet, they usually come with an operating system that provides some basic functionality to just get started and be productive. And, more importantly, you can personalize your OS to your needs by installing apps and, manage content, and much more.
+
+SolidOS should allow people to create, bit by bit, a web of social-linked data of their work and their play, and their lives. This is what we envision for SolidOS too!
 
 Solid is not shiped with a piece of hardware (who knows, maybe in the future it will...). For now, you get into the ecosystem once you create a and provision your own personal data store (Pod) ([see getting started with Solid](https://solidproject.org/developers/tutorials/getting-started)). Immediately after getting your new Solid WebID and Pod space, SolidOS is helping you to navigate the Solid ecosytem.
 
-But SolidOS is much more, it is showcasing the possibility of Solid for the future, and we mean: data discoverability and access, authorization control, organization of personal data, data interoperability.
+So, SolidOS is much more, it is showcasing the possibility of Solid for the future, and we mean: data discoverability and access, authorization control, organization of personal data, data interoperability.
 
 What you can do today with SolidOS:
 
