@@ -12,7 +12,8 @@
     "reset": "scripts/reset",
     "setup": "scripts/install && scripts/reset",
     "release": "/bin/bash scripts/release",
-    "bootstrap": "lerna bootstrap --force-local --scope "
+    "bootstrap": "lerna bootstrap --force-local --scope ",
+    "switchToBranch": "scripts/delete && scripts/switch-branch"
   },
   "devDependencies": {
     "concurrently": "5.3.0",
