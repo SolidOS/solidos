@@ -28,6 +28,7 @@ function updateRepo2 {
   rm package-lock.json
   npx npm-check-updates -u
   npm install
+  npm install --save-dev eslint@7 # eslint@8 do not works with node.j < 16
 }
 function updateRepo3 {
   npm test
@@ -83,6 +84,7 @@ updateRepo3 chat-pane
 updateRepo contacts-pane # contacts-pane (solid-ui)
 updateRepo folder-pane # folder-pane (solid-ui)
 updateRepo issue-pane # issue-pane (solid-ui, pane-registry, rdflib)
+updateRepo markdown-pane # markdown-pane (solid-ui, pane-registry, rdflib)
 
 updateRepo1 meeting-pane # meeting-pane (solid-ui)
 updateRepo2 meeting-pane

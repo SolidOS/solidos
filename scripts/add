@@ -1,4 +1,4 @@
-#!/bin/bash
+*#!/bin/bash
 set -e
 
 unset PREFIX npm_config_prefix
@@ -47,6 +47,10 @@ case $1 in
   'keychain')
     GIT_URL='https://github.com/solid/keychain'
     ;;
+  'markdown' | 'markdown-pane')
+    FOLDER='markdown-pane' 
+    GIT_URL='https://github.com/solid/markdown-pane'
+    ;; 
   'mashlib')
     GIT_URL='https://github.com/solid/mashlib'
     ;;
