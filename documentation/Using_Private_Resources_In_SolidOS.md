@@ -5,6 +5,10 @@
 In SolidOS, always use solid-ui.authn.currentUser() to check login status or find the applicable webID; do not directly check
 authSession.info.webId except during operations on the authSession itself.
 
+* use me = authn.currentUser() in places not directly part of authSession management 
+* use me = authn.authSession.info.webId during authSession operations
+* use await authn.checkUser() when you need to activate a session after login
+
 ## Longer answer :
 
 We want the SolidOS experience of private resources like local file systems and cloud storages to be the same as for Pods except
@@ -36,3 +40,4 @@ viewing a page on any other site, do require an authentication check and possibl
 
 The worst that happens if someone tries to spoof things is the UI lies about the user being logged in and when they try to access
 something that requires Solid authentication, they'll get a 401.
+
