@@ -3,43 +3,46 @@
 If you made it here you must already have heard about [Solid](https://solidproject.org).
 This space is home of the SolidOS code. Keep reading if you want to know:
 
-- 🤔 what SolidOS is
+- 🤔 [What is SolidOS](#🤔-What-is-SolidOS)
 - 👩🏽‍💻 SolidOS technical intro
-- 🙋🏻 how you can contribute and help SolidOS thrive
-- 👯 how the SolidOs team works
+- 🙋🏻 How you can contribute and help SolidOS thrive
+- 👯 How the SolidOs team works
 
 If you are looking for something else, let us try and guide you:
 
-- for learning about Solid: [about Solid](https://github.com/solid/solid) and [solidproject.org](https://solidproject.org);
-- to try out Solid: [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
-- for the SolidOS user guide: [visit user guide](https://github.com/solid/userguide);
-- for the SolidOS stand-alone desktop app visit: [Data-Kitchen](https://github.com/solid/data-kitchen);
-- for how-tos around how the community works: [solid process](https://github.com/solid/process);
-- chat with others about Solid: [forum](https://forum.solidproject.org/) and [instant chats](https://gitter.im/solid/home);
-- join an event: [Solid events](https://solidproject.org/events);
-- community code of conduct: [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
+- for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
+- to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
+- for how SolidOS works [visit the user guide](https://github.com/solid/userguide);
+- for the SolidOS stand-alone desktop app visit [Data-Kitchen](https://github.com/solid/data-kitchen);
+- for how the community works go over to [solid process](https://github.com/solid/process);
+- chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
+- join an event over at [Solid events](https://solidproject.org/events);
+- read the community code of conduct [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
 
 Further links:
 
-- [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs)
-- [SolidOS developer guide](https://github.com/solid/solidos/wiki)
-- report a problem for SolidOS by [creating a git issues](https://github.com/solid/solidos/issues)
-- have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories)
-- latests [Solid specification](https://github.com/solid/solid-spec) and [overview](https://solid.github.io/specification/)
-- [Solid history](https://gitlab.com/solid.community/support/-/wikis/Home/solid.community#solidcommunity)
+- [SolidOS goals & roadmap]((https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html);
+- [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs);
+- [SolidOS developer guide](https://github.com/solid/solidos/wiki);
+- report a problem for SolidOS by [creating a git issues](https://github.com/solid/solidos/issues);
+- have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories);
+- latests [Solid specification](https://github.com/solid/solid-spec) and [Specification overview](https://solid.github.io/specification/);
+- [Solid history](https://gitlab.com/solid.community/support/-/wikis/Home/solid.community#solidcommunity).
 
 ## 🤔 What is SolidOS?
+```
+🌟🌟🌟 SolidOS is an Operating System for [Solid](https://solidproject.org).🌟🌟🌟
+```
 
 [Solid](https://solidproject.org) is developing into a booming ecosystem which involves: specifications 📃, tech stack 🛠, servers 💻 and apps 🕹. We, the SolidOS team, believe that this ecosystem needs also an Operating System.
 
 When you get a new phone, PC, or tablet, they usually come with an operating system that provides some basic functionality to just get started and be productive. And, more importantly, you can personalize your OS to your needs by installing apps and, manage content, and much more.
 
-SolidOS should allow people to create, bit by bit, a web of social-linked data of their work and their play, and their lives. This is what we envision for SolidOS too!
+Solid is not shiped with a piece of hardware (who knows, maybe in the future it will...). For now, you get into the ecosystem once you create a WebID and provision your own personal data store (Pod) ([see getting started with Solid](https://solidproject.org/developers/tutorials/getting-started)). Immediately after getting your new Solid WebID and Pod space, SolidOS is helping you to navigate the Solid ecosytem.
 
-Solid is not shiped with a piece of hardware (who knows, maybe in the future it will...). For now, you get into the ecosystem once you create a and provision your own personal data store (Pod) ([see getting started with Solid](https://solidproject.org/developers/tutorials/getting-started)). Immediately after getting your new Solid WebID and Pod space, SolidOS is helping you to navigate the Solid ecosytem.
+SolidOS is much more. SolidOS is showcasing the possibility of [Solid](https://solidproject.org) for the future, and we mean:
 
-So, SolidOS is much more, it is showcasing the possibility of Solid for the future, and we mean: 
-- true data ownership through management of personal data & authorization control;
+- true data ownership: management of personal data & authorization control;
 - avoidance of vendor lock-in to services: easy moving to a different Pod or WebID provider;
 - data reuse between applications: with help of data interoperability and data discoverability.
 
@@ -52,41 +55,24 @@ What you can do today with SolidOS:
 - 🔧 create your own app [with Inrupt's Solid Reach SDK](https://docs.inrupt.com/developer-tools/javascript/react-sdk/application/) or [get inspired from a blog post](https://solidos.solidcommunity.net/public/2021/BuildingSolidAppsUsingPublicData-V3.html),
 - and more ([see SolidOS user guide](https://github.com/solid/userguide)).
 
-Read more about the current SolidOS goals 🎯 [here](https://solidos.solidcommunity.net/Team/docs/solidos.html) and the SolidOS roadmap 🛣 [here](https://solidos.solidcommunity.net/public/Roadmap/Tasks/index.ttl#this).
+Read more about the current SolidOS 🌟 vision, goals 🎯 and 🚗 roadmap [here](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
-Remark: SolidOS used to be known as (default) Data Browser and at times as mashlib [see](https://forum.solidproject.org/t/suggestion-penny-should-be-made-the-default-data-browser/4593).
+**Note:** SolidOS used to be known as (default) Data Browser and at times as mashlib. Read a [forum post]https://forum.solidproject.org/t/suggestion-penny-should-be-made-the-default-data-browser/4593) about it.
 
-🌟 In a nutshell: SolidOS is an Operating System for [Solid](https://solidproject.org).  
+## 💻 [SolidOS technical intro](#tech)
 
-## Goals
-
-Some of these have been achieved but there is a huge amount of work to do.
-
-- SolidOS should be a complete web-technology-based operating system for any new computer or data store.
-
-- When running as a native app, on laptop or desktop or mobile, it should allow the user to use their own local file system in very much the same way as a solid pod. (This currently works with Electron and rdflib). Users should be able to work **Local first**.
-
-- The User Interface should accommodate a wide range of devices, screen sizes, bandwidth.  The project was originally targeted at laptop, and responsive and reactive design is important in new work.
-
-- SolidOS, unlike a typical set of native applications, is very interconnected. You can do anything with anything - so data from different applications interlinks in a more powerful way so as to solve real life problems powerfully and naturally. You can start a chat about anything, with anyone or combination of people who have solid IDs. You can adopt anything as the target of a task you want to track later. You can like, flag, keyword, bookmark anything.  So one application will use others in a recursive way to get its job done.
-
-- You should be able to set SolidOS up for any **existing** folders you have full of things like photos and music, and it should let you listen to them, look at them, and share them very flexibly with anyone in the world.
-
-- When used with a Solid pod, because that is on the web, SolidOS provides the **public view** -- the interactive interface -- that the user has with the rest of the world.  Like when everyone had their own home page on the web, they have that power again to express themselves and their affiliation and their products, and to court interaction, such as collaborative work with others, or commerce.  The way this public home page appears to others is very customizable, so the user, individual or business can be proud of it.
-
-- SolidOS should be modular, **dynamically** loading new code modules in real time as a function of a user's preferences for handling different types of data with different new SolidOS applets, be it finance, fitness, or fishing.
-
-- A module providing new functionality in a new domain should be able to appear as a module in SolidOS or as a stand-alone app, or both.
-
-- The modularity of the system should allow you set yourself up with any set of apps, or indeed the user should be able to configure SolidOS to replace itself with the user's own choice of alternative SolidOS version.  All SolidOS implementations should allow the user to change this selection.
-
-- SolidOS should allow people to create, bit by bit, a web of social linked data of their work and their play, and their lives.
-
-## Architecture overview
-
+Lets take a look at an architecture diagram of SolidOS: 
 ![SolidOS architectural overview](documentation/architecture.svg)
 
-SolidOS is composed of serveral other repositories. The major ones are shown above.
+As you can see, SolidOS is composed of serveral repositories:
+
+- rdflib.js
+- solid-logic
+- [mashlib](https://github.com/solid/mashlib/): the glue that puts everything together
+- [solid-panes](https://github.com/solid/solid-panes): the part that handles everything reg panes
+- [solid-ui](https://github.com/solid/solid-ui): a lot of reusable code for solid-panes and the various pane-repos
+
+In the diagram SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server). When you download the SolidOS code, locally a NSS is also installed to be able to develop. 
 
 ## Deployment platforms
 
