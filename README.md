@@ -1,27 +1,36 @@
 # 🤗 Welcome to the home of SolidOS
 
+[![Build Status](https://travis-ci.org/solid/solidos.svg?branch=master&style=flat-square)](https://travis-ci.org/solid/solidos)
+[![Join the chat at https://gitter.im/solid/solidos](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/solid/solidos?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 If you made it here you must already have heard about [Solid](https://solidproject.org).
 This space is home of the SolidOS code. Keep reading if you want to know:
 
-- 🤔 [What is SolidOS](#🤔-What-is-SolidOS)
-- 👩🏽‍💻 SolidOS technical intro
-- 🙋🏻 How you can contribute and help SolidOS thrive
-- 👯 How the SolidOs team works
+- 🤔 [What is SolidOS](#-What-is-SolidOS)
+    - [What you can do today with SolidOS](#What-you-can-do-today-with-SolidOS)
+    - [Current SolidOS vision, mission and roadmap](#Current-SolidOS-vision,-mission-and-roadmap)
+- 👩🏽‍💻 [SolidOS technical intro](#-SolidOS-technical-intro)
+    - [SolidOS deeper technical topics](#SolidOS-deeper-technical-topics) 
+- 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
+- 👯 [How the SolidOs team works](#-How-the-SolidOs-team-works)
+    - [SolidOS team meeting](#SolidOSteam-meeting)
+    - [SolidOS team instant chat](#SolidOS-team-instant-chat)
+    - [SolidOS tasks](#SolidOS-tasks) 
 
 If you are looking for something else, let us try and guide you:
 
 - for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
 - to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
-- for how SolidOS works [visit the user guide](https://github.com/solid/userguide);
+- for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
 - for the SolidOS stand-alone desktop app visit [Data-Kitchen](https://github.com/solid/data-kitchen);
-- for how the community works go over to [solid process](https://github.com/solid/process);
+- for how the community works, go over to [solid process](https://github.com/solid/process);
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
 - join an event over at [Solid events](https://solidproject.org/events);
 - read the community code of conduct [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
 
 Further links:
 
-- [SolidOS goals & roadmap]((https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html);
+- [SolidOS goals & roadmap](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html);
 - [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs);
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki);
 - report a problem for SolidOS by [creating a git issues](https://github.com/solid/solidos/issues);
@@ -46,7 +55,9 @@ SolidOS is much more. SolidOS is showcasing the possibility of [Solid](https://s
 - avoidance of vendor lock-in to services: easy moving to a different Pod or WebID provider;
 - data reuse between applications: with help of data interoperability and data discoverability.
 
-What you can do today with SolidOS:
+### What you can do today with SolidOS
+
+Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.net/). SolidOS implemented features:
 
 - 📝 manage your WebID and the data about yourself,
 - 📝 manage personal data/files on your Pod,
@@ -55,77 +66,66 @@ What you can do today with SolidOS:
 - 🔧 create your own app [with Inrupt's Solid Reach SDK](https://docs.inrupt.com/developer-tools/javascript/react-sdk/application/) or [get inspired from a blog post](https://solidos.solidcommunity.net/public/2021/BuildingSolidAppsUsingPublicData-V3.html),
 - and more ([see SolidOS user guide](https://github.com/solid/userguide)).
 
+### Current SolidOS vision, mission and roadmap
+
 Read more about the current SolidOS 🌟 vision, goals 🎯 and 🚗 roadmap [here](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
 **Note:** SolidOS used to be known as (default) Data Browser and at times as mashlib. Read a [forum post]https://forum.solidproject.org/t/suggestion-penny-should-be-made-the-default-data-browser/4593) about it.
 
-## 💻 [SolidOS technical intro](#tech)
+## 👩🏽‍💻 SolidOS technical intro
 
 Lets take a look at an architecture diagram of SolidOS: 
 ![SolidOS architectural overview](documentation/architecture.svg)
 
 As you can see, SolidOS is composed of serveral repositories:
 
-- rdflib.js
-- solid-logic
-- [mashlib](https://github.com/solid/mashlib/): the glue that puts everything together
-- [solid-panes](https://github.com/solid/solid-panes): the part that handles everything reg panes
-- [solid-ui](https://github.com/solid/solid-ui): a lot of reusable code for solid-panes and the various pane-repos
+- [rdflib.js](https://github.com/linkeddata/rdflib.js): Javascript RDF library for browsers and Node.js
+- [solid-logic](https://github.com/solid/solid-logic): core business logic of Solid OS
+- [mashlib](https://github.com/solid/mashlib/): a solid-compatible code library of application-level functionality for the world of Solid
+- [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
+- [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
 
-In the diagram SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server). When you download the SolidOS code, locally a NSS is also installed to be able to develop. 
+In the diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server). When you download the SolidOS code, locally, a NSS is also installed to have everything ready to develop.
 
-## Deployment platforms
+### SolidOS deeper technical topics
 
-The current main way of getting SolidOS is as a big JS package, [mashlib.js](https://github.com/solid/mashlib).
+For further details about each repository, pelase visit the according GitHub repo linked abbove.
+For SolidOS related code know-how, make sure to also vist [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) and the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 
-The mashlib can be used as the core of a native application.  It has been tried on macOS using **electron**.
+## 🙋🏽‍ How you can contribute and help SolidOS thrive
 
-The mashlib has been used before, originally in various apps, in specific data interactions in different domains. It has been used in a **browser extension** (in Firefox and later Chrome) to add data-handling capacity as native to the browser itself.
+The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code to text to documentation. We are looking for UX designers, technical writers, frontend developers, backedn developers, DevOps. Don't let the titles intimidate you, they are just some examples. You can also find your own place no matter the level of knowledge you are at. 
 
-### As a stand-alone web app
+### For anyone up to writing some code
+### For anyone who likes writing text
+### For anyone with an eye for design
+### For anyone who likes builds or releases or Git workflows or deployments
 
-Portions of the SolidOS functionality may be made available as a [stand-alone web app](https://solid.github.io/mashlib/dist/browse.html). This app allows you to look at what a given thing, like a folder in someone's pod, looks like in SolidOS.  It doesn't have the general navigation, preferences, etc.
 
-### SolidOS as a native App: Data Kitchen
+## 👯 How the SolidOs team works
 
-The data kitchen is a native Mac/Windows/Linux App which provides the SolidOS functionality to your solid pods, but also your local files on your laptop/desktop.  Your Documents folder can be a Solid pod too!  This is very much in early experimental stage.  [Jeff's version on github](https://github.com/jeff-zucker/data-kitchen)
+### SolidOS team meeting
+The SolidOS team meets every week for a 1h touchdown. We discuss what was done over the week, what needs to be done and delegate tasks. Find the meeting time and link on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html). 
 
-### SolidOS served from solid pod servers
+### SolidOS team instant chat
 
-Solid pod servers can serve this HTML view as a
-sort of ad-hoc, rather crude browser extension, which loads the library and then tries to work as though
-the browser had been extended to understand data.  This has been done by solid servers for
-several years.
+In between team meetings, we avidly communicate over at the [gitter solidOS channel](https://gitter.im/solid/solidos). Drop by to chat with us, ask questions or simply say hi. 
 
-#### The data browser hack: upgrading your browser
+### SolidOS tasks
 
-This refers to a specific way in which the SolidOS is deployed for users who at first only have a conventional web browser - a hypertext browser not a data browser.  It is a hack -- in the original computing sense of a crafty, though not beautiful, little thing which gets the job done.
+We try to keep the [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/) up to date and plan on the Kanban the next milestones. 
 
-How does the data browser work?
+### Additional udefull information
 
-1. The user goes with a normal web browser to access some data object (like a to-do list).
-1. The server sees the browser doesn't understand the data natively.
-1. The server sends back a little placeholder HTML file, `databrowser.html`, instead of the data.
-1. The `databrowser.html` file loads the `mashlib.js` Javascript library, which can now understand the data.
-1. The `mashlib.js` then re-requests the original data, but accepting data formats.
-1. The server supplies the actual data of the to-do list or whatever it was.
-1. The `mashlib.js` code provides an editable visualization of the data.
+- For an overall description how the whole ecosystem works head over to [solid process](https://github.com/solid/process).
+- Make sure to get into debates on the [forum](https://forum.solidproject.org/) and on more Solid [instant chat channels](https://gitter.im/solid/home).
+- Join an event over at [Solid events](https://solidproject.org/events).
+- Read the community code of conduct [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
+- Find answers over at [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) or at the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 
-The mashlib human interface is *read-write*: where the user is allowed to edit: it lets them edit the data and create new things.  It is *live*, in that often the data browser signed up (using a websocket) for any changes which other users make, so users' screens are synchronized.
 
-A major limitation of the data browser hack is that current web browsers are made to distrust any code loaded from one domain that uses data from another domain.  This makes it hard, strangely complicated, and sometimes impossible to do some things.
 
-### And Many More…
 
-In addition to the well-established deployment patterns above, there are many other ways of developing with SolidOS and the mashlib and we look forward to learning what is possible and needed.
-
-## Help wanted
-
-Do join us by using and helping develop SolidOS.
-
-PRs are always welcome.
-
-We can add you to the [SolidOS team](https://solidos.solidcommunity.net/profile/card#me), which has a [pod](https://solidos.solidcommunity.net/) and some [solid space](https://solidos.solidcommunity.net/Team/) to work.
 
 # Development
 
@@ -304,3 +304,5 @@ cd solidos
 npm run install-nvm
 npm run release
 ```
+
+## License
