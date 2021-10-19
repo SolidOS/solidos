@@ -1,6 +1,5 @@
 # 🤗 Welcome to the home of SolidOS
 
-[![Build Status](https://travis-ci.org/solid/solidos.svg?branch=master&style=flat-square)](https://travis-ci.org/solid/solidos)
 [![Join the chat at https://gitter.im/solid/solidos](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/solid/solidos?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 If you made it here you must already have heard about [Solid](https://solidproject.org).
@@ -10,23 +9,27 @@ This space is home of the SolidOS code. Keep reading if you want to know:
     - [What you can do today with SolidOS](#What-you-can-do-today-with-SolidOS)
     - [Current SolidOS vision, mission and roadmap](#Current-SolidOS-vision,-mission-and-roadmap)
 - 👩🏽‍💻 [SolidOS technical intro](#-SolidOS-technical-intro)
-    - [SolidOS deeper technical topics](#SolidOS-deeper-technical-topics) 
-- 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
-- 👯 [How the SolidOs team works](#-How-the-SolidOs-team-works)
-    - [SolidOS team meeting](#SolidOSteam-meeting)
+    - [SolidOS deeper technical topics](#SolidOS-deeper-technical-topics)
+- 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
+    - [SolidOS team meetings](#SolidOS-team-meetings)
     - [SolidOS team instant chat](#SolidOS-team-instant-chat)
-    - [SolidOS tasks](#SolidOS-tasks) 
+    - [SolidOS tasks](#SolidOS-tasks)  
+- 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
+    - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
+    - [For anyone who likes builds or releases or Git workflows or deployments](#For-anyone-who-likes-builds-or-releases-or-Git-workflows-or-deployments)
+    - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
+    - [### For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
 
 If you are looking for something else, let us try and guide you:
 
 - for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
 - to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
 - for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
-- for the SolidOS stand-alone desktop app visit [Data-Kitchen](https://github.com/solid/data-kitchen);
+- for the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
 - for how the community works, go over to [solid process](https://github.com/solid/process);
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
 - join an event over at [Solid events](https://solidproject.org/events);
-- read the community code of conduct [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
+- read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
 
 Further links:
 
@@ -59,6 +62,7 @@ SolidOS is much more. SolidOS is showcasing the possibility of [Solid](https://s
 
 Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.net/). SolidOS implemented features:
 
+- 📰 create a personal webpage,
 - 📝 manage your WebID and the data about yourself,
 - 📝 manage personal data/files on your Pod,
 - 🤝 you can directly connect and engage with other people part of the ecosystem (add friends, chat..),
@@ -80,31 +84,22 @@ Lets take a look at an architecture diagram of SolidOS:
 As you can see, SolidOS is composed of serveral repositories:
 
 - [rdflib.js](https://github.com/linkeddata/rdflib.js): Javascript RDF library for browsers and Node.js
-- [solid-logic](https://github.com/solid/solid-logic): core business logic of Solid OS
+- [solid-logic](https://github.com/solid/solid-logic): core business logic of SolidOS
 - [mashlib](https://github.com/solid/mashlib/): a solid-compatible code library of application-level functionality for the world of Solid
 - [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
 - [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
 
-In the diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server). When you download the SolidOS code, locally, a NSS is also installed to have everything ready to develop.
+In the above diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server). When you download the SolidOS code, locally, a NSS is also installed to have everything ready to develop.
 
 ### SolidOS deeper technical topics
 
-For further details about each repository, pelase visit the according GitHub repo linked abbove.
+For further details about each repository, please visit the according GitHub repo linked above.
 For SolidOS related code know-how, make sure to also vist [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) and the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 
-## 🙋🏽‍ How you can contribute and help SolidOS thrive
+## 👯 How the SolidOS team works
 
-The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code to text to documentation. We are looking for UX designers, technical writers, frontend developers, backedn developers, DevOps. Don't let the titles intimidate you, they are just some examples. You can also find your own place no matter the level of knowledge you are at. 
+### SolidOS team meetings
 
-### For anyone up to writing some code
-### For anyone who likes writing text
-### For anyone with an eye for design
-### For anyone who likes builds or releases or Git workflows or deployments
-
-
-## 👯 How the SolidOs team works
-
-### SolidOS team meeting
 The SolidOS team meets every week for a 1h touchdown. We discuss what was done over the week, what needs to be done and delegate tasks. Find the meeting time and link on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html). 
 
 ### SolidOS team instant chat
@@ -115,40 +110,43 @@ In between team meetings, we avidly communicate over at the [gitter solidOS chan
 
 We try to keep the [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/) up to date and plan on the Kanban the next milestones. 
 
-### Additional udefull information
+### Additional usefull information
 
+- Find answers over at [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) or at the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 - For an overall description how the whole ecosystem works head over to [solid process](https://github.com/solid/process).
-- Make sure to get into debates on the [forum](https://forum.solidproject.org/) and on more Solid [instant chat channels](https://gitter.im/solid/home).
+- Make sure to get into discussion on the [forum](https://forum.solidproject.org/) and on Solid [instant chat channels](https://gitter.im/solid/home).
 - Join an event over at [Solid events](https://solidproject.org/events).
 - Read the community code of conduct [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
-- Find answers over at [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) or at the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 
+## 🙋🏽‍ How you can contribute and help SolidOS thrive
 
+The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code to text to documentation. We are looking for UX designers, technical writers, frontend developers, backend developers, DevOps. Don't let the titles intimidate you, they are just some examples. You can also find your own place no matter the level of knowledge you are at. 
 
+To check possible tasks you can help with, the best is to visit us on a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [instant chat](https://gitter.im/solid/solidos) and say 'Hi'. We will try out best to pair you up with a buddy to help you to get started. 
 
+### For anyone up to writing some code
 
-# Development
+The SolidOS stack contains:
+- Node.js
+- Javascript 
+- Typescript
+- npm
+- [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) 
+- [Lerna](https://lerna.js.org/)
+- Git workflows
+- bash scripts
+And it also makes use of:
+- [Storybook](https://storybook.js.org/)
+- Webpack
+- Jest
+- Cypress
+- Lint
+- Babel
+- Travis 
 
-The scripts in this repository are intended to ease the development of Solid OS.
+We keep track of stuff to do in Git issues of each repo. [Here](https://github.com/solid/solidos/issues) the link to the SolidOS open issues. But make sure to visit the underlying repos for specific issues (see: [SolidOS technical intro](#-SolidOS-technical-intro) for links).
 
-These scripts allow you to install automatically several of the component repositories of the Solid OS system, and coordinate their development.
-
-These scripts use a subset of the functionality in [Lerna](https://lerna.js.org/) to bootstrap the various projects. Do note that you cannot use it to manage multi-package repositories like you normally would want to with Lerna.
-
-The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know if you want support for this.
-
-## `nvm` is required
-
-Many of the repositories used in this project rely upon [Node Version Manager](https://github.com/nvm-sh/nvm) to maintain the Node version used to build the project. Be sure to have it installed.
-
-These scripts assume that `~/.nvm/nvm.sh` is a script that is sourced and establishes the `nvm` shell functions. Depending on your `nvm` installation and OS, it may be necessary to manually create a symlink from `~/.nvm/nvm.sh` to your installed version of `nvm.sh`. For example, on macOS using [Homebrew](https://brew.sh), the following command will be sufficient to allow these SolidOS scripts to use `nvm`:
-
-```bash
-cd ~/.nvm
-ln -s /usr/local/opt/nvm/nvm.sh nvm.sh
-```
-
-## First time setup
+#### SolidOS first time setup of code
 
 ```
 git clone https://github.com/solid/solidos
@@ -160,14 +158,14 @@ nvm install 13.14.0 # to satisfy https://github.com/solid/node-solid-server/blob
 npm run setup
 ```
 
-Run this the first time you setup your folder. By default this sets up some repos for you:
+Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
 
-- [mashlib](https://github.com/solid/mashlib/): the glue that puts everything together
+- [rdflib.js](https://github.com/linkeddata/rdflib.js): Javascript RDF library for browsers and Node.js
+- [solid-logic](https://github.com/solid/solid-logic): core business logic of SolidOS
+- [mashlib](https://github.com/solid/mashlib/): a solid-compatible code library of application-level functionality for the world of Solid
+- [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
+- [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
 - [node-solid-server](https://github.com/solid/node-solid-server): the server that allows you to test your changes
-- [solid-panes](https://github.com/solid/solid-panes): the part that handles everything reg panes
-- [solid-ui](https://github.com/solid/solid-ui): a lot of reusable code for solid-panes and the various pane-repos
-
-Any changes you do in this projects need to be committed to their original repos and eventually be pushed to NPM manually (this is the part of Lerna that we do not use for this project).
 
 You can start your server and test out your code with:
 
@@ -175,13 +173,59 @@ You can start your server and test out your code with:
 npm start
 ```
 
-An important part of this script is that it bootstraps the various packages using Lerna. If you for some reason (e.g. you've run `npm install` in any of the projects) need to bootstrap the packages again and don't want to stop the server, you can do `npx lerna bootstrap --force-local` (the `--force-local` makes sure that packages are bootstrapped even if versions don't match).
+If you get into problems check out [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) and ask us directly at [SolidOS team chat](https://gitter.im/solid/solidos).
+
+***Note:*** The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know, over at [SolidOS team chat](https://gitter.im/solid/solidos) if you want support for this.
+
+#### Developing SolidOS code
+
+Very likely you will want to make chnages in the dependent packages/repos of SolidOS (mashlib, solid-logic, solid-ui, solid-panes...). 
+
+You have two choises:
+- [work directly in SolidOS](#Work-directly-in-SolidOS)
+- [work in the according dependent package](#Work-in-the-according-dependent-package)
+
+##### Work directly in SolidOS
+
+The `npm start` script contains a lerna command: `npx lerna bootstrap --force-local` which makes sure that packages are bootstrapped/taken from your local machine even if versions don't match. 
+
+If you need to bootstrap any packages again (e.g. you've run `npm install` in any of the projects) and don't want to stop the server, you can do `npx lerna bootstrap --force-local` only. You do not need to stop the server and start it again (`npm start`).
+
+Another option is to start SolidOS with the `npm run watch` script. This triggers the watch-script for mashlib, solid-ui, and solid-panes. If you want to run watch-script for rdflib or any of the panes, you'll have to open another terminal window, navigate to the respective project and start its watch-script doing `npm run watch`.
+
+The output for the watch-script can be a bit difficult to interpret, since all output for mashlib, solid-ui, and solid-panes are presented in the same window. You might also consider having each watch scripts running in a separate terminal window. The downside using this approach is that at its worst, you'll have five separate watch-scripts running (in addition to the terminal window where you started the server) when working on a pane that needs to pick up a change in rdflib. If you find this unwieldy for your setup, or requiring too much resources, you should consider to [work in the according dependent package](#Work-in-the-according-dependent-package).
+
+If a package is missing on SolidOS you can simply add it using the `add script` as detailed next.
+
+###### Add dependency
+
+You can add missing packages to your SolidOS local workspaces as follows:
+
+```
+npm run add <name-of-repo>
+```
+
+If there is package that is not mapped (part of the script already) you need to manually give the URL to the Git repo.
+
+```
+npm run add <name-of-repo> <git-url-of-repo>
+```
+
+###### Remove dependency
+
+This removes a package and cleans up dependencies.
+
+```
+npm run delete <name-of-repo>
+```
+
+##### Work in the according dependent package 
+
+Any changes you do in a project needs to be committed to their original repos and eventually be pushed to NPM manually (this is the part of Lerna that we do not use for this project).
 
 Some projects require you to build a package before you can see changes, so check the various package.json files to see which scripts are available. You can usually do `npm run build`, and some also supports `npm run watch` which builds a new version each time you do a local change.
 
-## Debugging strategies
-
-There are a couple of ways you can test and debug your changes to the various projects. Before we go into the details, here's a simplified view of the dependencies:
+Be aware, the packages depend on one another. Here's a simplified view of the dependencies:
 
 ```
 node-solid-server --> rdflib
@@ -193,21 +237,19 @@ node-solid-server --> mashlib --> solid-panes --> [pane project] --> solid-ui --
 
 This means that if you do a change in solid-panes and want to see the result on your local NSS, you need to make sure that mashlib compiles the changes as well. Similarly, if you do changes to solid-ui, and some pane relies on those changes, you need to make sure that the pane compiles those changes, that solid-panes compiles the changes from the pane, and finally that mashlib compiles the changes from solid-panes. This quickly becomes hard to track, so we've devised a couple of ways to mitigate this.
 
-### Debugging solid-panes using Solid Pane Tester
+###### Debugging solid-panes using Solid Pane Tester
 
-This repository is a powerful setup for developing the full stack, from rdflib, to solid-ui, to solid-panes, to mashlib, to node-solid-server. If you are just developing a pane then you will probably find the [Solid Pane Tester](https://github.com/solid/solid-panes#development) more useful. There, you will be able to see the effect of your changes in 5 seconds, whereas a full recompile takes more like 5 minutes. You can also just run the pane tester within this repository, at workspaces/solid-panes/dev/.
+The [Solid Pane Tester](https://github.com/solid/solid-panes#development) is a powerful setup for developing the full stack, from rdflib, to solid-ui, to solid-panes, to mashlib, to node-solid-server. If you are just developing a pane then you will probably find the [Solid Pane Tester](https://github.com/solid/solid-panes#development) more useful. There, you will be able to see the effect of your changes in 5 seconds, whereas a full recompile takes more like 5 minutes. You can also just run the pane tester within this repository, at workspaces/solid-panes/dev/.
 
-### Debugging solid-ui
-
-### using storybook
+###### Debugging solid-ui using Storybook
 
 To debug a component from solid-ui in isolation, when you do not need the surrounding solid-pane, you can [run storybook in the solid-ui repository](https://github.com/solid/solid-ui#Development).
 
-#### using Solid Pane Tester
+###### Debugging solid-ui using Solid Pane Tester
 
 To debug solid-ui within a pane, you can combine the solid-ui to solid-panes link with the Pane Tester. For instance, when debugging code from solid-ui that affects the Sharing pane, you might run `npm start` to set the links between the workspaces, then run `npm run watch` in the solid-ui workspace and use the [Solid Pane Tester](https://github.com/solid/solid-panes#development) in the solid-panes workspace, with the Sharing pane in workspaces/solid-panes/dev/pane/, to see how your edits in solid-ui affect the Sharing pane.
 
-### Debugging rdflib using Solid Pane Tester
+###### Debugging rdflib using Solid Pane Tester
 
 Run:
 
@@ -233,44 +275,29 @@ Then, under `workspaces/rdflib`, make your change, for instance add a console.lo
 
 You can also combine this with `cd workspaces/solid-ui ; npm run watch` so that you can combine edits in rdflib with edits in solid-ui, but if you're only editing rdflib, the `npm run watch` in `workspaces/rdflib` should be enough.
 
-### Debugging using NSS and watch scripts
+### For anyone who likes builds or Git workflows or releases or deployments
 
-You can also test changes directly on the instance of NSS that starts when running `npm start` in this repository. There is a watch-script that you can start doing `npm run watch` that triggers the watch-script for mashlib, solid-ui, and solid-panes. If you want to run watch-script for rdflib or any of the panes, you'll have to open another terminal window, navigate to the respective project and start its watch-script doing `npm run watch`.
+#### Builds
 
-The output for the watch-script can be a bit difficult to interpret, since all output for mashlib, solid-ui, and solid-panes are presented in the same window, so you might also consider having each watch scripts running in a separate terminal window. The downside using this approach is that at its worst you'll have five separate watch-scripts running (in addition to the terminal window where you started the server) when working on a pane that needs to pick up a change in rdflib. If you find this unwieldy for your setup, or requiring too much resources, you should consider the Solid Pane Tester strategy instead.
+SolidOS contains different repositories (mashlib, solid-logic, solid-ui, solid-panes...). Each repository contains a `packacge.json` with `scripts`. Most repos contains a `npm run build` which is used to build the project. 
 
-## Add dependency
+#### Git workflows
 
-You can add other projects to your workspaces to do local changes. We've mapped most projects that are related to mashlib for you, so you can simply do:
+When you push or PR a change to a repo, usually a git workflow is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solid/solid-panes/blob/main/.github/workflows/ci.yml). This workflow can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails one should take care to fix it. 
 
-```
-npm run add <name-of-repo>
-```
+#### Testing & releasing a new SolidOS version
 
-For the projects that we haven't mapped you need to manually give the URL to the Git repo.
+In SolidOS, you will find a `bash scripts` under [scripts](https://github.com/solid/solidos/tree/main/scripts) which is related to releasing a new SolidOS version. The [release](https://github.com/solid/solidos/blob/main/scripts/release) script is also used to update dependencies in each repo.
 
-```
-npm run add <name-of-repo> <git-url-of-repo>
-```
+As best practice, we deploy the new version on the [testserver](https://solidcommunity.net:8443/) as mentioned [here](https://github.com/solid/solidcommunity.net/wiki#solidcommunitynet8443-test-server-instance).
 
-## Remove dependency
-
-This removes the dependency itself and cleans up dependencies.
+#### Deployment on solidcommunity.net server
 
 ```
-npm run delete <name-of-repo>
+More information can be also found over at the [server, solidcommunity.net, repo](https://github.com/solid/solidcommunity.net/wiki).
 ```
 
-## Troubleshooting
-
-If you for some reason aren't able to get your setup working, you should double-check that Lerna actually manages to bootstrap the repositories. One way of doing this is to check node_modules in one of them and verify that the dependency that should be bootstrapped is actually a symlink to the corresponding repository (e.g. check that `workspaces/mashlib/node_modules/solid-ui` links to `workspaces/solid-ui` ). If it doesn't, it is usually because of different version (e.g. mashlib expects a newer version of solid-ui than the one you have locally). Make sure that these are aligned, then bootstrap again by running `npm start` or do it manually with `npx lerna bootstrap` (must be run in the root of this repo).
-
-## Release the stack
-
-When you made a change in one of the repositories and you want that change to be included in a new version of Solid OS / NSS, do the following:
-
-* make sure you have access to all the github repo's and all the npm package (ask Tim or Michiel if needed)
-* get a VPS running Ubuntu, for instance at https://digitalocean.com, and ssh into it as root
+Before you start make sure you have access to all the github repo's and all the npm package. Get a VPS running Ubuntu, for instance at https://digitalocean.com, and ssh into server as root.
 
 ```sh
 tmux new
@@ -304,5 +331,25 @@ cd solidos
 npm run install-nvm
 npm run release
 ```
+
+### For anyone who likes writing text
+
+SolidOS has quite some documentation around it which needs constant improvement. 
+Places to start with are:
+- for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
+- [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs);
+- [SolidOS developer guide](https://github.com/solid/solidos/wiki).
+
+We are open to suggestions to improve them from structure, translation, UI to content in general.
+
+### For anyone with an eye for design
+
+[Solid-ui](https://github.com/solid/solid-ui) does the heavy lifting to all things UI for SolidOS. 
+Currently we use [Storybook](https://storybook.js.org/) to help develop components independent of other panes. Make sure to visit the [solid-ui readme](https://github.com/solid/solid-ui) for information of how to set it up and get started.
+There is a second option to run Solid-ui on its own. Read about it at [Debugging solid-ui using Solid Pane Tester](#Debugging-solid-ui-using-Solid-Pane-Tester).
+
+You can also find the current issues over at the [solid-ui issues](https://github.com/solid/solid-ui/issues). And some more information over at the [developer guide](https://github.com/solid/solidos/wiki/Solid-UI-tips).
+
+SolidOS needs a lot of improvements on UI, including UX and styleguides. Maybe you are the one who can help out?
 
 ## License
