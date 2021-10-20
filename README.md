@@ -16,7 +16,7 @@ This space is home of the SolidOS code. Keep reading if you want to know:
     - [SolidOS tasks](#SolidOS-tasks)  
 - 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
     - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
-    - [For anyone who likes builds or releases or Git workflows or deployments](#for-anyone-who-likes-builds-or-git-workflows-or-releases-or-deployments)
+    - [For anyone who likes builds or releases or GitHub CI or deployments](#for-anyone-who-likes-builds-or-github-ci-or-releases-or-deployments)
     - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
     - [For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
 
@@ -89,7 +89,7 @@ As you can see, SolidOS is composed of serveral repositories:
 - [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
 - [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
 
-In the above diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server). When you download the SolidOS code, locally, a NSS is also installed to have everything ready to develop.
+In the above diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server) or on ANY Solid server. When you download the SolidOS code, locally, a NSS is also installed to have everything ready to develop.
 
 ### SolidOS deeper technical topics
 
@@ -127,13 +127,13 @@ To check possible tasks you can help with, the best is to visit us on a [weekly 
 ### For anyone up to writing some code
 
 The SolidOS stack contains:
-- Node.js
-- Javascript 
-- Typescript
-- npm
+- [Node.js](https://nodejs.dev/)
+- [Javascript](https://www.w3schools.com/js/) 
+- [Typescript](https://www.typescriptlang.org/)
+- [npm](https://www.npmjs.com/)
 - [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) 
 - [Lerna](https://lerna.js.org/)
-- Git workflows
+- [GitHub CI](https://docs.github.com/en/actions/automating-builds-and-tests/about-continuous-integration)
 - bash scripts
 
 And it also makes use of:
@@ -276,15 +276,15 @@ Then, under `workspaces/rdflib`, make your change, for instance add a console.lo
 
 You can also combine this with `cd workspaces/solid-ui ; npm run watch` so that you can combine edits in rdflib with edits in solid-ui, but if you're only editing rdflib, the `npm run watch` in `workspaces/rdflib` should be enough.
 
-### For anyone who likes builds or Git workflows or releases or deployments
+### For anyone who likes builds or GitHub CI or releases or deployments
 
 #### Builds
 
 SolidOS contains different repositories (mashlib, solid-logic, solid-ui, solid-panes...). Each repository contains a `packacge.json` with `scripts`. Most repos contains a `npm run build` which is used to build the project. 
 
-#### Git workflows
+#### GitHub CI
 
-When you push or PR a change to a repo, usually a git workflow is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solid/solid-panes/blob/main/.github/workflows/ci.yml). This workflow can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails one should take care to fix it. 
+When you push or PR a change to a repo, usually a git CI is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solid/solid-panes/blob/main/.github/workflows/ci.yml). This CI YML can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails, one should take care to fix it. 
 
 #### Testing & releasing a new SolidOS version
 
@@ -298,7 +298,7 @@ As best practice, we deploy the new version on the [testserver](https://solidcom
 More information can be also found over at the [server, solidcommunity.net, repo](https://github.com/solid/solidcommunity.net/wiki).
 ```
 
-Before you start make sure you have access to all the github repo's and all the npm package. Get a VPS running Ubuntu, for instance at https://digitalocean.com, and ssh into server as root.
+Before you start, make sure you have access to all the GitHub repos and all the npm packages. Using Ubuntu or alike, ssh into server as root.
 
 ```sh
 tmux new
@@ -336,12 +336,12 @@ npm run release
 ### For anyone who likes writing text
 
 SolidOS has quite some documentation around it which needs constant improvement. 
-Places to start with are:
+Places to start:
 - for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
 - [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs);
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 
-We are open to suggestions to improve them from structure, translation, UI to content in general.
+We are open to suggestions to improve these resources from structure, translation, UI to content in general.
 
 ### For anyone with an eye for design
 
