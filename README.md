@@ -134,16 +134,16 @@ The SolidOS stack contains:
 - [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) 
 - [Lerna](https://lerna.js.org/)
 - [GitHub CI](https://docs.github.com/en/actions/automating-builds-and-tests/about-continuous-integration)
-- bash scripts
+- [bash scripts](https://www.gnu.org/software/bash/manual/html_node/index.html)
 
 And it also makes use of:
 - [Storybook](https://storybook.js.org/)
-- Webpack
-- Jest
-- Cypress
-- Lint
-- Babel
-- Travis 
+- [Webpack](https://webpack.js.org/)
+- [Jest](https://jestjs.io/)
+- [Cypress](https://www.cypress.io/)
+- [Lint](https://en.wikipedia.org/wiki/Lint_%28software%29)
+- [Babel](https://babeljs.io/)
+- [Travis](https://travis-ci.org/) 
 
 We keep track of stuff to do in Git issues of each repo. [Here](https://github.com/solid/solidos/issues) the link to the SolidOS open issues. But make sure to visit the underlying repos for specific issues (see: [SolidOS technical intro](#-SolidOS-technical-intro) for links).
 
