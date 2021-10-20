@@ -43,7 +43,7 @@ Further links:
 
 ## 🤔 What is SolidOS?
 ```
-🌟🌟🌟 SolidOS is an Operating System for [Solid](https://solidproject.org).🌟🌟🌟
+🌟🌟🌟 SolidOS is an Operating System for Solid. 🌟🌟🌟
 ```
 
 [Solid](https://solidproject.org) is developing into a booming ecosystem which involves: specifications 📃, tech stack 🛠, servers 💻 and apps 🕹. We, the SolidOS team, believe that this ecosystem needs also an Operating System.
