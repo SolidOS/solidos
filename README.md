@@ -355,7 +355,7 @@ SolidOS needs a lot of improvements on UI, including UX and styleguides. Maybe y
 
 ## License
 
-If you are looking for something else, let us try and guide you:
+## If you are looking for something else, let us try and guide you:
 
 - for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
 - to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
