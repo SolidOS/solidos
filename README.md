@@ -8,15 +8,15 @@ This space is home of the SolidOS code. Keep reading if you want to know:
 - 🤔 [What is SolidOS](#-What-is-SolidOS)
     - [What you can do today with SolidOS](#What-you-can-do-today-with-SolidOS)
     - [Current SolidOS vision, mission and roadmap](#Current-SolidOS-vision,-mission-and-roadmap)
-- 👩🏽‍💻 [SolidOS technical intro](#-SolidOS-technical-intro)
-    - [SolidOS deeper technical topics](#SolidOS-deeper-technical-topics)
+- 👩🏽‍💻 [SolidOS technical intro](#-solidos-technical-intro)
+    - [SolidOS deeper technical topics](#solidos-deeper-technical-topics)
 - 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
     - [SolidOS team meetings](#SolidOS-team-meetings)
     - [SolidOS team instant chat](#SolidOS-team-instant-chat)
     - [SolidOS tasks](#SolidOS-tasks)  
 - 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
     - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
-    - [For anyone who likes builds or releases or Git workflows or deployments](#For-anyone-who-likes-builds-or-releases-or-Git-workflows-or-deployments)
+    - [For anyone who likes builds or releases or Git workflows or deployments](#for-anyone-who-likes-builds-or-git-workflows-or-releases-or-deployments)
     - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
     - [For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
 
@@ -354,3 +354,14 @@ You can also find the current issues over at the [solid-ui issues](https://githu
 SolidOS needs a lot of improvements on UI, including UX and styleguides. Maybe you are the one who can help out?
 
 ## License
+
+If you are looking for something else, let us try and guide you:
+
+- for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
+- to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
+- for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
+- for the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
+- for how the community works, go over to [solid process](https://github.com/solid/process);
+- chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
+- join an event over at [Solid events](https://solidproject.org/events);
+- read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
