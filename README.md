@@ -18,7 +18,7 @@ This space is home of the SolidOS code. Keep reading if you want to know:
     - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
     - [For anyone who likes builds or releases or Git workflows or deployments](#For-anyone-who-likes-builds-or-releases-or-Git-workflows-or-deployments)
     - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
-    - [### For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
+    - [For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
 
 If you are looking for something else, let us try and guide you:
 
@@ -72,9 +72,9 @@ Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.
 
 ### Current SolidOS vision, mission and roadmap
 
-Read more about the current SolidOS 🌟 vision, goals 🎯 and 🚗 roadmap [here](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
+Read more about the current SolidOS 🌟 vision, goals 🎯 and 🚗 roadmap on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
-**Note:** SolidOS used to be known as (default) Data Browser and at times as mashlib. Read a [forum post]https://forum.solidproject.org/t/suggestion-penny-should-be-made-the-default-data-browser/4593) about it.
+**Note:** SolidOS used to be known as (default) Data Browser and at times as mashlib. Read a [forum post](https://forum.solidproject.org/t/suggestion-penny-should-be-made-the-default-data-browser/4593) about it.
 
 ## 👩🏽‍💻 SolidOS technical intro
 
@@ -104,7 +104,7 @@ The SolidOS team meets every week for a 1h touchdown. We discuss what was done o
 
 ### SolidOS team instant chat
 
-In between team meetings, we avidly communicate over at the [gitter solidOS channel](https://gitter.im/solid/solidos). Drop by to chat with us, ask questions or simply say hi. 
+In between team meetings, we avidly communicate over at the [gitter SolidOS channel](https://gitter.im/solid/solidos). Drop by to chat with us, ask questions or simply say hi. 
 
 ### SolidOS tasks
 
@@ -135,6 +135,7 @@ The SolidOS stack contains:
 - [Lerna](https://lerna.js.org/)
 - Git workflows
 - bash scripts
+
 And it also makes use of:
 - [Storybook](https://storybook.js.org/)
 - Webpack
