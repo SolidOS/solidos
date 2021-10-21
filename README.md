@@ -1,4 +1,4 @@
-# 🤗 Welcome to the home of SolidOS
+# 🤗 Welcome to the repo of SolidOS
 
 [![Join the chat at https://gitter.im/solid/solidos](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/solid/solidos?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -19,6 +19,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
     - [For anyone who likes builds or releases or GitHub CI or deployments](#for-anyone-who-likes-builds-or-github-ci-or-releases-or-deployments)
     - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
     - [For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
+- 🎤 [Feedback and questions](#-Feedback-and-questions)
 
 If you are looking for something else, let us try and guide you:
 
@@ -353,7 +354,15 @@ You can also find the current issues over at the [solid-ui issues](https://githu
 
 SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe you are the one who can help out?
 
-## License
+## 📜 License
+
+The SolidOS code is available under the MIT License.
+
+Core contributors are Joachim Van Herwegen, Ruben Verborgh, Ruben Taelman, and Matthieu Bosquet.
+
+## 🎤 Feedback and questions
+
+Don't hesitate to start a [discussion]((https://gitter.im/solid/home) or [report a bug](https://github.com/solid/solidos/issues).
 
 ## If you are looking for something else, let us try and guide you:
 
