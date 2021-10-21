@@ -1,6 +1,10 @@
 # 🤗 Welcome to the repo of SolidOS
 
-[![Join the chat at https://gitter.im/solid/solidos](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/solid/solidos?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+<img src="https://raw.githubusercontent.com/solid/community-server/main/templates/images/solid.svg" alt="[Solid logo]" height="150" align="right"/>
+
+[![MIT license](https://img.shields.io/github/license/solid/solidos)](https://github.com/solid/solidos/blob/main/LICENSE.md)
+[![SolidOS issues](https://img.shields.io/github/issues/solid/solidos)](https://github.com/solid/solidos/issues)
+[![Join the chat at https://gitter.im/solid/solidos](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/solid/solidos)
 
 If you made it here you must already have heard about [Solid](https://solidproject.org).
 This space is home to the SolidOS code. Keep reading if you want to know:
