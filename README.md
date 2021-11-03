@@ -13,18 +13,21 @@ This space is home to the SolidOS code. Keep reading if you want to know:
     - [What you can do today with SolidOS](#What-you-can-do-today-with-SolidOS)
     - [Current SolidOS vision, mission and roadmap](#Current-SolidOS-vision,-mission-and-roadmap)
 - 👩🏽‍💻 [SolidOS technical intro](#-solidos-technical-intro)
-    - [SolidOS first time setup of code](#SolidOS-first-time-setup-of-code)
+    
     - [SolidOS deeper technical topics](#solidos-deeper-technical-topics)
 - 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
     - [SolidOS team meetings](#SolidOS-team-meetings)
     - [SolidOS team instant chat](#SolidOS-team-instant-chat)
     - [SolidOS tasks](#SolidOS-tasks)  
 - 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
-    - [How to make changes in repos](#How-to-make-changes-in-repos)
     - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
     - [For anyone who likes builds or releases or GitHub CI or deployments](#for-anyone-who-likes-builds-or-github-ci-or-releases-or-deployments)
     - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
     - [For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
+- 🆕 [Getting started with the SolidOS code](#Getting-started-with-the-SolidOS-code)
+    - [SolidOS first time setup of code](#SolidOS-first-time-setup-of-code)
+    - [How to make changes in repos](#How-to-make-changes-in-repos)
+- 📜 [License](#License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
 If you are looking for something else, let us try and guide you:
@@ -117,37 +120,6 @@ As you can see, SolidOS is composed of several repositories:
 
 In the above diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https://github.com/solid/node-solid-server) BUT it can also be set up to run on the [Community Solid Server (CSS)](https://github.com/solid/community-server) or on ANY Solid compliant server. When you download the SolidOS code, locally, a NSS is also installed to have everything ready to develop.
 
-### SolidOS first time setup of code
-
-```
-git clone https://github.com/solid/solidos
-cd solidos
-nvm install 12.7.0 # to satisfy https://github.com/solid/mashlib/blob/main/.nvmrc
-nvm install 12.19.1 # to satisfy https://github.com/linkeddata/rdflib.js/blob/main/.nvmrc
-nvm install 13.14.0 # to satisfy https://github.com/solid/node-solid-server/blob/main/.nvmrc
-# ... and maybe other versions if build errors tell you so ...
-npm run setup
-```
-
-Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
-
-- [rdflib.js](https://github.com/linkeddata/rdflib.js): Javascript RDF library for browsers and Node.js
-- [solid-logic](https://github.com/solid/solid-logic): core business logic of SolidOS
-- [mashlib](https://github.com/solid/mashlib/): a solid-compatible code library of application-level functionality for the world of Solid
-- [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
-- [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
-- [node-solid-server](https://github.com/solid/node-solid-server): the server that allows you to test your changes
-
-You can start your server and test out your code with:
-
-```
-npm start
-```
-
-If you get into problems check out [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) and ask us directly at [SolidOS team chat](https://gitter.im/solid/solidos).
-
-***Note:*** The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know, over at [SolidOS team chat](https://gitter.im/solid/solidos) if you want support for this.
-
 ### SolidOS deeper technical topics
 
 For further details about each repository, please visit the according to GitHub repo linked above.
@@ -181,10 +153,6 @@ For a longer term roadmap we use a Solid [task manager](https://solidos.solidcom
 The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code, to text, to style. We are looking for UX designers, technical writers, frontend developers, backend developers, DevOps. Don't let the titles intimidate you, they are just some examples. You can also find your own place no matter the level of knowledge you are at. 
 
 To check possible tasks you can help with, the best is to visit us on a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [instant chat](https://gitter.im/solid/solidos) and say 'Hi'. We will try out best to pair you up with a buddy to help you to get started. 
-
-### How to make changes in repos
-
-Make sure to read more about working with PRs, branches and missing repos over at the [SolidOS developer guide](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#how-to-contribute)
 
 ### For anyone up to writing some code
 
@@ -304,6 +272,47 @@ There is a second option to run Solid-ui on its own. Read about it at [Debugging
 You can also find the current issues over at the [solid-ui issues](https://github.com/solid/solid-ui/issues). And some more information over at the [developer guide](https://github.com/solid/solidos/wiki/Solid-UI-tips).
 
 SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe you are the one who can help out?
+
+## 🆕 Getting started with the SolidOS code
+
+### SolidOS first time setup of code
+
+```
+git clone https://github.com/solid/solidos
+cd solidos
+nvm install 12.7.0 # to satisfy https://github.com/solid/mashlib/blob/main/.nvmrc
+nvm install 12.19.1 # to satisfy https://github.com/linkeddata/rdflib.js/blob/main/.nvmrc
+nvm install 13.14.0 # to satisfy https://github.com/solid/node-solid-server/blob/main/.nvmrc
+# ... and maybe other versions if build errors tell you so ...
+npm run setup
+```
+
+Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
+
+- [rdflib.js](https://github.com/linkeddata/rdflib.js): Javascript RDF library for browsers and Node.js
+- [solid-logic](https://github.com/solid/solid-logic): core business logic of SolidOS
+- [mashlib](https://github.com/solid/mashlib/): a solid-compatible code library of application-level functionality for the world of Solid
+- [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
+- [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
+- [node-solid-server](https://github.com/solid/node-solid-server): the server that allows you to test your changes
+
+You can start your server and test out your code with:
+
+```
+npm start
+```
+
+If you get into problems check out [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) and ask us directly at [SolidOS team chat](https://gitter.im/solid/solidos).
+
+***Note:*** The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know, over at [SolidOS team chat](https://gitter.im/solid/solidos) if you want support for this.
+
+### How to make changes in repos
+
+As a newcomer, you do not have direct access to the repos. In this case, you can still contribute through Pull Requests (PRs). First, navigate to the repo you want to work on and create a fork. Make your changes on your fork and then create a PR. We will be notified and you will receive feedback on your changes. For more details on how to do this, visit the GitHub documentation which explains it much better than we ever could.
+
+If you do have direct access to the repos, it is usual to create a branch for your changes and then a PR. A PR helps you receive feedback and lets us know easily about any changes to the code. Read more about Pull Requests over at the GitHub documentation.
+
+Make sure to read more about working with branches and missing repos over at the [SolidOS developer guide](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#dealing-with-github-branches)
 
 ## 📜 License
 
