@@ -23,14 +23,14 @@ This space is home to the SolidOS code. Keep reading if you want to know:
     - [For anyone who likes builds or releases or GitHub CI or deployments](#for-anyone-who-likes-builds-or-github-ci-or-releases-or-deployments)
     - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
     - [For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
-- 🆕 [Getting started with the SolidOS code](#Getting-started-with-the-SolidOS-code)
+- 🆕 [Getting started with the SolidOS code](#-Getting-started-with-the-SolidOS-code)
     - [SolidOS first time setup of code](#SolidOS-first-time-setup-of-code)
     - [How to use SolidOS on localhost](#How-to-use-SolidOS-on-localhost)
     - [How to make changes in repos](#How-to-make-changes-in-repos)
     - [Developing SolidOS code](#Developing-SolidOS-code)
     - [Testing SolidOS code](#Testing-SolidOS-code)
     - [SolidOS build & release](#SolidOS-build-and-release)
-- 📜 [License](#License)
+- 📜 [License](#-License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
 If you are looking for something else, let us try and guide you:
