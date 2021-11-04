@@ -131,6 +131,9 @@ For SolidOS related code know-how, make sure to also visit [SolidOS FAQs](https:
 
 ## 👯 How the SolidOS team works
 
+First and foremost who are the contributors of SolidOS? 
+The SolidOS codebase has a long history and there were over the years a lot of contributors(see: [GitHub contributors](https://github.com/solid/solidos/graphs/contributors)). The most active team members are mentioned in the SolidOS Team on the [SolidOS Pod Contacts](https://solidos.solidcommunity.net/Contacts/).
+
 ### SolidOS team meetings
 
 The SolidOS team meets every week for a 1h touchdown. We discuss what was done over the week, what needs to be done and delegate tasks. Find the meeting time and link on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html). 
