@@ -17,6 +17,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 - 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
     - [SolidOS team meetings](#SolidOS-team-meetings)
     - [SolidOS team instant chat](#SolidOS-team-instant-chat)
+    - [SolidOS team discussions](#SolidOS-team-discussions)
     - [SolidOS tasks](#SolidOS-tasks)  
 - 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
     - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
@@ -133,15 +134,20 @@ For SolidOS related code know-how, make sure to also visit [SolidOS FAQs](https:
 ### SolidOS team meetings
 
 The SolidOS team meets every week for a 1h touchdown. We discuss what was done over the week, what needs to be done and delegate tasks. Find the meeting time and link on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html). 
+We take minutes on our meetings. You can find them on the [SolidOS pod](https://solidos.solidcommunity.net/public/SolidOS%20team%20meetings/).
 
 ### SolidOS team instant chat
 
 In between team meetings, we avidly communicate over at the [gitter SolidOS channel](https://gitter.im/solid/solidos). Drop by to chat with us, ask questions or simply say hi. 
 
+### SolidOS team discussions
+
+Sometimes some ideas need an incubation period and further discussions. We make use of [GitHub discussions](https://github.com/solid/solidos/discussions) for that. 
+
 ### SolidOS tasks
 
-For daily tasks we have a [GitHub prioritization board](https://github.com/solid/solidos/projects/1).
-For a longer term roadmap we use a Solid [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/) and plan on Kanban the next milestones. 
+For daily tasks we have a [task overview](https://github.com/orgs/solid/projects/14/views/4) and an overview of needed PRs at [GitHub prioritization board](https://github.com/solid/solidos/projects/1) and a new one over at 
+For a longer term roadmap, we use a Solid [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/) and plan on Kanban the next milestones. 
 
 ### Additional useful information
 
