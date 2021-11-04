@@ -337,7 +337,7 @@ Jets can also offer information related to test coverage by simply runnig `npm r
 
 ### SolidOS build and release
 
-The SolidOS code stack build and release are [described above](#For anyone-who-likes-builds-or-GitHub-CI-or-releases-or-deployments).
+The SolidOS code stack build and release are [described above](#For-anyone-who-likes-builds-or-GitHub-CI-or-releases-or-deployments).
 
 ## 📜 License
 
