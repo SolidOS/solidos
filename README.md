@@ -326,7 +326,7 @@ node-solid-server --> mashlib --> solid-panes --> [pane project] --> solid-ui --
 
 This means that if you do a change in solid-panes and want to see the result on your local NSS, you need to make sure that mashlib compiles the changes as well. Similarly, if you do changes to solid-ui, and some pane relies on those changes, you need to make sure that the pane compiles those changes, that solid-panes compiles the changes from the pane, and finally that mashlib compiles the changes from solid-panes. This quickly becomes hard to track, so we've devised a couple of ways to mitigate this.
 
-Read about in detail how each pane can be debugged over at the [Solid developer guide](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#debugging-panesrepos-standalone-without-running-whole-solidos)
+Read about in detail how each pane can be debugged over at the [Solid developer guide](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#debugging-panesrepos-standalone-without-running-whole-solidos).
 
 ### Testing SolidOS code
 
