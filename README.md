@@ -34,16 +34,20 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 - 📜 [License](#-License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
+For experimenting with SolidOS implementations try SolidOs on a [test-pod](https://test-pod/solidcommunity.net:8443/) (user and password: `test-pod`) or,
+- take a pod on https://solidcommunity.net or an [other provider](https://solidproject.org/users/get-a-pod#get-a-pod-from-a-pod-provider)
+- [SolidOS WebApp](https://solid.github.io/mashlib/dist/browse.htm); 
+- stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
+
 If you are looking for something else, let us try and guide you:
 
 - for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
 - to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
 - for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
-- for the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
 - for how the community works, go over to [Solid process](https://github.com/solid/process);
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
 - join an event over at [Solid events](https://solidproject.org/events);
-- read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
+- read the Solid community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
 
 Further links:
 
@@ -52,7 +56,8 @@ Further links:
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki);
 - report a problem for SolidOS by [creating a git issues](https://github.com/solid/solidos/issues);
 - have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories);
-- latests [Solid specification](https://github.com/solid/solid-spec) and [overview](https://solid.github.io/specification/).
+- latests [Solid specification](https://github.com/solid/solid-spec) and [overview](https://solid.github.io/specification/);
+- [Glossary](https://github.com/solid/solidcommunity.net/wiki/Glossary) of terms frequently used in Solid environment.
 
 ## 🤔 What is SolidOS?
 ```
@@ -63,7 +68,7 @@ Further links:
 
 When you get a new phone, PC, or tablet, they usually come with an operating system that provides some basic functionality to just get started and be productive. And, more importantly, you can personalize your OS to your needs by installing apps and, managing content, and much more.
 
-Solid is not shipped with a piece of hardware (who knows, maybe in the future it will...). For now, you get into the ecosystem once you create a WebID and provision your own personal data store (Pod) ([see getting started with Solid](https://solidproject.org/developers/tutorials/getting-started)). Immediately after getting your new Solid WebID and Pod space, SolidOS is helping you to navigate the Solid ecosystem.
+Solid is not shipped with a piece of hardware (who knows, maybe in the future it will...). For now, you get into the ecosystem once you create a WebID and provision your own personal data store (Pod) ([see getting started with Solid - get a pod](https://solidproject.org/users/get-a-pod#get-a-pod-from-a-pod-provider)). Immediately after getting your new Solid WebID and Pod space, SolidOS is helping you to navigate the Solid ecosystem.
 
 SolidOS is much more. SolidOS is showcasing the possibility of [Solid](https://solidproject.org) for the future, and we mean:
 
