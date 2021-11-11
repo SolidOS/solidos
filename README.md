@@ -47,7 +47,7 @@ If you are looking for something else, let us try and guide you:
 
 Further links:
 
-- [SolidOS explanation video](https://vimeo.com/643594034);
+- [SolidOS explanation video](https://vimeo.com/643594034#t=9m39s);
 - [SolidOS goals & roadmap](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html);
 - [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs);
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki);
@@ -72,7 +72,7 @@ SolidOS is much more. SolidOS is showcasing the possibility of [Solid](https://s
 - avoidance of vendor lock-in to services: easy moving to a different Pod or WebID provider;
 - data reuse between applications: with help of data interoperability and data discoverability.
 
-Watch a [SolidOS explanation video](https://vimeo.com/643594034) as part of the [Solid World event series](https://solidproject.org/events).
+Watch a [SolidOS explanation video](https://vimeo.com/643594034#t=9m39s) as part of the [Solid World event series](https://solidproject.org/events).
 
 ### What you can do today with SolidOS
 
