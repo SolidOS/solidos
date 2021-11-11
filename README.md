@@ -90,7 +90,7 @@ Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.
 
 Read more about the current SolidOS 🌟 vision, goals 🎯 and 🚗 roadmap on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
-**Note:** SolidOS used to be known as (default) Data Browser or Databrowser and at times as mashlib. It depends on which flavour of SolidOS you refer to: 
+**Note:** SolidOS is known alsi under names like (default) Data Browser or Databrowser and at times as mashlib. It depends on which flavour of SolidOS you refer to: 
 - The SolidOS Databrowser Frontend - a frontend for Solid Servers like [solidcommunity.net](https://solidcommunity.net), represented by this codebase;
 - The SolidOS Databrowser Webapp - a stand-alone web app served from mashlib: [https://solid.github.io/mashlib/dist/browse.html](https://solid.github.io/mashlib/dist/browse.html);
 - The SolidOS Data-Kitchen - a stand-alone desktop app: [https://github.com/solid/data-kitchen](https://github.com/solid/data-kitchen);
