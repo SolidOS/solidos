@@ -11,7 +11,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 
 - 🤔 [What is SolidOS](#-What-is-SolidOS)
     - [What you can do today with SolidOS](#What-you-can-do-today-with-SolidOS)
-    - [SolidOS vision, mission and roadmap](#SolidOS-vision,-mission-and-roadmap)
+    - [SolidOS vision, mission and roadmap](#solidos-vision-mission-and-roadmap)
 - 👩🏽‍💻 [SolidOS technical intro](#-solidos-technical-intro)
     - [SolidOS deeper technical topics](#solidos-deeper-technical-topics)
 - 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
