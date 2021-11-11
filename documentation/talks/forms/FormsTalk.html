@@ -84,12 +84,52 @@ src="https://www.w3.org/Talks/Tools/Slidy2/graphics/w3c-logo-white.gif" /></a></
 <h1>Components are form Fields or structures</h1>
 <h3>Fields<h3>
 <ul>
-  <li>@@ add fileds
+  <li>BooleanField
   </li>
+  <li>TriStateField
+  </li>
+  <li>IntegerField
+  </li>
+  <li>DecimalField
+  </li>
+  <li>FloatField</li>
+
+</ul><ul>
+
+  <li>ColorField
+  </li>
+  <li>DateField
+  </li>
+  <li>DateTimeField
+  </li>
+  <li>PhoneField
+  </li>
+  <li>EmailField
+  </li>
+  <li>SingleLineTextField
+  </li>
+  <li>MultiLineTextField
+  </li>
+  <li>Autocomplete</li>
 </ul>
 <h3>Structures<h3>
 <ul>
-  <li>@@ add structures
+  <li>Group
+  </li>
+  <li>Choice
+  </li>
+  <li>Multiple
+  </li>
+  <li>Classifier
+  </li>
+  <li>Options
+  </li>
+</ul>
+<h3>Documentation components<h3>
+<ul>
+  <li>Heading
+  </li>
+  <li>Comment
   </li>
 </ul>
 
@@ -130,16 +170,68 @@ src="https://www.w3.org/Talks/Tools/Slidy2/graphics/w3c-logo-white.gif" /></a></
 </div>
 
 <div class="slide">
+<h1>Code: Render a form</h1>
+<p>To put a form in your UI</p>
+<pre>UI.widgets.appendForm(dom, container, {}, subject, form, doc, callback)
+  </pre>
+
+  <table class="parameters">
+  <tr>
+    <td>dom</td>
+
+    <td>is the DOM HTMLDocument object, a/k/a document</td>
+  </tr>
+
+  <tr>
+    <td>container</td>
+
+    <td>is a DOM element to contain the form</td>
+  </tr>
+
+  <tr>
+    <td>{}</td>
+
+    <td>are unused at present</td>
+  </tr>
+
+  <tr>
+    <td>subject</td>
+    <td>is the RDF thing about which data will be stored</td>
+  </tr>
+  <tr>
+    <td>form</td>
+    <td>is the RDF object in the store for the form</td>
+  </tr>
+  <tr>
+    <td>doc</td>
+    <td>
+      is the RDF document on the web where the data will be stored. Often,
+      <tt>subject.doc()</tt>
+    </td>
+  </tr>
+  <tr>
+    <td>callback</td>
+    <td>
+      is a function taking an error flag and a message (if the error flag is
+      true)
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<div class="slide">
 <h1>Example: The profile editing form</h1>
-@@
+<p>@@</p>
 </div>
 
 <div class="slide">
 <h1>Going meta -- designing forms using the form of forms 1</h1>
-</div>
 <p>Here is a form for editing a form</p>
 <p>Users and developers should be able to design and adapt their forms</p>
-@@ The form of forms
+</div>
+
+<p>@@ The form of forms</p>
 <div class="slide">
 <h1>Going meta -- designing forms using the form of forms 2</h1>
 @@ here we are editing the really small form we started with.

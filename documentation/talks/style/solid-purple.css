@@ -495,3 +495,22 @@ div.comment { display: none; visibility: hidden }
  div.slide.cover h1 { background: transparent; color: black }
  div.comment { display: block; visibility: visible }
 }
+
+
+
+
+table {
+    border-collapse: collapse;
+    margin: 1em;
+  }
+  table.parameters {
+    background-color: #dddddd;
+  } /*  background-color: #ddddff; */
+  table.properties {
+    background-color: #ddddff;
+  } /*  background-color: #ddddff; */
+  td {
+    padding: 0.5em;
+    border: 0.1em solid white;
+    margin: 0;
+  }
