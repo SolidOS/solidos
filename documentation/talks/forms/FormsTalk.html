@@ -10,13 +10,20 @@
 <meta name="duration" content="5" />
 <meta name="font-size-adjustment" content="-2" />
 <link rel="stylesheet" href="https://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" type="text/css" />
+<!--
 <link rel="stylesheet" href="https://www.w3.org/Talks/Tools/Slidy2/styles/w3c-blue.css" type="text/css" />
-<script src-"https://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js" charset="utf-8" type="text/javascript">
+-->
+<link rel="stylesheet" href="../style/solid-purple.css" type="text/css" />
+<script src="https://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js" charset="utf-8" type="text/javascript">
 </script>
+<script>
+// alert("wrth")</script>
 </head>
 <body>
+<!-- @@ change W3C logos to solid logos -->
 <div class="background"><img alt="" id="head-icon"
-src="https://www.w3.org/Talks/Tools/Slidy2/graphics/icon-blue.png" /><object id="head-logo"
+src="https://www.w3.org/Talks/Tools/Slidy2/graphics/icon-blue.png" />
+<object id="head-logo"
 data="graphics/w3c-logo-white.svg" type="image/svg+xml"
 title="W3C logo"><a href="http://www.w3.org/"><img
 alt="W3C logo" id="head-logo-fallback"
@@ -64,7 +71,86 @@ src="https://www.w3.org/Talks/Tools/Slidy2/graphics/w3c-logo-white.gif" /></a></
 </div>
 
 <div class="slide">
-<h1>Forms and Apps in RDF - 2</h1>
+<h1>What would that look like?</h1>
 
-<p>More tetx</p>
+<pre>
+  @@ add a really small form with  just a set of questions - name steing, children number, enrolled date, interested boolean.
+  Forms part of the talkshould be on the web, maybe in the talk itself/examples or in other places where we have persistent curated set of examples.
+</pre>
+</div>
+
+
+<div class="slide">
+<h1>Components are form Fields or structures</h1>
+<h3>Fields<h3>
+<ul>
+  <li>@@ add fileds
+  </li>
+</ul>
+<h3>Structures<h3>
+<ul>
+  <li>@@ add structures
+  </li>
+</ul>
+
+</div>
+
+<div class="slide">
+<h1>Single Line Text field</h1>
+<p>Form fields are set up to write linked data into Solid pods.</p>
+<p>Each one adds (typically) a new edge to the data graph at run time</p>
+<p>So e give the predicate which will be used in the instance of the field.</p>
+@@ example of turtle of form
+@@ example of ui result
+</div>
+
+<div class="slide">
+<h1>@@ slides for other fields</h1>
+</div>
+
+<div class="slide">
+<h1>Structures</h1>
+<p>Form componetnts which are structures combine
+  several fields</p>
+</div>
+
+<div class="slide">
+<h1>Group</h1>
+<p>A group is just set of components in order</p>
+@@ example, of form data and UI
+</div>
+
+<div class="slide">
+<h1>@@ Add examples for other structures</h1>
+</div>
+
+<div class="slide">
+<h1>Example: A contact card form</h1>
+@@ on the left the form data, on the right the form rendred
+</div>
+
+<div class="slide">
+<h1>Example: The profile editing form</h1>
+@@
+</div>
+
+<div class="slide">
+<h1>Going meta -- designing forms using the form of forms 1</h1>
+</div>
+<p>Here is a form for editing a form</p>
+<p>Users and developers should be able to design and adapt their forms</p>
+@@ The form of forms
+<div class="slide">
+<h1>Going meta -- designing forms using the form of forms 2</h1>
+@@ here we are editing the really small form we started with.
+</div>
+
+<div class="slide">
+<h1>Questions?</h1>
+</div>
+<div class="slide">
+<h1>@@ The Autocomplete field</h1>
+<p>This form field allows users to select things from lists in public databases, things like Languages, Organizations, Occupations, and Skills</p>
+<p>This is not covered in this talk, but a later one.</p>
+<p>(Ther is a @@ref blog about is which I could run though if interested)</p>
 </div>
