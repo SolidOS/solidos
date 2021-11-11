@@ -11,7 +11,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 
 - 🤔 [What is SolidOS](#-What-is-SolidOS)
     - [What you can do today with SolidOS](#What-you-can-do-today-with-SolidOS)
-    - [Current SolidOS vision, mission and roadmap](#Current-SolidOS-vision,-mission-and-roadmap)
+    - [SolidOS vision, mission and roadmap](#SolidOS-vision,-mission-and-roadmap)
 - 👩🏽‍💻 [SolidOS technical intro](#-solidos-technical-intro)
     - [SolidOS deeper technical topics](#solidos-deeper-technical-topics)
 - 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
@@ -40,7 +40,7 @@ If you are looking for something else, let us try and guide you:
 - to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
 - for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
 - for the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
-- for how the community works, go over to [solid process](https://github.com/solid/process);
+- for how the community works, go over to [Solid process](https://github.com/solid/process);
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
 - join an event over at [Solid events](https://solidproject.org/events);
 - read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
@@ -52,8 +52,7 @@ Further links:
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki);
 - report a problem for SolidOS by [creating a git issues](https://github.com/solid/solidos/issues);
 - have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories);
-- latests [Solid specification](https://github.com/solid/solid-spec) and [Specification overview](https://solid.github.io/specification/);
-- [Solid history](https://gitlab.com/solid.community/support/-/wikis/Home/solid.community#solidcommunity).
+- latests [Solid specification](https://github.com/solid/solid-spec) and [overview](https://solid.github.io/specification/).
 
 ## 🤔 What is SolidOS?
 ```
@@ -84,7 +83,7 @@ Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.
 - 🔧 create your own app [with Inrupt's Solid Reach SDK](https://docs.inrupt.com/developer-tools/javascript/react-sdk/application/) or [get inspired from a blog post](https://solidos.solidcommunity.net/public/2021/BuildingSolidAppsUsingPublicData-V3.html),
 - and more ([see SolidOS user guide](https://github.com/solid/userguide)).
 
-### Current SolidOS vision, mission and roadmap
+### SolidOS vision, mission and roadmap
 
 Read more about the current SolidOS 🌟 vision, goals 🎯 and 🚗 roadmap on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
@@ -126,7 +125,7 @@ In the above diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https
 
 ### SolidOS deeper technical topics
 
-For further details about each repository, please visit the according to GitHub repo linked above.
+For further details about each repository, please visit the according GitHub repo linked above.
 For SolidOS related code know-how, make sure to also visit [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) and the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 
 ## 👯 How the SolidOS team works
@@ -362,7 +361,7 @@ Don't hesitate to [chat with us on gitter](https://gitter.im/solid/home) or [rep
 - to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
 - for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
 - for the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
-- for how the community works, go over to [solid process](https://github.com/solid/process);
+- for how the community works, go over to [Solid process](https://github.com/solid/process);
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
 - join an event over at [Solid events](https://solidproject.org/events);
 - read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
