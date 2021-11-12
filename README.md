@@ -34,7 +34,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 - 📜 [License](#-License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
-For experimenting with SolidOS implementations try SolidOs on a [test-pod](https://test-pod/solidcommunity.net:8443/) (user and password: `test-pod`) or,
+For experimenting with SolidOS implementations try SolidOS on a [test-pod](https://test-pod/solidcommunity.net:8443/) (user and password: `test-pod`) or,
 - take a pod on https://solidcommunity.net or an [other provider](https://solidproject.org/users/get-a-pod#get-a-pod-from-a-pod-provider)
 - [SolidOS WebApp](https://solid.github.io/mashlib/dist/browse.htm); 
 - stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
@@ -145,7 +145,7 @@ We take minutes on our meetings. You can find them on the [SolidOS pod](https://
 
 ### SolidOS team instant chat
 
-In between team meetings, we avidly communicate over at the [gitter SolidOS channel](https://gitter.im/solid/solidos). Drop by to chat with us, ask questions or simply say hi. 
+In between team meetings, we avidly communicate over at the [gitter SolidOS channel](https://gitter.im/solid/solidos). Drop by to chat with us, ask questions or simply say 'Hi'.
 
 ### SolidOS team discussions
 
@@ -180,7 +180,7 @@ There is a process and code in place to help with SolidOS releases. However, we 
 
 #### Builds
 
-SolidOS contains different repositories (mashlib, solid-logic, solid-ui, solid-panes...). Each repository contains a `packacge.json` with `scripts`. Most repos contain a `npm run build` which is used to build the project. 
+SolidOS contains different repositories (mashlib, solid-logic, solid-ui, solid-panes...). Each repository contains a `package.json` with `scripts`. Most repos contain a `npm run build` which is used to build the project.
 
 #### GitHub CI
 
