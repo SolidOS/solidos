@@ -11,7 +11,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 
 - 🤔 [What is SolidOS](#-What-is-SolidOS)
     - [What you can do today with SolidOS](#What-you-can-do-today-with-SolidOS)
-    - [SolidOS vision, mission and roadmap](#SolidOS-vision,-mission-and-roadmap)
+    - [SolidOS vision, mission and roadmap](#solidos-vision-mission-and-roadmap)
 - 👩🏽‍💻 [SolidOS technical intro](#-solidos-technical-intro)
     - [SolidOS deeper technical topics](#solidos-deeper-technical-topics)
 - 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
@@ -51,6 +51,7 @@ If you are looking for something else, let us try and guide you:
 
 Further links:
 
+- [SolidOS explanation video](https://vimeo.com/643594034#t=9m39s);
 - [SolidOS goals & roadmap](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html)
 - [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs)
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki)
@@ -58,7 +59,6 @@ Further links:
 - have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories)
 - latest [Solid specification](https://github.com/solid/solid-spec) and [Specification overview](https://solid.github.io/specification/)
 - [Glossary](https://github.com/solid/solidcommunity.net/wiki/Glossary) of terms frequently used in Solid environment
-
 
 ## 🤔 What is SolidOS?
 ```
@@ -77,6 +77,8 @@ SolidOS is much more. SolidOS showcases the possibility of [Solid](https://solid
 - **avoidance of vendor lock-in to services** — easy moving to a different Pod or WebID provider
 - **data reuse between applications** — with help of data interoperability and data discoverability
 
+Watch a [SolidOS explanation video](https://vimeo.com/643594034#t=9m39s) as part of the [Solid World event series](https://solidproject.org/events).
+
 ### What you can do today with SolidOS
 
 Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.net/). SolidOS implemented features:
@@ -93,7 +95,12 @@ Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.
 
 Read more about the current SolidOS 🌟 vision, goals 🎯, and roadmap 🚗 on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
-**Note:** SolidOS used to be known as (default) Data Browser and, at times, as mashlib. Read a [forum post](https://forum.solidproject.org/t/suggestion-penny-should-be-made-the-default-data-browser/4593) about it.
+**Note:** SolidOS is also known under names like (default) Data Browser or Databrowser and at times as mashlib. It depends on which flavour of SolidOS you refer to: 
+- The SolidOS Databrowser Frontend - a frontend for Solid Servers like [solidcommunity.net](https://solidcommunity.net), represented by this codebase;
+- The SolidOS Databrowser Webapp - a stand-alone web app served from mashlib: [https://solid.github.io/mashlib/dist/browse.html](https://solid.github.io/mashlib/dist/browse.html);
+- The SolidOS Data-Kitchen - a stand-alone desktop app: [https://github.com/solid/data-kitchen](https://github.com/solid/data-kitchen);
+- The SolidOS software stack - a set of libraries that may be used independently of the databrowser, see next section.
+
 
 ## 👩🏽‍💻 SolidOS technical intro
 

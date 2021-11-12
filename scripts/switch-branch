@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+unset PREFIX npm_config_prefix
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+nvm use --delete-prefix
+
+FOLDER=$1
+
+echo ">>>>> SETTING UP PROJECT WITH NEW BRANCH $1"
+mkdir -p workspaces
+rm -rf workspaces/*
+
+declare -a packages=(
+  "rdflib"
+  "solid-ui"
+  "solid-panes"
+  "mashlib"
+  "node-solid-server")
+
+# Clone and npm install dependent packages
+for package in "${packages[@]}"
+do
+  echo ""
+  echo "# Installing $package"
+  npm run add $package
+done
+
+# checkout specified branch
+for package in "${packages[@]}"
+do
+  echo ""
+  echo "# Checking out $1 for $package"
+  pushd workspaces/$package
+  git checkout $1 || true
+  git pull
+  npm i
+  popd
+done
+
+# Build dependent packages, ensuring each is in proper Node environment via nvm
+for package in "${packages[@]}"
+do
+  echo ""
+  echo "# Building $package"
+  pushd workspaces/$package
+  nvm use --delete-prefix
+  npm run build
+  popd
+done
+
+for x in workspaces/* ; do ( echo "###### " $x; cd $x; git status)  done
+
+openssl req -outform PEM -keyform PEM -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout workspaces/privkey.pem -days 365 -out workspaces/fullchain.pem -subj "/C=RO/ST=Bucharest/L=Bucharest/O=IT/CN=localhost"
