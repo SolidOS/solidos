@@ -52,7 +52,7 @@ div.background {
   padding: 0 0 0 0.2em;
   margin: 0 0 0 0;
   border-width: 0;
-  background-color: #c28ec2; /* was #728ec2 */
+  background-color: #c28ec2; /* was #c28ec2 */
 }
 
 div.background img {
@@ -107,7 +107,7 @@ div.slide h1 a:active {
   margin-bottom: 0;
   margin-left: 0;
   margin-right: 1em;
-  background:  #728ec2;
+  background:  #c28ec2;
   border-width: 0;
   height: 3em;
   max-width: 3em;
@@ -126,7 +126,7 @@ div.slide h1 a:active {
   width: 4.8em;
   float: right;
   z-index: 2;
-  background: #728ec2;
+  background: #c28ec2;
 }
 
 #head-logo-fallback {
@@ -207,6 +207,8 @@ a {text-decoration: none}
 .navbar a:visited {color: yellow}
 .navbar a:active {color: red}
 .navbar a:hover {color: red}
+
+p { margin-left: 0.5em; margin-top: 0.5em; font-size: 150%; line-height: 120%; }
 
 ul { list-style-type: square; }
 ul ul { list-style-type: disc; }
@@ -442,7 +444,7 @@ div[class="footer"] {
 
 div.slide.cover {
   color: white;
-  background-color: #728ec2;
+  background-color: #c28ec2;
   padding-top: 0;
   padding-right: 0;
   padding-left: 3em;
