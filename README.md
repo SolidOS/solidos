@@ -34,10 +34,10 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 - 📜 [License](#-License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
-For experimenting with SolidOS implementations, try SolidOS on a [test-pod](https://test-pod/solidcommunity.net:8443/) (user and password: `test-pod`) or --
-- take a pod on https://solidcommunity.net or an [other provider](https://solidproject.org/users/get-a-pod#get-a-pod-from-a-pod-provider)
-- [SolidOS WebApp](https://solid.github.io/mashlib/dist/browse.htm)
-- stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen)
+For experimenting with SolidOS implementations, try SolidOS on a [test-pod](https://test-pod.solidcommunity.net:8443/) (user and password: `test-pod`) or --
+- take a pod on https://solidcommunity.net or [another provider](https://solidproject.org/users/get-a-pod#get-a-pod-from-a-pod-provider)
+- check out the [SolidOS WebApp](https://solid.github.io/mashlib/dist/browse.html)
+- use as a stand-alone desktop app with [Data-Kitchen](https://github.com/solid/data-kitchen)
 
 If you are looking for something else, let us try and guide you:
 
@@ -51,11 +51,11 @@ If you are looking for something else, let us try and guide you:
 
 Further links:
 
-- [SolidOS explanation video](https://vimeo.com/643594034#t=9m39s);
+- [SolidOS explanation video](https://vimeo.com/643594034#t=9m39s)
 - [SolidOS goals & roadmap](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html)
 - [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs)
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki)
-- report a problem with SolidOS by [creating a git issues](https://github.com/solid/solidos/issues)
+- report a problem with SolidOS by [creating a git issue](https://github.com/solid/solidos/issues)
 - have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories)
 - latest [Solid specification](https://github.com/solid/solid-spec) and [Specification overview](https://solid.github.io/specification/)
 - [Glossary](https://github.com/solid/solidcommunity.net/wiki/Glossary) of terms frequently used in Solid environment
@@ -206,10 +206,6 @@ Following best practices, we deploy the new version on the [testserver](https://
 
 #### Deployment on solidcommunity.net server
 
-```
-More information can be also found over at the [server, solidcommunity.net, repo](https://github.com/solid/solidcommunity.net/wiki).
-```
-
 Before you start, make sure you have access to all the GitHub repos and all the npm packages. Using Ubuntu or alike, ssh into server as root.
 
 ```sh
@@ -245,6 +241,8 @@ npm run install-nvm
 npm run release
 ```
 
+More information can be also found over at the [server, solidcommunity.net, repo](https://github.com/solid/solidcommunity.net/wiki).
+
 ### For anyone who likes writing text
 
 SolidOS has quite some documentation around it that needs constant improvement. 
@@ -259,9 +257,9 @@ We are open to suggestions to improve these resources from structure, translatio
 
 [Solid-ui](https://github.com/solid/solid-ui) does the heavy lifting to all things UI for SolidOS. 
 Currently, we use [Storybook](https://storybook.js.org/) to help develop components independent of other panes. Make sure to visit the [solid-ui readme](https://github.com/solid/solid-ui) for information on how to set it up and get started.
-There is a second option to run Solid-ui on its own. Read about it at [Debugging solid-ui using Solid Pane Tester](#Debugging-solid-ui-using-Solid-Pane-Tester).
+There is a second option to run Solid-ui on its own. Read about it at [Debugging solid-ui using Solid Pane Tester](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#debugging-solid-ui-using-solid-pane-tester).
 
-You can also find the current issues over at the [solid-ui issues](https://github.com/solid/solid-ui/issues). And some more information over at the [developer guide](https://github.com/solid/solidos/wiki/Solid-UI-tips).
+You can also find the current issues over at the [solid-ui issues](https://github.com/solid/solid-ui/issues). And some more information over at the [developer guide](https://github.com/solid/solidos/wiki/2.-Solid-UI-know-how).
 
 SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe you are the one who can help out?
 
@@ -309,11 +307,11 @@ Whenever you need to login again, remember to put `https://localhost:8443/` in t
 
 ### How to make changes in repos
 
-As a newcomer, you do not have direct access to the repos. In this case, you can still contribute through Pull Requests (PRs). First, navigate to the repo you want to work on and create a fork. Make your changes on your fork and then create a PR. We will be notified and you will receive feedback on your changes. For more details on how to do this, visit the GitHub documentation which explains it much better than we ever could.
+As a newcomer, you do not have direct access to the repos. In this case, you can still contribute through Pull Requests (PRs). First, navigate to the repo you want to work on and create a fork. Make your changes on your fork and then create a PR. We will be notified and you will receive feedback on your changes. For more details on how to do this, visit [the GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) which explains it much better than we ever could.
 
 If you do have direct access to the repos, it is usual to create a branch for your changes and then a PR. A PR helps you receive feedback and lets us know easily about any changes to the code. Read more about Pull Requests over at the GitHub documentation.
 
-Make sure to read more about working with branches and missing repos over at the [SolidOS developer guide](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#dealing-with-github-branches)
+Make sure to read more about working with branches and missing repos over at the [SolidOS developer guide](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#dealing-with-github-branches).
 
 ### Developing SolidOS code
 
@@ -358,7 +356,7 @@ Read about in detail how each pane can be debugged over at the [Solid developer 
 Most of the modules in SolidOS have a `test` script which can be called with `npm run test`. 
 In some cases the tests run an [eslint](https://eslint.org/) command `eslint 'src/**/*.ts'` or a [jest](https://jestjs.io/) test or both. 
 
-Jets can also offer information related to test coverage by simply runnig `npm run coverage`. 
+Jest can also offer information related to test coverage by simply runnig `npm run coverage`. 
 
 ### SolidOS build and release
 
@@ -376,7 +374,7 @@ Don't hesitate to [chat with us on gitter](https://gitter.im/solid/home) or [rep
 
 - for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
 - to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
-- for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
+- for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and the [SolidOS project Pod](https://solidos.solidcommunity.net/);
 - for the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
 - for how the community works, go over to [Solid process](https://github.com/solid/process);
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
