@@ -18,7 +18,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
     - [SolidOS team meetings](#SolidOS-team-meetings)
     - [SolidOS team instant chat](#SolidOS-team-instant-chat)
     - [SolidOS team discussions](#SolidOS-team-discussions)
-    - [SolidOS tasks](#SolidOS-tasks)  
+    - [SolidOS tasks](#SolidOS-tasks)
 - 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
     - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
     - [For anyone who likes builds or releases or GitHub CI or deployments](#for-anyone-who-likes-builds-or-github-ci-or-releases-or-deployments)
@@ -95,7 +95,7 @@ Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.
 
 Read more about the current SolidOS 🌟 vision, goals 🎯, and roadmap 🚗 on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
-**Note:** SolidOS is also known under names like (default) Data Browser or Databrowser and at times as mashlib. It depends on which flavour of SolidOS you refer to: 
+**Note:** SolidOS is also known under names like (default) Data Browser or Databrowser and at times as mashlib. It depends on which flavour of SolidOS you refer to:
 - The SolidOS Databrowser Frontend - a frontend for Solid Servers like [solidcommunity.net](https://solidcommunity.net), represented by this codebase;
 - The SolidOS Databrowser Webapp - a stand-alone web app served from mashlib: [https://solid.github.io/mashlib/dist/browse.html](https://solid.github.io/mashlib/dist/browse.html);
 - The SolidOS Data-Kitchen - a stand-alone desktop app: [https://github.com/solid/data-kitchen](https://github.com/solid/data-kitchen);
@@ -106,10 +106,10 @@ Read more about the current SolidOS 🌟 vision, goals 🎯, and roadmap 🚗 on
 
 The SolidOS stack contains —
 - [Node.js](https://nodejs.dev/)
-- [Javascript](https://www.w3schools.com/js/) 
+- [Javascript](https://www.w3schools.com/js/)
 - [Typescript](https://www.typescriptlang.org/)
 - [npm](https://www.npmjs.com/)
-- [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) 
+- [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm)
 - [Lerna](https://lerna.js.org/)
 - [GitHub CI](https://docs.github.com/en/actions/automating-builds-and-tests/about-continuous-integration)
 - [bash scripts](https://www.gnu.org/software/bash/manual/html_node/index.html)
@@ -121,9 +121,9 @@ It also makes use of —
 - [Cypress](https://www.cypress.io/)
 - [Lint](https://en.wikipedia.org/wiki/Lint_%28software%29)
 - [Babel](https://babeljs.io/)
-- [Travis](https://travis-ci.org/) 
+- [Travis](https://travis-ci.org/)
 
-Let's take a look at an architecture diagram of SolidOS: 
+Let's take a look at an architecture diagram of SolidOS:
 ![SolidOS architectural overview](documentation/architecture.svg)
 
 As you can see, SolidOS is composed of several repositories:
@@ -144,13 +144,13 @@ For SolidOS related code know-how, make sure to also visit [SolidOS FAQs](https:
 
 ## 👯 How the SolidOS team works
 
-First and foremost who are the contributors of SolidOS? 
+First and foremost who are the contributors of SolidOS?
 
 The SolidOS codebase has a long history and there have been a lot of contributors over the years (see: [GitHub contributors](https://github.com/solid/solidos/graphs/contributors)). The most active team members are mentioned in the SolidOS Team on the [SolidOS Pod Contacts](https://solidos.solidcommunity.net/Contacts/).
 
 ### SolidOS team meetings
 
-The SolidOS team meets every week for a 1h touchdown. We discuss what was done over the past week, what needs to be done next, and delegation of tasks. Find the meeting time and link on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html). 
+The SolidOS team meets every week for a 1h touchdown. We discuss what was done over the past week, what needs to be done next, and delegation of tasks. Find the meeting time and link on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html).
 
 We take minutes on our meetings. You can find them on the [SolidOS pod](https://solidos.solidcommunity.net/public/SolidOS%20team%20meetings/).
 
@@ -160,13 +160,13 @@ In between team meetings, we avidly communicate over at the [gitter SolidOS chan
 
 ### SolidOS team discussions
 
-Sometimes some ideas need an incubation period and further discussion. We make use of [GitHub discussions](https://github.com/solid/solidos/discussions) for that. 
+Sometimes some ideas need an incubation period and further discussion. We make use of [GitHub discussions](https://github.com/solid/solidos/discussions) for that.
 
 ### SolidOS tasks
 
 For daily tasks we have a [task overview](https://github.com/orgs/solid/projects/14/views/4) and an overview of needed PRs at [GitHub prioritization board](https://github.com/solid/solidos/projects/1),  and a new one over at ???
 
-For a longer term roadmap, we use a Solid [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban. 
+For a longer term roadmap, we use a Solid [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban.
 
 ### Additional useful information
 
@@ -178,9 +178,9 @@ For a longer term roadmap, we use a Solid [task manager](https://solidos.solidco
 
 ## 🙋🏽‍ How you can contribute and help SolidOS thrive
 
-The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code, to text, to style. We are looking for UX designers, technical writers, frontend developers, backend developers, DevOps. Don't let these titles intimidate you; they are just some examples. You can find your own place no matter the level of knowledge you are at. 
+The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code, to text, to style. We are looking for UX designers, technical writers, frontend developers, backend developers, DevOps. Don't let these titles intimidate you; they are just some examples. You can find your own place no matter the level of knowledge you are at.
 
-To check possible tasks you can help with, the best is to visit us on a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [instant chat](https://gitter.im/solid/solidos) and say 'Hi'. We will try our best to pair you up with a buddy to help you to get started. 
+To check possible tasks you can help with, the best is to visit us on a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [instant chat](https://gitter.im/solid/solidos) and say 'Hi'. We will try our best to pair you up with a buddy to help you to get started.
 
 ### For anyone up to writing some code
 
@@ -188,7 +188,7 @@ We keep track of stuff to do in Git issues of each repo. [Here](https://github.c
 
 ### For anyone who likes builds or GitHub CI or releases or deployments
 
-There is a process and code in place to help with SolidOS releases. However, we would like to get better and automatize as much as possible. We describe next each part. 
+There is a process and code in place to help with SolidOS releases. However, we would like to get better and automatize as much as possible. We describe next each part.
 
 #### Builds
 
@@ -196,7 +196,7 @@ SolidOS contains different repositories (mashlib, solid-logic, solid-ui, solid-p
 
 #### GitHub CI
 
-When you push or PR a change to a repo, usually a git CI is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solid/solid-panes/blob/main/.github/workflows/ci.yml). This CI YML can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails, one should take care to fix it. 
+When you push or PR a change to a repo, usually a git CI is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solid/solid-panes/blob/main/.github/workflows/ci.yml). This CI YML can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails, one should take care to fix it.
 
 #### Testing & releasing a new SolidOS version
 
@@ -245,7 +245,7 @@ More information can be also found over at the [server, solidcommunity.net, repo
 
 ### For anyone who likes writing text
 
-SolidOS has quite some documentation around it that needs constant improvement. 
+SolidOS has quite some documentation around it that needs constant improvement.
 Places to start:
 - for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
 - [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs);
@@ -255,7 +255,7 @@ We are open to suggestions to improve these resources from structure, translatio
 
 ### For anyone with an eye for design
 
-[Solid-ui](https://github.com/solid/solid-ui) does the heavy lifting to all things UI for SolidOS. 
+[Solid-ui](https://github.com/solid/solid-ui) does the heavy lifting to all things UI for SolidOS.
 Currently, we use [Storybook](https://storybook.js.org/) to help develop components independent of other panes. Make sure to visit the [solid-ui readme](https://github.com/solid/solid-ui) for information on how to set it up and get started.
 There is a second option to run Solid-ui on its own. Read about it at [Debugging solid-ui using Solid Pane Tester](https://github.com/solid/solidos/wiki/1.-SolidOS-know-how#debugging-solid-ui-using-solid-pane-tester).
 
@@ -267,7 +267,7 @@ SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe 
 
 ### SolidOS first time setup of code
 
-Make sure you have the needed environment: [nvm for SolidOS](https://github.com/solid/solidos/wiki/FAQs#setting-up-nvm-to-develop-for-solidos), npm, node. If you have problems with node versions on the Apple M1 chip, in the [FAQ](https://github.com/solid/solidos/wiki/FAQs#how-to-run-solidos-on-apple-m1-chip-160921) you can find a solution. 
+Make sure you have the needed environment: [nvm for SolidOS](https://github.com/solid/solidos/wiki/FAQs#setting-up-nvm-to-develop-for-solidos), npm, node. If you have problems with node versions on the Apple M1 chip, in the [FAQ](https://github.com/solid/solidos/wiki/FAQs#how-to-run-solidos-on-apple-m1-chip-160921) you can find a solution.
 
 ```
 git clone https://github.com/solid/solidos
@@ -300,10 +300,10 @@ If you get into problems check out [SolidOS FAQs](https://github.com/solid/solid
 
 ### How to use SolidOS on localhost
 
-Once you managed to get SolidOS running locally (`npm start`) you can see it over at `https://localhost:8443/`. If you encounter any problems make sure to check the [FAQ page](https://github.com/solid/solidos/wiki/FAQs#unauthorised-error-when-you-click-login). 
+Once you managed to get SolidOS running locally (`npm start`) you can see it over at `https://localhost:8443/`. If you encounter any problems make sure to check the [FAQ page](https://github.com/solid/solidos/wiki/FAQs#unauthorised-error-when-you-click-login).
 
-To work on localhost, first you need to register a local user, so hit `register` on `https://localhost:8443/`. After you have created your user, you can navigate to your new pod over at `https://username.localhost:8443/`. 
-Whenever you need to login again, remember to put `https://localhost:8443/` in the `Enter the URL of your identity provider:` input field. Otherwise you will be logged in with a different provider and redirected out of the localhost environment. 
+To work on localhost, first you need to register a local user, so hit `register` on `https://localhost:8443/`. After you have created your user, you can navigate to your new pod over at `https://username.localhost:8443/`.
+Whenever you need to login again, remember to put `https://localhost:8443/` in the `Enter the URL of your identity provider:` input field. Otherwise you will be logged in with a different provider and redirected out of the localhost environment.
 
 ### How to make changes in repos
 
@@ -315,7 +315,7 @@ Make sure to read more about working with branches and missing repos over at the
 
 ### Developing SolidOS code
 
-Very likely you will want to make changes in the dependent packages/repos of SolidOS (mashlib, solid-logic, solid-ui, solid-panes...). 
+Very likely you will want to make changes in the dependent packages/repos of SolidOS (mashlib, solid-logic, solid-ui, solid-panes...).
 
 You have two choices:
 - [work directly in SolidOS](#Work-directly-in-SolidOS)
@@ -323,7 +323,7 @@ You have two choices:
 
 #### Work directly in SolidOS
 
-The `npm start` script contains a lerna command: `npx lerna bootstrap --force-local` which makes sure that packages are bootstrapped/taken from your local machine even if versions don't match. 
+The `npm start` script contains a lerna command: `npx lerna bootstrap --force-local` which makes sure that packages are bootstrapped/taken from your local machine even if versions don't match.
 
 If you need to bootstrap any packages again (e.g. you've run `npm install` in any of the projects) and don't want to stop the server, you can do `npx lerna bootstrap --force-local` only. You do not need to stop the server and start it again (`npm start`).
 
@@ -331,7 +331,7 @@ Another option is to start SolidOS with the `npm run watch` script. This trigger
 
 The output for the watch-script can be a bit difficult to interpret since all output for mashlib, solid-ui, and solid-panes are presented in the same window. You might also consider having each watch scripts running in a separate terminal window. The downside of using this approach is that at its worst, you'll have five separate watch-scripts running (in addition to the terminal window where you started the server) when working on a pane that needs to pick up a change in rdflib. If you find this unwieldy for your setup, or require too many resources, you should consider to [work in the according dependent package](#Work-in-the-according-dependent-package).
 
-#### Work in the according dependent package 
+#### Work in the according dependent package
 
 Any changes you do in a project need to be committed to their original repos and eventually be pushed to NPM manually (this is the part of Lerna that we do not use for this project).
 
@@ -353,10 +353,10 @@ Read about in detail how each pane can be debugged over at the [Solid developer 
 
 ### Testing SolidOS code
 
-Most of the modules in SolidOS have a `test` script which can be called with `npm run test`. 
-In some cases the tests run an [eslint](https://eslint.org/) command `eslint 'src/**/*.ts'` or a [jest](https://jestjs.io/) test or both. 
+Most of the modules in SolidOS have a `test` script which can be called with `npm run test`.
+In some cases the tests run an [eslint](https://eslint.org/) command `eslint 'src/**/*.ts'` or a [jest](https://jestjs.io/) test or both.
 
-Jest can also offer information related to test coverage by simply runnig `npm run coverage`. 
+Jest can also offer information related to test coverage by simply runnig `npm run coverage`.
 
 ### SolidOS build and release
 
