@@ -34,7 +34,9 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 - 📜 [License](#-License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
-For experimenting with SolidOS implementations, try SolidOS on a [test-pod](https://test-pod.solidcommunity.net:8443/) (user and password: `test-pod`) or —
+For experimenting with SolidOS implementations, you can:
+
+- try SolidOS on a [test-pod](https://test-pod.solidcommunity.net:8443/) (provider: `https://solidcommunity.net:8443`, user and password: `test-pod`)
 - take a pod on https://solidcommunity.net or [another provider](https://solidproject.org/users/get-a-pod#get-a-pod-from-a-pod-provider)
 - check out the [SolidOS WebApp](https://solid.github.io/mashlib/dist/browse.html)
 - use as a stand-alone desktop app with [Data-Kitchen](https://github.com/solid/data-kitchen)
