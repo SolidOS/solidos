@@ -34,7 +34,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 - 📜 [License](#-License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
-For experimenting with SolidOS implementations, try SolidOS on a [test-pod](https://test-pod.solidcommunity.net:8443/) (user and password: `test-pod`) or --
+For experimenting with SolidOS implementations, try SolidOS on a [test-pod](https://test-pod.solidcommunity.net:8443/) (user and password: `test-pod`) or —
 - take a pod on https://solidcommunity.net or [another provider](https://solidproject.org/users/get-a-pod#get-a-pod-from-a-pod-provider)
 - check out the [SolidOS WebApp](https://solid.github.io/mashlib/dist/browse.html)
 - use as a stand-alone desktop app with [Data-Kitchen](https://github.com/solid/data-kitchen)
@@ -206,7 +206,7 @@ Following best practices, we deploy the new version on the [testserver](https://
 
 #### Deployment on solidcommunity.net server
 
-Before you start, make sure you have access to all the GitHub repos and all the npm packages. Using Ubuntu or alike, ssh into server as root.
+Before you start, make sure you have access to all the GitHub repos and all the `npm` packages. Using Ubuntu or other Unix-like OS, `ssh` into the server as `root`.
 
 ```sh
 tmux new
@@ -307,7 +307,7 @@ Whenever you need to login again, remember to put `https://localhost:8443/` in t
 
 ### How to make changes in repos
 
-As a newcomer, you do not have direct access to the repos. In this case, you can still contribute through Pull Requests (PRs). First, navigate to the repo you want to work on and create a fork. Make your changes on your fork and then create a PR. We will be notified and you will receive feedback on your changes. For more details on how to do this, visit [the GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) which explains it much better than we ever could.
+As a newcomer, you do not have direct access to the repos, but you can still contribute through Pull Requests (PRs). First, navigate to the repo you want to work on, and create a fork. Make your changes on your fork, and then create a PR. We will be notified, and you will receive feedback on your changes. For more details on how to do this, visit [the GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request), which explains it much better than we ever could.
 
 If you do have direct access to the repos, it is usual to create a branch for your changes and then a PR. A PR helps you receive feedback and lets us know easily about any changes to the code. Read more about Pull Requests over at the GitHub documentation.
 
@@ -372,11 +372,11 @@ Don't hesitate to [chat with us on gitter](https://gitter.im/solid/home) or [rep
 
 ## If you are looking for something else, let us try and guide you:
 
-- for learning about Solid read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org);
-- to try out Solid head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started);
-- for how SolidOS works [visit the user guide](https://github.com/solid/userguide) and the [SolidOS project Pod](https://solidos.solidcommunity.net/);
-- for the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen);
-- for how the community works, go over to [Solid process](https://github.com/solid/process);
-- chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home);
-- join an event over at [Solid events](https://solidproject.org/events);
-- read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
+- to learn about Solid, read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org)
+- to try out Solid, head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started)
+- to learn how SolidOS works, [visit the user guide](https://github.com/solid/userguide) and the [SolidOS project Pod](https://solidos.solidcommunity.net/)
+- to try the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen)
+- to learn how the community works, go over to [Solid process](https://github.com/solid/process)
+- to chat with others about Solid, use the [forum](https://forum.solidproject.org/) or [instant chats](https://gitter.im/solid/home)
+- join an event over at [Solid events](https://solidproject.org/events)
+- read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md)
