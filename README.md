@@ -59,7 +59,7 @@ Further links:
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki)
 - report a problem with SolidOS by [creating a git issue](https://github.com/solid/solidos/issues)
 - have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories)
-- latest [Solid specification](https://github.com/solid/solid-spec) and [Specification overview](https://solid.github.io/specification/)
+- latest [Solid specification](https://solidproject.org/TR/protocol) and [Solid specification repo](https://solid.github.io/specification/)
 - [Glossary](https://github.com/solid/solidcommunity.net/wiki/Glossary) of terms frequently used in Solid environment
 
 ## 🤔 What is SolidOS?
