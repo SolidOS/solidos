@@ -48,7 +48,7 @@ If you are looking for something else, let us try and guide you:
 - for how SolidOS works, [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/)
 - for how the community works, go over to [Solid process](https://github.com/solid/process)
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home)
-- join an event over at [Solid events](https://solidproject.org/events) or register to the [Solid newsletter](https://solidproject.org/newsletter) not to miss any news
+- join an event over at [Solid events](https://solidproject.org/events) or sign up for the [Solid newsletter](https://solidproject.org/newsletter) to not miss any news
 - read the Solid community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md)
 
 Further links:
