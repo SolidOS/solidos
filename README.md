@@ -175,7 +175,7 @@ For a longer term roadmap, we use a Solid [task manager](https://solidos.solidco
 - Find answers over at [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) or at the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 - For an overall description of how the whole ecosystem works head over to [solid process](https://github.com/solid/process).
 - Make sure to get into discussions on the [forum](https://forum.solidproject.org/) and on Solid [instant chat channels](https://gitter.im/solid/home).
-- Join an event over at [Solid events](https://solidproject.org/events) or register to the [Solid newsletter](https://solidproject.org/newsletter) not to miss any news.
+- Join an event over at [Solid events](https://solidproject.org/events) or sign up for the [Solid newsletter](https://solidproject.org/newsletter) to not miss any news
 - Read the community code of conduct [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
 
 ## 🙋🏽‍ How you can contribute and help SolidOS thrive
