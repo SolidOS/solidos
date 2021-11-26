@@ -166,7 +166,7 @@ Sometimes some ideas need an incubation period and further discussion. We make u
 
 ### SolidOS tasks
 
-For daily tasks we have a [task overview](https://github.com/orgs/solid/projects/14/views/4) and an overview of needed PRs at [GitHub prioritization board](https://github.com/solid/solidos/projects/1).
+For daily tasks, we have a [task overview](https://github.com/orgs/solid/projects/14/views/4), as well as a [GitHub prioritization board](https://github.com/solid/solidos/projects/1) with an overview of needed PRs.
 
 For a longer term roadmap, we use a Solid [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban.
 
