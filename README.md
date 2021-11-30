@@ -48,7 +48,7 @@ If you are looking for something else, let us try and guide you:
 - for how SolidOS works, [visit the user guide](https://github.com/solid/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/)
 - for how the community works, go over to [Solid process](https://github.com/solid/process)
 - chat with others about Solid on the [forum](https://forum.solidproject.org/) and on [instant chats](https://gitter.im/solid/home)
-- join an event over at [Solid events](https://solidproject.org/events)
+- join an event over at [Solid events](https://solidproject.org/events) or sign up for the [Solid newsletter](https://solidproject.org/newsletter) to not miss any news
 - read the Solid community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md)
 
 Further links:
@@ -59,7 +59,7 @@ Further links:
 - [SolidOS developer guide](https://github.com/solid/solidos/wiki)
 - report a problem with SolidOS by [creating a git issue](https://github.com/solid/solidos/issues)
 - have a new idea? Create a Solid [user story/new idea ticket](https://github.com/solid/user-stories)
-- latest [Solid specification](https://github.com/solid/solid-spec) and [Specification overview](https://solid.github.io/specification/)
+- check out the in-progress [Solid specification](https://solidproject.org/TR/protocol) and in-progress [Solid specification repo](https://solid.github.io/specification/). Find the previous specifications, now outdated but still in use if you work with NSS: [https://github.com/solid/solid-spec](https://github.com/solid/solid-spec).
 - [Glossary](https://github.com/solid/solidcommunity.net/wiki/Glossary) of terms frequently used in Solid environment
 
 ## 🤔 What is SolidOS?
@@ -121,7 +121,7 @@ It also makes use of —
 - [Webpack](https://webpack.js.org/)
 - [Jest](https://jestjs.io/)
 - [Cypress](https://www.cypress.io/)
-- [Lint](https://en.wikipedia.org/wiki/Lint_%28software%29)
+- [ESLint](https://eslint.org/)
 - [Babel](https://babeljs.io/)
 - [Travis](https://travis-ci.org/)
 
@@ -166,7 +166,7 @@ Sometimes some ideas need an incubation period and further discussion. We make u
 
 ### SolidOS tasks
 
-For daily tasks we have a [task overview](https://github.com/orgs/solid/projects/14/views/4) and an overview of needed PRs at [GitHub prioritization board](https://github.com/solid/solidos/projects/1),  and a new one over at ???
+For daily tasks, we have a [task overview](https://github.com/orgs/solid/projects/14/views/4), as well as a [GitHub prioritization board](https://github.com/solid/solidos/projects/1) with an overview of needed PRs.
 
 For a longer term roadmap, we use a Solid [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban.
 
@@ -175,7 +175,7 @@ For a longer term roadmap, we use a Solid [task manager](https://solidos.solidco
 - Find answers over at [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) or at the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
 - For an overall description of how the whole ecosystem works head over to [solid process](https://github.com/solid/process).
 - Make sure to get into discussions on the [forum](https://forum.solidproject.org/) and on Solid [instant chat channels](https://gitter.im/solid/home).
-- Join an event over at [Solid events](https://solidproject.org/events).
+- Join an event over at [Solid events](https://solidproject.org/events) or sign up for the [Solid newsletter](https://solidproject.org/newsletter) to not miss any news
 - Read the community code of conduct [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md).
 
 ## 🙋🏽‍ How you can contribute and help SolidOS thrive
@@ -356,7 +356,7 @@ Read about in detail how each pane can be debugged over at the [Solid developer 
 ### Testing SolidOS code
 
 Most of the modules in SolidOS have a `test` script which can be called with `npm run test`.
-In some cases the tests run an [eslint](https://eslint.org/) command `eslint 'src/**/*.ts'` or a [jest](https://jestjs.io/) test or both.
+In some cases the tests run an [ESLint](https://eslint.org/) command `eslint 'src/**/*.ts'` or a [jest](https://jestjs.io/) test or both.
 
 Jest can also offer information related to test coverage by simply runnig `npm run coverage`.
 
@@ -371,14 +371,3 @@ The SolidOS code is available under the MIT License.
 ## 🎤 Feedback and questions
 
 Don't hesitate to [chat with us on gitter](https://gitter.im/solid/home) or [report a bug](https://github.com/solid/solidos/issues).
-
-## If you are looking for something else, let us try and guide you:
-
-- to learn about Solid, read [about Solid](https://github.com/solid/solid) and visit [solidproject.org](https://solidproject.org)
-- to try out Solid, head over to [getting started with Solid](https://solidproject.org/developers/tutorials/getting-started)
-- to learn how SolidOS works, [visit the user guide](https://github.com/solid/userguide) and the [SolidOS project Pod](https://solidos.solidcommunity.net/)
-- to try the SolidOS stand-alone desktop app, visit [Data-Kitchen](https://github.com/solid/data-kitchen)
-- to learn how the community works, go over to [Solid process](https://github.com/solid/process)
-- to chat with others about Solid, use the [forum](https://forum.solidproject.org/) or [instant chats](https://gitter.im/solid/home)
-- join an event over at [Solid events](https://solidproject.org/events)
-- read the community code of conduct at [Solid CoC](https://github.com/solid/process/blob/main/code-of-conduct.md)
