@@ -13,11 +13,16 @@
     "setup": "scripts/install && scripts/reset",
     "release": "/bin/bash scripts/release",
     "bootstrap": "lerna bootstrap --force-local --scope ",
-    "switchToBranch": "scripts/delete && scripts/switch-branch"
+    "switchToBranch": "scripts/delete && scripts/switch-branch",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:test": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test start https-get://localhost:8443 cy:run"
   },
   "devDependencies": {
     "concurrently": "5.3.0",
-    "lerna": "3.22.1"
+    "cypress": "^8.6.0",
+    "lerna": "3.22.1",
+    "start-server-and-test": "^1.14.0"
   },
   "dependencies": {
     "source-pane": "^2.2.11"

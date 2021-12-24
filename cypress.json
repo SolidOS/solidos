@@ -1,0 +1,7 @@
+{
+    "baseUrl": "https://localhost:8443",
+    "chromeWebSecurity": false,
+    "video": false,
+    "pluginsFile": false,
+    "fixturesFolder": false
+}
