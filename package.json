@@ -20,6 +20,6 @@
     "lerna": "3.22.1"
   },
   "dependencies": {
-    "source-pane": "^2.2.11"
+    "rdflib": "^2.2.15-bbf45639"
   }
 }
