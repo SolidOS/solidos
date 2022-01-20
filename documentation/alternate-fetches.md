@@ -33,15 +33,15 @@ Within the SolidOS stack, please do not ever use window.fetch or cross-fetch unl
 
 This example creates a trivial fetch method that does nothing but return a new Response object, which, by default has a status of 200.  We then try to fetch a non-existant URI.  The default fetch gives 404 and the altered fetch 200 for the same URI.  This proves we have redefined the fetch.
 ```
-const myFetchMethod = async ()=> { return new Response(); }                            
-                                                                                       
 const $rdf = require('rdflib');                                                        
+const kb = $rdf.graph();                                                               
 const uri = 'https://example.com/fribble-frabble';                                     
+
+const myFetchMethod = async ()=> { return new Response(); }                            
+const defaultFetcher = $rdf.fetcher(kb);                                             
+const alteredFetcher = $rdf.fetcher(kb,{fetch:myFetchMethod});                       
                                                                                        
 (async()=>{                                                                            
-  let kb = $rdf.graph();                                                               
-  const defaultFetcher = $rdf.fetcher(kb);                                             
-  const alteredFetcher = $rdf.fetcher(kb,{fetch:myFetchMethod});                       
   console.log('Default fetch status : '+ await getStatus(uri,defaultFetcher));         
   console.log('Altered fetch status : '+ await getStatus(uri,alteredFetcher));         
 })();                                                                                  
