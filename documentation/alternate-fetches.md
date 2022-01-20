@@ -1,6 +1,6 @@
 # Redefining the fetch method in rdflib and SolidOS
 
-An app may wish to redefine the method rdflib and SolidOS use to read and write data.  One reason is to handle protocols other than https:, e.g. file: or browser:.  Another reason would be local-first replicating fetches.  Once rdflib's fetch is redefined, the new fetch will be used by all fetcher methods (load, webOperation, update, etc). 
+An app may wish to redefine the method rdflib and SolidOS use to read and write data.  One reason is to handle protocols other than https:, e.g. file: or browser:.  Another reason would be local-first replicating fetches.  Once rdflib's fetch is redefined, the new fetch will be used by all fetcher and updateManager methods (load, webOperation, update, etc). 
 
 ## An app using *rdflib*
 Can override the fetch globally 
