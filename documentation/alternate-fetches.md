@@ -10,7 +10,7 @@ Can override the fetch globally
 ```
 Or modify a specific fetcher
 ```
-    myFetcher = $rdf.fetcher(kb,{fetch:myFetchMethod})
+    myFetcher = $rdf.fetcher(store,{fetch:myFetchMethod})
 ```
 
 ## An app using mashlib or panes
@@ -21,25 +21,25 @@ Can override the fetch globally
 
 ## Additional details
 
-Please keep in mind that rdflib's fetcher object does a lot more than simply fetch a document, it loads the headers and other details into the store and performs various checks.  Redefining the *fetch* only redfines the actual reading and writing, all other parts of what the fetcher does remain in place.  This includes checking authentication status when needed.  Redefining the fetch has no necessary impact on the authentication process, to alter that see [the documentation on private resources in SolidOS](https://github.com/solid/solidos/blob/main/documentation/Using_Private_Resources_In_SolidOS.md).  
+Please keep in mind that rdflib's fetcher object does a lot more than simply fetch a document, it loads the headers and other details into the store and performs various checks.  Redefining the *fetch* only redefines the actual reading and writing, all other parts of what the fetcher does remain in place.  This includes checking authentication status when needed.  Redefining the fetch has no necessary impact on the authentication process, to alter that see [the documentation on private resources in SolidOS](https://github.com/solid/solidos/blob/main/documentation/Using_Private_Resources_In_SolidOS.md).  
 
-The fetcher object's other activities mean that the fetch you redfine must conform to the Solid REST protocols - content-types are required for methods that write, wac-allow headers are expected in responses, etc.  Without these, you can do a simple fetcher.webOperation but fetcher.load and updateManager.update will fail somewhere within rdflib or SolidOS.  The [Solid Rest](https://github.com/solid/solid-rest) library provides an in-client version of REST that reads incoming headers and sends back appropriate Solid REST responses.  An app wishing to redefine the fetch will need to use Solid Rest or an equivalent layer that interprets incoming requests and formulates outgoing responses.
+The fetcher object's other activities mean that the fetch you redefine must conform to the Solid REST Protocol - content-types are required for methods that write, wac-allow headers are expected in responses, etc.  Without these, you can do a simple fetcher.webOperation but fetcher.load and updateManager.update will fail somewhere within rdflib or SolidOS.  The [Solid Rest](https://github.com/solid/solid-rest) library provides an in-client version of REST that reads incoming headers and sends back appropriate Solid REST responses.  An app wishing to redefine the fetch will need to use Solid Rest or an equivalent layer that interprets incoming requests and formulates outgoing responses.
 
 ## Note for SolidOS developers
 
-Within the SolidOS stack, please do not ever use window.fetch or cross-fetch unless you are certain it will not interfere with user-defined fetches.  Instead use `fetcher.webOperation()` which will respect any user defined fetch and fallback to cross-fetch or Inrupt fetch when needed.
+Within the SolidOS stack, please do not ever use `window.fetch` or `cross-fetch` unless you are certain it will not interfere with user-defined fetches.  Instead use `fetcher.webOperation()` which will respect any user defined fetch and fallback to cross-fetch or Inrupt authenticated fetch when needed.
 
 ## A code example
 
 This example creates a trivial fetch method that does nothing but return a new Response object, which, by default has a status of 200.  We then try to fetch a non-existant URI.  The default fetch gives 404 and the altered fetch 200 for the same URI.  This proves we have redefined the fetch.
 ```
 const $rdf = require('rdflib');                                                        
-const kb = $rdf.graph();                                                               
+const store = $rdf.graph();                                                               
 const uri = 'https://example.com/fribble-frabble';                                     
 
 const myFetchMethod = async ()=> { return new Response(); }                            
-const defaultFetcher = $rdf.fetcher(kb);                                             
-const alteredFetcher = $rdf.fetcher(kb,{fetch:myFetchMethod});                       
+const defaultFetcher = $rdf.fetcher(store);                                             
+const alteredFetcher = $rdf.fetcher(store,{fetch:myFetchMethod});                       
                                                                                        
 (async()=>{                                                                            
   console.log('Default fetch status : '+ await getStatus(uri,defaultFetcher));         
