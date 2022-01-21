@@ -142,7 +142,9 @@ In the above diagram, SolidOS is deployed on the [Node Solid Server (NSS)](https
 
 For further details about each GitHub repository, please visit them via the links above.
 
-For SolidOS related code know-how, make sure to also visit [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) and the [SolidOS developer guide](https://github.com/solid/solidos/wiki).
+We collect SolidOS code good practices and know how in [SolidOS documentation pages](https://github.com/solid/solidos/tree/main/documentation).
+[SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) part of the [SolidOS developer guide](https://github.com/solid/solidos/wiki) also contains some Q&A and technical troubleshooting infos.
+
 
 ## 👯 How the SolidOS team works
 
