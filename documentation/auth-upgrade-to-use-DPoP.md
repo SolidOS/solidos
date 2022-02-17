@@ -58,7 +58,7 @@ Workarounds and hacks are welcome to be reported, let us know on <https://gitter
 
 ## How does this effect other developer?
 
-### Login code must be apdated in all previous Solid Apps
+### Login code must be adapted in all previous Solid Apps
 
 All previous Solid Apps should be updated to be able to work with the current Solid Server. This effort is recorded in [this ticket](https://github.com/solid/team/issues/19). The ticket also shows further examples how to upgrade and which Apps are affected. 
 
