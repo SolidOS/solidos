@@ -169,7 +169,7 @@
 <g id="node10" class="node">
 <title>native</title>
 <ellipse fill="none" stroke="#f781bf" cx="303.8" cy="-450" rx="61.99" ry="18"/>
-<text text-anchor="middle" x="303.8" y="-446.3" font-family="Times,serif" font-size="14.00" fill="#f781bf">Native Aps</text>
+<text text-anchor="middle" x="303.8" y="-446.3" font-family="Times,serif" font-size="14.00" fill="#f781bf">Native Apps</text>
 </g>
 <!-- native&#45;&gt;mashlib -->
 <g id="edge9" class="edge">
