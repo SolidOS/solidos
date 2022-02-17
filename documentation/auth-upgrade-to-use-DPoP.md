@@ -6,7 +6,13 @@ As of February 2022 this part of the code was further refactored and is now part
 
 ## What has changed?
 
+### Code review
+
 For a detailed view of what changed, the team had a code review which was recorded and stored in the team videos, look for [auth-upgrade code review](https://solidos.solidcommunity.net/public/SolidOS%20team%20meetings/SolidOS_team_videos.html). At the same location find also videos about a knowledge transfer regarding the new authentication (look for 'solid OIDC').
+
+### UX upon login from NSS
+
+There was also a diagram created before and after auth upgrade to record the UX upon login when one comes from the server. See diagrams [here](https://github.com/solid/solidos/discussions/54).
 
 ## How does this affect the SolidOS developer?
 
@@ -52,4 +58,10 @@ Workarounds and hacks are welcome to be reported, let us know on <https://gitter
 
 ## How does this effect other developer?
 
+### Login code must be apdated in all previous Solid Apps
+
 All previous Solid Apps should be updated to be able to work with the current Solid Server. This effort is recorded in [this ticket](https://github.com/solid/team/issues/19). The ticket also shows further examples how to upgrade and which Apps are affected. 
+
+### Login from an iFrame
+
+One cannot login/logout from an iFrame anymore. 
