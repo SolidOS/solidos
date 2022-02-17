@@ -49,3 +49,7 @@ One of the biggest changes is probably how login redirects behave. Lets say your
 The fact that you could before, login to domainA and get redirected to domainB was quite debatable a security gap. However, the fact that you cannot do that anymore is restrictive for some use cases. 
 You are invited to read further about it [here](https://github.com/inrupt/solid-client-authn-js/issues/1473#issuecomment-908202681).
 Workarounds and hacks are welcome to be reported, let us know on <https://gitter.im/solid/solidos> gitter channel is you found any. Do handle with care.
+
+## How does this effect other developer?
+
+All previous Solid Apps should be updated to be able to work with the current Solid Server. This effort is recorded in [this ticket](https://github.com/solid/team/issues/19). The ticket also shows further examples how to upgrade and which Apps are affected. 
