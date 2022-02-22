@@ -128,6 +128,9 @@ It also makes use of —
 Let's take a look at an architecture diagram of SolidOS:
 ![SolidOS architectural overview](documentation/architecture.svg)
 
+A colorful dependency tree can be seen here:
+![SolidOS dependencies](documentation/solidos_dependencies.svg)
+
 As you can see, SolidOS is composed of several repositories:
 
 - [**rdflib.js**](https://github.com/linkeddata/rdflib.js) — Javascript RDF library for browsers and Node.js
