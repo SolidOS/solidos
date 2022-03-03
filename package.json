@@ -18,8 +18,5 @@
   "devDependencies": {
     "concurrently": "5.3.0",
     "lerna": "3.22.1"
-  },
-  "dependencies": {
-    "source-pane": "^2.2.11"
   }
 }
