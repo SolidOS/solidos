@@ -275,7 +275,7 @@ SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe 
 
 ### SolidOS first time setup of code
 
-Make sure you have the needed environment: [nvm for SolidOS](https://github.com/solid/solidos/wiki/FAQs#setting-up-nvm-to-develop-for-solidos), npm, node. If you have problems with node versions on the Apple M1 chip, in the [FAQ](https://github.com/solid/solidos/wiki/FAQs#how-to-run-solidos-on-apple-m1-chip-160921) you can find a solution.
+Make sure you have the needed environment: [nvm for SolidOS](https://github.com/solid/solidos/wiki/FAQs#setting-up-nvm-to-develop-for-solidos), npm, node. If you have problems with node versions on the Apple M1 chip, in the [Troubleshooting SolidOS](https://github.com/solid/solidos/wiki/Troubleshooting-SolidOS) you can find a solution.
 
 ```
 git clone https://github.com/solid/solidos
@@ -308,7 +308,7 @@ If you get into problems check out [SolidOS FAQs](https://github.com/solid/solid
 
 ### How to use SolidOS on localhost
 
-Once you managed to get SolidOS running locally (`npm start`) you can see it over at `https://localhost:8443/`. If you encounter any problems make sure to check the [FAQ page](https://github.com/solid/solidos/wiki/FAQs#unauthorised-error-when-you-click-login).
+Once you managed to get SolidOS running locally (`npm start`) you can see it over at `https://localhost:8443/`. If you encounter any problems make sure to check the [Troubleshooting SolidOS page](https://github.com/solid/solidos/wiki/Troubleshooting-SolidOS).
 
 To work on localhost, first you need to register a local user, so hit `register` on `https://localhost:8443/`. After you have created your user, you can navigate to your new pod over at `https://username.localhost:8443/`.
 Whenever you need to login again, remember to put `https://localhost:8443/` in the `Enter the URL of your identity provider:` input field. Otherwise you will be logged in with a different provider and redirected out of the localhost environment.
