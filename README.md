@@ -280,17 +280,15 @@ Make sure you have the needed environment: [nvm for SolidOS](https://github.com/
 ```
 git clone https://github.com/solid/solidos
 cd solidos
-nvm install 12.7.0 # to satisfy https://github.com/solid/mashlib/blob/main/.nvmrc
-nvm install 12.19.1 # to satisfy https://github.com/linkeddata/rdflib.js/blob/main/.nvmrc
-nvm install 13.14.0 # to satisfy https://github.com/solid/node-solid-server/blob/main/.nvmrc
-# ... and maybe other versions if build errors tell you so ...
+npm run prepare # to install the requested node versions
+# ... and maybe missing versions if build errors tell you so ...
+# nvm install xxx # version missing
 npm run setup
 ```
 
 Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
 
 - [rdflib.js](https://github.com/linkeddata/rdflib.js): Javascript RDF library for browsers and Node.js
-- [solid-logic](https://github.com/solid/solid-logic): core business logic of SolidOS
 - [mashlib](https://github.com/solid/mashlib/): a solid-compatible code library of application-level functionality for the world of Solid
 - [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
 - [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
