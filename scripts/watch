@@ -10,6 +10,8 @@ npx lerna bootstrap --force-local
 
 declare -a packageNames=(
   "rdflib"
+  "solid-logic"
+  "pane-registry"
   "solid-ui"
   "solid-panes"
   "mashlib"

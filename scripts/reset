@@ -16,6 +16,8 @@ declare -a packages=(
   "mashlib"
   "solid-panes"
   "solid-ui"
+  "pane-registry"
+  "solid-logic"
   "rdflib")
 
 # Clone and npm install dependent packages
