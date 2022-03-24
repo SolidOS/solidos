@@ -54,24 +54,18 @@ REMOVED
 
 updateRepo jose # @solid/jose
 updateRepo oidc-rp # @solid/oidc-rp (@solid/jose)
+updateRepo solid-namespace # solid-namespace
 
 gitCheckoutMainOf solid-auth-client # solid-auth-client (@babel/runtime, auth-header, commander, isomorphic-fetch, @solid/oidc-rp)
 # npmInstallUpdateOf solid-auth-client
 npm install @solid/oidc-rp@latest
 testBuildPushTagOn solid-auth-client
 
-gitCheckoutMainOf rdflib # rdflib (jsonld, n3, xmldom)
-npmInstallUpdateOf rdflib
-npm install --save-dev node-fetch@2
-npm install --save-dev source-map-loader@1
-npm install --save-dev webpack@4
-testBuildPushTagOn rdflib
+updateRepo rdflib # rdflib (jsonld, n3, xmldom)
 
 updateRepo solid-logic # solid-logic (rdflib, solid-namespace)
 
 updateRepo pane-registry # pane-registry (rdflib)
-
-updateRepo solid-namespace # solid-namespace
 
 updateRepo solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-auth-client, solid-namespace)
 
@@ -103,7 +97,6 @@ npmInstallUpdateOf node-solid-server
 npm install bootstrap@3
 npm install get-folder-size@2 # require needed
 npm install into-stream@6 # require needed
-npm install node-fetch@2  # require needed
 npm install --save-dev @solid/solid-auth-oidc@0.3.0
 testBuildPushTagOn node-solid-server
 
