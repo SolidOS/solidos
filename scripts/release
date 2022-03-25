@@ -5,7 +5,7 @@ unset PREFIX npm_config_prefix
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-function updateRepo1 {
+function gitCheckoutMainOf {
   if [ ! -d workspaces/$1 ]; then
     echo "Creating workspace $1"
     npm run add $1
@@ -14,7 +14,7 @@ function updateRepo1 {
     echo "Workspace not found! $1" 1>&2
     exit 64
   fi
-  echo Updating $1
+  echo Checkout $1
   cd workspaces/$1
   sed -i -e 's/https...github.com./git@github.com:/g' .git/config
   git checkout main
@@ -22,15 +22,17 @@ function updateRepo1 {
   git checkout -- .
   git pull
 }
-function updateRepo2 {
+function npmInstallUpdateOf {
+  echo Install $1
   nvm use --delete-prefix
   rm -rf node_modules
   rm package-lock.json
   npx npm-check-updates -u
-  npm install --save-dev eslint@7 # eslint@8 do not works with node.j < 16
+  # npm install --save-dev eslint@7 # eslint@8 do not works with node.j < 16
   npm install
 }
-function updateRepo3 {
+function testBuildPushTagOn {
+  echo Test, Build and Create tag of $1
   npm test
   npm run build
   ( git commit -am"Update dependencies" && npm version patch && npm publish -timeout=9999999 ) || echo No change in $1
@@ -40,12 +42,12 @@ function updateRepo3 {
 }
 function updateRepo {
   echo Starting $1
-  updateRepo1 $1
-  updateRepo2 $1
-  updateRepo3 $1
+  gitCheckoutMainOf $1
+  npmInstallUpdateOf $1
+  testBuildPushTagOn $1
 }
 
- #  This is a here-document
+#  This is a here-document
 << REMOVED
   Any code in between is not executed.
 REMOVED
@@ -53,78 +55,38 @@ REMOVED
 updateRepo jose # @solid/jose
 updateRepo oidc-rp # @solid/oidc-rp (@solid/jose)
 
-updateRepo1 solid-auth-client # solid-auth-client (@babel/runtime, auth-header, commander, isomorphic-fetch, @solid/oidc-rp)
-# updateRepo2 solid-auth-client
+gitCheckoutMainOf solid-auth-client # solid-auth-client (@babel/runtime, auth-header, commander, isomorphic-fetch, @solid/oidc-rp)
+# npmInstallUpdateOf solid-auth-client
 npm install @solid/oidc-rp@latest
-updateRepo3 solid-auth-client
+testBuildPushTagOn solid-auth-client
 
-updateRepo1 rdflib # rdflib (jsonld, n3, xmldom)
-updateRepo2 rdflib
+gitCheckoutMainOf rdflib # rdflib (jsonld, n3, xmldom)
+npmInstallUpdateOf rdflib
 npm install --save-dev node-fetch@2
 npm install --save-dev source-map-loader@1
 npm install --save-dev webpack@4
-updateRepo3 rdflib
+testBuildPushTagOn rdflib
 
-updateRepo pane-registry # pane-registry (rdflib)
-updateRepo solid-namespace # solid-namespace
 updateRepo solid-logic # solid-logic (rdflib, solid-namespace)
 
-updateRepo1 solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-auth-client, solid-namespace)
-updateRepo2 solid-ui
-npm install --save-dev webpack@4
-npm install --save-dev webpack-cli@3
-updateRepo3 solid-ui
+updateRepo pane-registry # pane-registry (rdflib)
 
-updateRepo1 activitystreams-pane
-updateRepo2 activitystreams-pane
-npm install --save-dev webpack@4
-npm install --save-dev webpack-cli@3
-updateRepo3 activitystreams-pane
+updateRepo solid-namespace # solid-namespace
 
-updateRepo1 chat-pane # chat-pane (solid-ui)
-updateRepo2 chat-pane
-npm install --save-dev webpack@4
-npm install --save-dev webpack-cli@3
-npm install --save-dev html-webpack-plugin@4
-updateRepo3 chat-pane
+updateRepo solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-auth-client, solid-namespace)
 
+updateRepo activitystreams-pane
+updateRepo chat-pane # chat-pane (solid-ui)
 updateRepo contacts-pane # contacts-pane (solid-ui)
 updateRepo folder-pane # folder-pane (solid-ui)
 updateRepo issue-pane # issue-pane (solid-ui, pane-registry, rdflib)
-
-updateRepo1 markdown-pane # markdown-pane (solid-ui, pane-registry, rdflib)
-updateRepo2 markdown-pane # markdown-pane (solid-ui, pane-registry, rdflib)
-# npm install --save-dev @typescript-eslint/eslint-plugin@3
-# npm install --save-dev @typescript-eslint/parser@3
-npm install --save-dev webpack@4
-npm install --save-dev webpack-cli@3
-npm install --save-dev html-webpack-plugin@4
-npm install react-markdown@5
-updateRepo3 markdown-pane # markdown-pane (solid-ui, pane-registry, rdflib)
-
-updateRepo1 meeting-pane # meeting-pane (solid-ui)
-updateRepo2 meeting-pane
-npm install --save-dev webpack@4
-npm install --save-dev webpack-cli@3
-npm install --save-dev html-webpack-plugin@4
-updateRepo3 meeting-pane
-
+updateRepo meeting-pane # meeting-pane (solid-ui)
 updateRepo profile-pane # profile-pane (solid-ui, rdflib, contacts-pane)
 updateRepo source-pane # source-pane (solid-ui)
+
 updateRepo solid-panes # solid-panes (chat-pane, contacts-pane, folder-pane, issue-pane, meeting-pane, pane-registry, rdflib, solid-ui, source-pane)
 
-updateRepo1 mashlib # mashlib (rdflib, solid-panes, solid-ui)
-updateRepo2 mashlib
-npm install --save-dev @typescript-eslint/eslint-plugin@3
-npm install --save-dev @typescript-eslint/parser@3
-npm install --save-dev webpack@4
-npm install --save-dev webpack-cli@3
-npm install --save-dev mini-css-extract-plugin@1.2
-npm install --save-dev copy-webpack-plugin@6
-npm install --save-dev html-webpack-plugin@4
-npm install --save-dev css-loader@5
-npm install --save-dev sass-loader@10
-updateRepo3 mashlib
+updateRepo mashlib # mashlib (rdflib, solid-panes, solid-ui)
 
 updateRepo node-solid-ws # solid-ws ()
 updateRepo node-webid # webid (rdflib)
@@ -136,22 +98,22 @@ updateRepo solid-multi-rp-client # @solid/solid-multi-rp-client (oidc-rp)
 updateRepo oidc-auth-manager # @solid/oidc-auth-manager (oidc-rp, oidc-op, oidc-rs, solid-multi-rp-client)
 updateRepo solid-auth-oidc # @solid/solid-auth-oidc (@solid/oidc-rp)
 
-updateRepo1 node-solid-server # solid-server (@solid/acl-check, @solid/oidc-auth-manager, rdflib, mashlib, solid-auth-client, solid-namespace, solid-ws, @solid/oidc-op, @solid/solid-auth-oidc, webid)
-updateRepo2 node-solid-server
+gitCheckoutMainOf node-solid-server # solid-server (@solid/acl-check, @solid/oidc-auth-manager, rdflib, mashlib, solid-auth-client, solid-namespace, solid-ws, @solid/oidc-op, @solid/solid-auth-oidc, webid)
+npmInstallUpdateOf node-solid-server
 npm install bootstrap@3
 npm install get-folder-size@2 # require needed
 npm install into-stream@6 # require needed
 npm install node-fetch@2  # require needed
 npm install --save-dev @solid/solid-auth-oidc@0.3.0
-updateRepo3 node-solid-server
+testBuildPushTagOn node-solid-server
 
-updateRepo1 solid-rest # solid-rest (concat-stream, cross-fetch, fs-extra, mime-types)
+gitCheckoutMainOf solid-rest # solid-rest (concat-stream, cross-fetch, fs-extra, mime-types)
 nvm use --delete-prefix
 rm -rf node_modules
 rm package-lock.json
 npx npm-check-updates -u
 npm install --save-dev webpack@4
-updateRepo3 solid-rest
+testBuildPushTagOn solid-rest
 
 updateRepo solid-cli # solid-cli (@solid/oidc-rp)
 

@@ -230,8 +230,8 @@ Then:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-nvm install 15
-nvm use 15
+nvm install 16
+nvm use 16
 
 ssh-keygen -t ed25519 -C "michiel+build@unhosted.org"
 git config --global user.name "Solid OS Build (Michiel)"
