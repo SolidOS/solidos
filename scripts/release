@@ -62,7 +62,10 @@ gitCheckoutMainOf solid-auth-client # solid-auth-client (@babel/runtime, auth-he
 npm install @solid/oidc-rp@latest
 testBuildPushTagOn solid-auth-client
 
-updateRepo rdflib # rdflib (jsonld, n3, xmldom)
+gitCheckoutMainOf rdflib # rdflib (jsonld, n3, xmldom)
+npmInstallUpdateOf rdflib
+npm install --save-dev node-fetch@2 # node-fetch@3 needs import
+testBuildPushTagOn rdflib
 
 updateRepo solid-logic # solid-logic (rdflib, solid-namespace)
 
