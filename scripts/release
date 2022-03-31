@@ -80,6 +80,7 @@ testBuildPushTagOn solid-ui
 gitCheckoutMainOf activitystreams-pane # activity-streams (solid-ui, pane-registry, solid-logic, rdflib)
 npmInstallUpdateOf activitystreams-pane
 npm install --save react@17 react-dom@17 # for storybook@6.4.19
+npm install --save-dev @testing-library/react@12.1.4 # for storybook@6.4.19
 testBuildPushTagOn activitystreams-pane
 
 updateRepo chat-pane # chat-pane (solid-ui, solid-logic, rdflib)
