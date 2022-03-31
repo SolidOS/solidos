@@ -280,11 +280,12 @@ Make sure you have the needed environment: [nvm for SolidOS](https://github.com/
 ```
 git clone https://github.com/solid/solidos
 cd solidos
-npm run prepare # to install the requested node versions
-# ... and maybe missing versions if build errors tell you so ...
-# nvm install xxx # version missing
 npm run setup
 ```
+
+***Note:*** It might prompt you to install a dedicated node version, somthing like `nvm install xxx # version missing mentioned in console log`.
+
+***Note:*** In case of errors try to follow what the output messages (errors) suggest in the console to fix the problems. And write us up on [SolidOS team chat](https://gitter.im/solid/solidos).
 
 Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
 
@@ -300,7 +301,7 @@ You can start your server and test out your code with:
 npm start
 ```
 
-If you get into problems check out [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) or ask us directly at [SolidOS team chat](https://gitter.im/solid/solidos).
+If you get into problems check out [SolidOS FAQs](https://github.com/solid/solidos/wiki/FAQs) or ask us directly at [SolidOS team chat](https://.im/solid/solidos).
 
 ***Note:*** The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know, over at [SolidOS team chat](https://gitter.im/solid/solidos) if you want support for this.
 
