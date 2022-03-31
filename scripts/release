@@ -65,17 +65,17 @@ updateRepo rdflib # rdflib (jsonld, n3, xmldom)
 
 updateRepo solid-logic # solid-logic (rdflib, solid-namespace)
 
-updateRepo pane-registry # pane-registry (rdflib)
+updateRepo pane-registry # pane-registry (solid-logic, rdflib)
 
 updateRepo solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-auth-client, solid-namespace)
 
-updateRepo activitystreams-pane
-updateRepo chat-pane # chat-pane (solid-ui)
-updateRepo contacts-pane # contacts-pane (solid-ui)
-updateRepo folder-pane # folder-pane (solid-ui)
+updateRepo activitystreams-pane # activity-streams (solid-ui, pane-registry, solid-logic, rdflib)
+updateRepo chat-pane # chat-pane (solid-ui, solid-logic, rdflib)
+updateRepo folder-pane # folder-pane (solid-ui, solid-logic)
 updateRepo issue-pane # issue-pane (solid-ui, pane-registry, rdflib)
-updateRepo meeting-pane # meeting-pane (solid-ui)
-updateRepo profile-pane # profile-pane (solid-ui, rdflib, contacts-pane)
+updateRepo meeting-pane # meeting-pane (solid-ui, solid-logic, rdflib)
+updateRepo contacts-pane # contacts-pane (solid-ui, pane-registry, solid-logic, rdflib)
+updateRepo profile-pane # profile-pane (contacts-pane, solid-ui, pane-registry, solid-logic, rdflib)
 updateRepo source-pane # source-pane (solid-ui)
 
 updateRepo solid-panes # solid-panes (chat-pane, contacts-pane, folder-pane, issue-pane, meeting-pane, pane-registry, rdflib, solid-ui, source-pane)
