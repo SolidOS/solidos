@@ -290,10 +290,13 @@ npm run setup
 Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
 
 - [rdflib.js](https://github.com/linkeddata/rdflib.js): Javascript RDF library for browsers and Node.js
+- [solid-logic](https://github.com/solid/solid-logic): core business logic of SolidOS
+- [pane-registry](https://github.com/solid/pane-registry): an index to hold all loaded solid panes
 - [mashlib](https://github.com/solid/mashlib/): a solid-compatible code library of application-level functionality for the world of Solid
 - [solid-panes](https://github.com/solid/solid-panes): a set of core solid-compatible panes based on solid-ui
 - [solid-ui](https://github.com/solid/solid-ui): User Interface widgets and utilities for Solid. Building blocks for solid-based apps
 - [node-solid-server](https://github.com/solid/node-solid-server): the server that allows you to test your changes
+
 
 You can start your server and test out your code with:
 
