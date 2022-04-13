@@ -194,6 +194,8 @@ To check possible tasks you can help with, the best is to visit us on a [weekly 
 
 We keep track of stuff to do in Git issues of each repo. [Here](https://github.com/solid/solidos/issues) is the link to the SolidOS open issues. But make sure to visit the underlying repos for specific issues (see: [SolidOS technical intro](#-SolidOS-technical-intro) for links).
 
+Writing tests as a way to understand the code is always a good idea. Tests, in each repo, should be found in the `test` folder. One can start from there or/and add tests there.
+
 ### For anyone who likes builds or GitHub CI or releases or deployments
 
 There is a process and code in place to help with SolidOS releases. However, we would like to get better and automatize as much as possible. We describe next each part.
@@ -367,6 +369,8 @@ Most of the modules in SolidOS have a `test` script which can be called with `np
 In some cases the tests run an [ESLint](https://eslint.org/) command `eslint 'src/**/*.ts'` or a [jest](https://jestjs.io/) test or both.
 
 Jest can also offer information related to test coverage by simply runnig `npm run coverage`.
+
+You can find a repo's tests usually in a dedicated folder called `test`.
 
 ### SolidOS build and release
 
