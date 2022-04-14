@@ -53,14 +53,7 @@ function updateRepo {
   Any code in between is not executed.
 REMOVED
 
-updateRepo jose # @solid/jose
-updateRepo oidc-rp # @solid/oidc-rp (@solid/jose)
 updateRepo solid-namespace # solid-namespace
-
-gitCheckoutMainOf solid-auth-client # solid-auth-client (@babel/runtime, auth-header, commander, isomorphic-fetch, @solid/oidc-rp)
-# npmInstallUpdateOf solid-auth-client
-npm install @solid/oidc-rp@latest
-testBuildPushTagOn solid-auth-client
 
 gitCheckoutMainOf rdflib # rdflib (jsonld, n3, xmldom)
 npmInstallUpdateOf rdflib
@@ -68,10 +61,9 @@ npm install --save-dev node-fetch@2 # node-fetch@3 needs import
 testBuildPushTagOn rdflib
 
 updateRepo solid-logic # solid-logic (rdflib, solid-namespace)
-
 updateRepo pane-registry # pane-registry (solid-logic, rdflib)
 
-gitCheckoutMainOf solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-auth-client, solid-namespace)
+gitCheckoutMainOf solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-namespace)
 npm install pane-registry solid-logic rdflib solid-namespace # temporary until storybook updated to react 18
 # npmInstallUpdateOf solid-ui
 # npm install --save-dev @testing-library/user-event@13
@@ -79,9 +71,9 @@ npm install pane-registry solid-logic rdflib solid-namespace # temporary until s
 testBuildPushTagOn solid-ui
 
 gitCheckoutMainOf activitystreams-pane # activity-streams (solid-ui, pane-registry, solid-logic, rdflib)
-npmInstallUpdateOf activitystreams-pane
-npm install --save react@17 react-dom@17 # for storybook@6.4.19
-npm install --save-dev @testing-library/react@12.1.4 # for storybook@6.4.19
+npm install solid-ui pane-registry solid-logic rdflib # temporary until storybook updated to react 18
+# npmInstallUpdateOf activitystreams-pane
+# npm install --save react@17 react-dom@17 # for storybook@6.4.19
 testBuildPushTagOn activitystreams-pane
 
 updateRepo chat-pane # chat-pane (solid-ui, solid-logic, rdflib)
@@ -95,6 +87,15 @@ updateRepo folder-pane # folder-pane (solid-ui, solid-logic)
 updateRepo solid-panes # solid-panes (chat-pane, contacts-pane, folder-pane, issue-pane, meeting-pane, pane-registry, rdflib, solid-ui, source-pane)
 
 updateRepo mashlib # mashlib (rdflib, solid-panes, solid-ui)
+
+<< REMOVED
+updateRepo jose # @solid/jose
+updateRepo oidc-rp # @solid/oidc-rp (@solid/jose)
+
+gitCheckoutMainOf solid-auth-client # solid-auth-client (@babel/runtime, auth-header, commander, isomorphic-fetch, @solid/oidc-rp)
+# npmInstallUpdateOf solid-auth-client
+npm install @solid/oidc-rp@latest
+testBuildPushTagOn solid-auth-client
 
 updateRepo node-solid-ws # solid-ws ()
 updateRepo node-webid # webid (rdflib)
@@ -135,3 +136,4 @@ updateRepo web-access-control-tests
 # updateRepo gitter-solid
 # FIXME: https://github.com/solid/gitter-solid/pull/12
 # updateRepo github-solid
+REMOVED
