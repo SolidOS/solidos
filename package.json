@@ -4,7 +4,7 @@
   "description": "SolidOS - Operating System for Solid",
   "repository": {
     "type": "git",
-    "url": "https://github.com/solid/solidos"
+    "url": "https://github.com/solidos/solidos"
   },
   "keywords": [
     "solidos",
@@ -13,11 +13,11 @@
   ],
   "author": "Tim Berners-Lee <timbl@mit.edu>",
   "contributors": [
-    "https://github.com/solid/solidos/graphs/contributors"
+    "https://github.com/solidos/solidos/graphs/contributors"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/solid/solidos/issues"
+    "url": "https://github.com/solidos/solidos/issues"
   },
   "homepage": "https://solidos.solidcommunity.net/",
   "scripts": {
