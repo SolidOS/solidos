@@ -49,7 +49,7 @@ case $1 in
     ;;
   'markdown' | 'markdown-pane')
     FOLDER='markdown-pane' 
-    GIT_URL='https://github.com/solid/markdown-pane'
+    GIT_URL='https://github.com/solidos/markdown-pane'
     ;; 
   'mashlib')
     GIT_URL='https://github.com/solidos/mashlib'
