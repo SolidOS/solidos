@@ -13,19 +13,19 @@ case $1 in
     ;;
   'activitystreams' | 'activitystreams-pane')
     FOLDER='activitystreams-pane'
-    GIT_URL='https://github.com/solid/activitystreams-pane'
+    GIT_URL='https://github.com/solidos/activitystreams-pane'
     ;;
   'chat' | 'chat-pane')
     FOLDER='chat-pane'
-    GIT_URL='https://github.com/solid/chat-pane'
+    GIT_URL='https://github.com/solidos/chat-pane'
     ;;
   'contacts' | 'contacts-pane')
     FOLDER='contacts-pane'
-    GIT_URL='https://github.com/solid/contacts-pane'
+    GIT_URL='https://github.com/solidos/contacts-pane'
     ;;
   'folder' | 'folder-pane')
     FOLDER='folder-pane'
-    GIT_URL='https://github.com/solid/folder-pane'
+    GIT_URL='https://github.com/solidos/folder-pane'
     ;;
   'github-solid')
     GIT_URL='https://github.com/solid/github-solid'
@@ -35,11 +35,11 @@ case $1 in
     ;;
   'issue' | 'issue-pane')
     FOLDER='issue-pane'
-    GIT_URL='https://github.com/solid/issue-pane'
+    GIT_URL='https://github.com/solidos/issue-pane'
     ;;
   'profile' | 'profile-pane')
     FOLDER='profile-pane'
-    GIT_URL='https://github.com/solid/profile-pane'
+    GIT_URL='https://github.com/solidos/profile-pane'
     ;;
   'jose')
     GIT_URL='https://github.com/solid/jose'
@@ -52,11 +52,11 @@ case $1 in
     GIT_URL='https://github.com/solid/markdown-pane'
     ;; 
   'mashlib')
-    GIT_URL='https://github.com/solid/mashlib'
+    GIT_URL='https://github.com/solidos/mashlib'
     ;;
   'meeting' | 'meeting-pane')
     FOLDER='meeting-pane'
-    GIT_URL='https://github.com/solid/meeting-pane'
+    GIT_URL='https://github.com/solidos/meeting-pane'
     ;;
   'node-solid-server')
     GIT_URL='https://github.com/solid/node-solid-server'
@@ -80,7 +80,7 @@ case $1 in
     GIT_URL='https://github.com/solid/oidc-rs'
     ;;
   'pane-registry' | 'registry')
-    GIT_URL='https://github.com/solid/pane-registry'
+    GIT_URL='https://github.com/solidos/pane-registry'
     ;;
   'rdflib')
     GIT_URL='https://github.com/linkeddata/rdflib.js.git'
@@ -107,10 +107,10 @@ case $1 in
     GIT_URL='https://github.com/solid/solid-crud-tests.git'
     ;;
   'solid-logic')
-    GIT_URL='https://github.com/solid/solid-logic.git'
+    GIT_URL='https://github.com/solidos/solid-logic.git'
     ;;
   'money-pane')
-    GIT_URL='https://github.com/solid/money-pane.git'
+    GIT_URL='https://github.com/solidos/money-pane.git'
     ;;
   'solid-multi-rp-client')
     GIT_URL='https://github.com/solid/solid-multi-rp-client.git'
@@ -122,17 +122,17 @@ case $1 in
     GIT_URL='https://github.com/solid/solid-node-client'
     ;;
   'solid-panes')
-    GIT_URL='https://github.com/solid/solid-panes'
+    GIT_URL='https://github.com/solidos/solid-panes'
     ;;
   'solid-rest')
     GIT_URL='https://github.com/solid/solid-rest.git'
     ;;
   'solid-ui')
-    GIT_URL='https://github.com/solid/solid-ui'
+    GIT_URL='https://github.com/solidos/solid-ui'
     ;;
   'source' | 'source-pane')
     FOLDER='source-pane'
-    GIT_URL='https://github.com/solid/source-pane'
+    GIT_URL='https://github.com/solidos/source-pane'
     ;;
   'web-access-control-tests')
     GIT_URL='https://github.com/solid/web-access-control-tests.git'

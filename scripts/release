@@ -72,9 +72,10 @@ updateRepo solid-logic # solid-logic (rdflib, solid-namespace)
 updateRepo pane-registry # pane-registry (solid-logic, rdflib)
 
 gitCheckoutMainOf solid-ui # solid-ui (pane-registry, solid-logic, rdflib, solid-auth-client, solid-namespace)
-npmInstallUpdateOf solid-ui
-npm install --save-dev @testing-library/user-event@13
-npm install --save react@17 react-dom@17 react-is@17 # for storybook@6.4.19
+npm install pane-registry solid-logic rdflib solid-namespace # temporary until storybook updated to react 18
+# npmInstallUpdateOf solid-ui
+# npm install --save-dev @testing-library/user-event@13
+# npm install --save react@17 react-dom@17 react-is@17 # for storybook@6.4.19
 testBuildPushTagOn solid-ui
 
 gitCheckoutMainOf activitystreams-pane # activity-streams (solid-ui, pane-registry, solid-logic, rdflib)
@@ -89,7 +90,7 @@ updateRepo meeting-pane # meeting-pane (solid-ui, solid-logic, rdflib)
 updateRepo contacts-pane # contacts-pane (solid-ui, pane-registry, solid-logic, rdflib)
 updateRepo profile-pane # profile-pane (contacts-pane, solid-ui, pane-registry, solid-logic, rdflib)
 updateRepo source-pane # source-pane (solid-ui)
-
+updateRepo folder-pane # folder-pane (solid-ui, solid-logic)
 updateRepo solid-panes # solid-panes (chat-pane, contacts-pane, folder-pane, issue-pane, meeting-pane, pane-registry, rdflib, solid-ui, source-pane)
 
 updateRepo mashlib # mashlib (rdflib, solid-panes, solid-ui)
