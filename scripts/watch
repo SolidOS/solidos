@@ -34,7 +34,7 @@ do
   if [[ "$package" == "mashlib" ]]; then
       command="sleep 20 && $command"
   elif [[ "$package" == "node-solid-server" ]]; then
-      command="./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem"
+      command="--root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem"
   fi
   # command="echo '---' && pwd && echo '---'"
 
