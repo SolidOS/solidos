@@ -172,9 +172,9 @@ Sometimes some ideas need an incubation period and further discussion. We make u
 
 ### SolidOS tasks
 
-For daily tasks, we have a [task overview](https://github.com/orgs/solidos/projects/14/views/4), as well as a [GitHub prioritization board](https://github.com/solidos/solidos/projects/1) with an overview of needed PRs.
+For daily tasks, we have a [task overview](https://github.com/orgs/SolidOS/projects/1) with different views.
 
-For a longer term roadmap, we use a Solid [task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban.
+For a longer term roadmap, we use a [Solid task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban.
 
 ### Additional useful information
 
@@ -188,17 +188,17 @@ For a longer term roadmap, we use a Solid [task manager](https://solidos.solidco
 
 The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code, to text, to style. We are looking for UX designers, technical writers, frontend developers, backend developers, DevOps. Don't let these titles intimidate you; they are just some examples. You can find your own place no matter the level of knowledge you are at.
 
-To check possible tasks you can help with, the best is to visit us on a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [instant chat](https://gitter.im/solid/solidos) and say 'Hi'. We will try our best to pair you up with a buddy to help you to get started.
+To check possible tasks you can help with immediately, look on the [Newcomer View in the Project board](https://github.com/orgs/SolidOS/projects/1/views/3). You are welcome to visit us on a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [instant chat](https://gitter.im/solid/solidos) and say 'Hi' or let us know about any blocker you might have.
 
 ### For anyone up to writing some code
 
-We keep track of stuff to do in Git issues of each repo. [Here](https://github.com/solidos/solidos/issues) is the link to the SolidOS open issues. But make sure to visit the underlying repos for specific issues (see: [SolidOS technical intro](#-SolidOS-technical-intro) for links).
+We keep track of stuff to do in Git issues of each repo. [An overview](https://github.com/orgs/SolidOS/projects/1/views/4) you can find on the project board.
 
-Writing tests as a way to understand the code is always a good idea. Tests, in each repo, should be found in the `test` folder. One can start from there or/and add tests there.
+Writing tests as a way to understand the code is always a good idea. Tests, in each repo, should be found in the `test` folder. One can start from there or/and add tests.
 
 ### For anyone who likes builds or GitHub CI or releases or deployments
 
-There is a process and code in place to help with SolidOS releases. However, we would like to get better and automatize as much as possible. We describe next each part.
+There is a process and code in place to help with SolidOS releases. However, we would like to get better and automatize as much as possible. Open issues can be found on the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) under the CI category. We describe next each part.
 
 #### Builds
 
@@ -206,11 +206,11 @@ SolidOS contains different repositories (mashlib, solid-logic, solid-ui, solid-p
 
 #### GitHub CI
 
-When you push or PR a change to a repo, usually a git CI is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solidos/solid-panes/blob/main/.github/workflows/ci.yml). This CI YML can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails, one should take care to fix it.
+When you push or PR a change to a repo, a git CI is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solidos/solid-panes/blob/main/.github/workflows/ci.yml). This CI YML can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails, one should take care to fix it and keep the branches green.
 
 #### Testing & releasing a new SolidOS version
 
-In SolidOS, you will find a `bash scripts` under [scripts](https://github.com/solidos/solidos/tree/main/scripts) which is related to releasing a new SolidOS version. The [release](https://github.com/solidos/solidos/blob/main/scripts/release) script is also used to update dependencies in each repo.
+In SolidOS, you will find a `bash scripts` under [scripts](https://github.com/solidos/solidos/tree/main/scripts) which is related to releasing a new SolidOS stack. The [release script](https://github.com/solidos/solidos/blob/main/scripts/release) is also used to update dependencies in each repo.
 
 Following best practices, we deploy the new version on the [testserver](https://solidcommunity.net:8443/) as mentioned [here](https://github.com/solid/solidcommunity.net/wiki#solidcommunitynet8443-test-server-instance).
 
@@ -255,11 +255,11 @@ More information can be also found over at the [server, solidcommunity.net, repo
 
 ### For anyone who likes writing text
 
-SolidOS has quite some documentation around it that needs constant improvement.
+SolidOS has quite some documentation around that needs constant improvement.
 Places to start:
 - for how SolidOS works [visit the user guide](https://github.com/solidos/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
 - [SolidOS FAQs](https://github.com/solidos/solidos/wiki/FAQs);
-- [SolidOS developer guide](https://github.com/solidos/solidos/wiki).
+- [SolidOS Wiki](https://github.com/solidos/solidos/wiki).
 
 We are open to suggestions to improve these resources from structure, translation, UI to content in general.
 
@@ -267,17 +267,17 @@ We are open to suggestions to improve these resources from structure, translatio
 
 [Solid-ui](https://github.com/solidos/solid-ui) does the heavy lifting to all things UI for SolidOS.
 Currently, we use [Storybook](https://storybook.js.org/) to help develop components independent of other panes. Make sure to visit the [solid-ui readme](https://github.com/solidos/solid-ui) for information on how to set it up and get started.
-There is a second option to run Solid-ui on its own. Read about it at [Debugging solid-ui using Solid Pane Tester](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#debugging-solid-ui-using-solid-pane-tester).
+There is a second option to run solid-ui on its own. Read about it at [Debugging solid-ui using Solid Pane Tester](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#debugging-solid-ui-using-solid-pane-tester).
 
-You can also find the current issues over at the [solid-ui issues](https://github.com/solidos/solid-ui/issues). And some more information over at the [developer guide](https://github.com/solidos/solidos/wiki/2.-Solid-UI-know-how).
+You can also find the current issues over at the [solid-ui issues](https://github.com/solidos/solid-ui/issues). And some more information over at the [SolidOS Wiki](https://github.com/solidos/solidos/wiki/2.-Solid-UI-know-how).
 
-SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe you are the one who can help out?
+SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe you are the one who can help out? Visit the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) and look for UX and UI categories.
 
 ## 🆕 Getting started with the SolidOS code
 
 ### SolidOS first time setup of code
 
-Make sure you have the needed environment: [nvm for SolidOS](https://github.com/solidos/solidos/wiki/FAQs#setting-up-nvm-to-develop-for-solidos), npm, node. If you have problems with node versions on the Apple M1 chip, in the [Troubleshooting SolidOS](https://github.com/solidos/solidos/wiki/Troubleshooting-SolidOS) you can find a solution.
+Make sure you have the needed environment: [nvm for SolidOS](https://github.com/solidos/solidos/wiki/FAQs#setting-up-nvm-to-develop-for-solidos), npm, Node. If you have problems with node versions on the Apple M1 chip, in the [Troubleshooting SolidOS](https://github.com/solidos/solidos/wiki/Troubleshooting-SolidOS) you can find a solution.
 
 ```
 git clone https://github.com/solidos/solidos
@@ -323,7 +323,7 @@ As a newcomer, you do not have direct access to the repos, but you can still con
 
 If you do have direct access to the repos, it is usual to create a branch for your changes and then a PR. A PR helps you receive feedback and lets us know easily about any changes to the code. Read more about Pull Requests over at the GitHub documentation.
 
-Make sure to read more about working with branches and missing repos over at the [SolidOS developer guide](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#dealing-with-github-branches).
+Make sure to read more about working with branches and missing repos over at the [SolidOS Wiki](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#dealing-with-github-branches).
 
 ### Developing SolidOS code
 
@@ -361,7 +361,7 @@ node-solid-server --> mashlib --> solid-panes --> [pane project] --> solid-ui --
 
 This means that if you do a change in solid-panes and want to see the result on your local NSS, you need to make sure that mashlib compiles the changes as well. Similarly, if you do changes to solid-ui, and some pane relies on those changes, you need to make sure that the pane compiles those changes, that solid-panes compiles the changes from the pane, and finally that mashlib compiles the changes from solid-panes. This quickly becomes hard to track, so we've devised a couple of ways to mitigate this.
 
-Read about in detail how each pane can be debugged over at the [Solid developer guide](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#debugging-panesrepos-standalone-without-running-whole-solidos).
+Read about in detail how each pane can be debugged over at the [SolidOS Wiki](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#debugging-panesrepos-standalone-without-running-whole-solidos).
 
 ### Testing SolidOS code
 
