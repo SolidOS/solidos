@@ -97,7 +97,7 @@ Take a look at an example: [SolidOS project Pod](https://solidos.solidcommunity.
 
 Read more about the current SolidOS 🌟 vision, goals 🎯, and roadmap 🚗 on the [SolidOS project Pod](https://solidos.solidcommunity.net/Team/docs/SolidOSNorthStar.html).
 
-**Note:** SolidOS is also known under names like (default) Data Browser or Databrowser and at times as mashlib. It depends on which flavour of SolidOS you refer to:
+_**Note:** SolidOS is also known under names like (default) Data Browser or Databrowser and at times as mashlib._ It depends on which flavour of SolidOS you refer to:
 
 - The SolidOS Databrowser Frontend - a frontend for Solid Servers like [solidcommunity.net](https://solidcommunity.net), represented by this codebase;
 - The SolidOS Databrowser Webapp - a stand-alone web app served from mashlib: [https://solidos.github.io/mashlib/dist/browse.html](https://solidos.github.io/mashlib/dist/browse.html);
@@ -201,7 +201,7 @@ _**Note:** Please get familiar with [coding](./documentation/guidelines/coding_g
 
 ### For anyone who likes builds or GitHub CI or releases or deployments
 
-There is a process and code in place to help with SolidOS releases. However, we would like to get better and automate as much as possible. Open issues can be found on the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) under the CI category. 
+There is a process and code in place to help with SolidOS releases. However, we would like to get better and automate as much as possible. Open issues can be found on the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) under the CI category.
 
 _**Note:** Please get familiar with [release guidelines](./documentation/guidelines/dependencies_and_release_guidelines.md)._
 
@@ -297,9 +297,9 @@ cd solidos
 npm run setup
 ```
 
-***Note:*** It might prompt you to install a dedicated node version, somthing like `nvm install xxx # version missing mentioned in console log`.
+_**Note:** It might prompt you to install a dedicated node version, somthing like `nvm install xxx # version missing mentioned in console log`._
 
-***Note:*** In case of errors try to follow what the output messages (errors) suggest in the console to fix the problems. And write us up on [SolidOS team chat](https://gitter.im/solid/solidos).
+_**Note:** In case of errors try to follow what the output messages (errors) suggest in the console to fix the problems. And write us up on [SolidOS team chat](https://gitter.im/solid/solidos)._
 
 Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
 
@@ -319,7 +319,7 @@ npm start
 
 If you get into problems check out [SolidOS FAQs](https://github.com/solidos/solidos/wiki/FAQs) or ask us directly at [SolidOS team chat](https://.im/solid/solidos).
 
-***Note:*** The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know, over at [SolidOS team chat](https://gitter.im/solid/solidos) if you want support for this.
+_**Note:** The NPM scripts are using `bash` scripts. These might not work if you're developing on a Windows machine. Let us know, over at [SolidOS team chat](https://gitter.im/solid/solidos) if you want support for this._
 
 ### How to use SolidOS on localhost
 
