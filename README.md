@@ -175,7 +175,7 @@ Sometimes some ideas need an incubation period and further discussion. We make u
 
 For daily tasks, we have a [Project Board](https://github.com/orgs/SolidOS/projects/1) with different views.
 
-For a longe-term roadmap, we use a [Solid task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban.
+For a longer-term roadmap, we use a [Solid task manager](https://solidos.solidcommunity.net/public/Roadmap/Tasks/), and plan the next milestones on Kanban.
 
 ### Additional useful information
 
