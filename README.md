@@ -197,7 +197,7 @@ We keep track of stuff to do in Git issues of each repo. [An overview](https://g
 
 Writing tests as a way to understand the code is always a good idea. Tests, in each repo, should be found in the `test` folder. One can start from there or/and add tests.
 
-***Note:*** Please get familiar with [coding](./documentation/guidelines/coding_guidelines.md) and [testing](./documentation/guidelines/testing_guidelines.md) guidelines.
+_**Note:** Please get familiar with [coding](./documentation/guidelines/coding_guidelines.md) and [testing](./documentation/guidelines/testing_guidelines.md) guidelines._
 
 ### For anyone who likes builds or GitHub CI or releases or deployments
 
