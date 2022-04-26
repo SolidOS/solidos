@@ -1,6 +1,6 @@
 # 🤗 Welcome CONTRIBUTOR
 
-This is a document about coding guidelines and processes. These topics reflect the way SolidOS stack conotributors work.
+This is a document about coding guidelines and processes. These topics reflect the way SolidOS stack contributors work.
 
 Table of content:
 
