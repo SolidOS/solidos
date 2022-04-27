@@ -34,7 +34,7 @@ Comment blocks look like this:
  */
  ```
 
- One-line comments look like:
+ One-line comments look like this:
 
  ```js
   // comments
