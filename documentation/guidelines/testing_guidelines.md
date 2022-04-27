@@ -37,8 +37,8 @@ The original code was not written with testing in mind. To make testing more eff
 `@ignore exporting this only for the unit test`
 
 There will also be times that even exporting the function isn't enough to enable proper tests to be developed.
-In this case follow the commenting procedures in the Code Readme.md, which is to add the comment
-` \* @@ TODO and desribe the problem.
+In this case, follow the commenting procedures in the Code `Readme.md`, which is to add the comment
+` \* @@ TODO` and describe the problem.
 
 You can reference <https://github.com/solidos/solid-ui/issues/215> in your [TODO comment](./coding_guidelines.md#adding-a-todo) if the code is hard to test due to DOM manipulation.
 
