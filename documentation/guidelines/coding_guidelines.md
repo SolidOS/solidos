@@ -67,5 +67,5 @@ Steps:
 
 ## Windows developers
 
-Notes: can't use single quotes in scripts. Need to use `\" instead
-Need to run builds using bash because of sh command.
+Notes: Single quotes can't be used in scripts on Windows; need to use `\"` instead.
+Builds must be run using `bash`, because of `sh` command.
