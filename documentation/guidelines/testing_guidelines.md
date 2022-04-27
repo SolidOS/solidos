@@ -40,7 +40,7 @@ There will also be times that even exporting the function isn't enough to enable
 In this case, follow the commenting procedures in the Code `Readme.md`, which is to add the comment
 ` \* @@ TODO` and describe the problem.
 
-You can reference <https://github.com/solidos/solid-ui/issues/215> in your [TODO comment](./coding_guidelines.md#adding-a-todo) if the code is hard to test due to DOM manipulation.
+You can reference <https://github.com/solidos/solid-ui/issues/215> in your [`TODO` comment](./coding_guidelines.md#adding-a-todo) if the code is hard to test due to DOM manipulation.
 
 ### Data fixtures
 
