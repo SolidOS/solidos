@@ -299,7 +299,7 @@ npm run setup
 
 _**Note:** It might prompt you to install a specific `node` version, something like `nvm install xxx # version missing mentioned in console log`._
 
-_**Note:** In case of errors try to follow what the output messages (errors) suggest in the console to fix the problems. And write us up on [SolidOS team chat](https://gitter.im/solid/solidos)._
+_**Note:** In case of errors, try to follow what the output messages (errors) suggest in the console to fix the problems, and let us know on the [SolidOS team chat](https://gitter.im/solid/solidos)._
 
 Run the above lines in a terminal of your choice to setup your SolidOS project folder. By default, some dependent repos are also set up for you:
 
