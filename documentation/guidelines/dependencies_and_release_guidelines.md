@@ -19,7 +19,7 @@ Since the whole SolidOS stack is built into the `mashlib.js` at the end, the Nod
 
 ## Update Node version used in SolidOS
 
-Once a year one should upgrade the used Node version. In April, each year, Node releases an even number Node version which will be taken into [LTS (long term support) releases](https://nodejs.org/en/about/releases/).
+Once a year, you should upgrade the Node version you're using. In April of each year, Node releases an even-numbered Node version which will be taken into [LTS (long term support) releases](https://nodejs.org/en/about/releases/).
 
 To upgrade the Node version in SolidOS:
 
