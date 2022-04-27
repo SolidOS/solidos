@@ -49,9 +49,9 @@ To upgrade the Node version in SolidOS:
 
 The following is a guideline of what should be considered upon a release. It is not an exhaustive list, but covers most situations.
 
-- in each repository to be released you need to do a dependency upgrade with `npx npm-check-updates -u` -> this upgrades all dependencies to major versions. Afterwards one needs to make sure the repo builds and all tests pass
-- each repository should be green in GitHub CI on the `main` branch
-- build must follow a strict order becaused repositories depend on eachother. The priority is as follows:
+- In each repository to be released, you need to do a dependency upgrade with `npx npm-check-updates -u`. This upgrades all dependencies to major versions. Afterwards, you need to make sure the repo builds and all tests pass.
+- The `main` branch of each repository should be green in GitHub CI.
+- The build must follow a strict order because the repositories depend on each other. The priority is as follows:
   - rdflib
   - solid-logic
   - solid-ui
