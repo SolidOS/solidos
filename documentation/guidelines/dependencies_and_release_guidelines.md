@@ -34,9 +34,9 @@ To upgrade the Node version in SolidOS:
 
 ***Note:*** Our work follows the [Semantic Versioning practices](https://semver.org/) in which, given a version number `MAJOR.MINOR.PATCH` of a repository, increment the:
 
-- MAJOR version when you make incompatible API changes,
-- MINOR version when you add functionality in a backwards compatible manner, and
-- PATCH version when you make backwards compatible bug fixes.
+- `MAJOR` version when you make incompatible API changes
+- `MINOR` version when you add functionality in a backwards compatible manner
+- `PATCH` version when you make bug fixes in a backwards compatible manner
 
 ### To update dependencies you can use
 
