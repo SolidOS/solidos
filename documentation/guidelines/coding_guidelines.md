@@ -59,7 +59,7 @@ Steps:
 1. Rename file to `.ts`
 2. Add types to public methods (if this is difficult, you can add the `any` type and add comments as described above to indicate it needs further work)
 3. Add comments
-4. No Logic changes, only minor refactoring
+4. No Logic changes; only minor refactoring
 5. PR is reviewed by one other engineer and merged to `main` branch
 6. Write unit tests
 7. Write examples
