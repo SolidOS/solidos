@@ -25,7 +25,7 @@ Table of content:
 
 In general, if the code is clean, it is easy to understand the algorithm, but sometimes it may make sense to include comments to explain or give an example.
 
-Comment blocks look:
+Comment blocks look like this:
 
 ```js
 /**
