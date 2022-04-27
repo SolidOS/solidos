@@ -3,7 +3,7 @@
 
 This document talks about SolidOS stack Node versions and about work required upon release, in particular about dependency upgrades.
 
-Table of content:
+Table of contents:
 
 - [🤗 Welcome CONTRIBUTOR](#-welcome-contributor)
   - [Usage of Node versions in SolidOS](#usage-of-node-versions-in-solidos)
