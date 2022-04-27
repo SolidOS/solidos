@@ -14,8 +14,8 @@ Table of contents:
 
 ## Usage of Node versions in SolidOS
 
-The local development should be build with the latest used Node version -> one can make sure this is the case by running `nvm use` in the root of the repo. This command will look for a `.nvmrc` file and use the node version in there.
-However since all SolidOS stack is build into the mashlib.js at the ned -> the Node version used is not that important (still best practice to so do it so).
+Local development should be built with the latest used Node version. One can make sure this is the case by running `nvm use` in the root of the repo. This command will look for a file named `.nvmrc`, and use the node version specified therein.
+Since the whole SolidOS stack is built into the `mashlib.js` at the end, the Node version used is not vitally important, but best practice is still to so do it so.
 
 ## Update Node version used in SolidOS
 
