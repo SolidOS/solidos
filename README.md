@@ -281,7 +281,7 @@ SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe 
 
 ## 🆕 Getting started with the SolidOS code
 
-Before you get started with coding please visit our guidelines:
+Before you start coding, please review our guidelines:
 
 - [coding guidelines](./documentation/guidelines/coding_guidelines.md);
 - [testing guidelines](./documentation/guidelines/testing_guidelines.md);
