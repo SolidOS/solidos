@@ -45,7 +45,7 @@ You can reference <https://github.com/solidos/solid-ui/issues/215> in your [`TOD
 ### Data fixtures
 
 See <https://github.com/solidos/solid-ui/blob/5fd8fb0/test/unit/widgets/buttons.test.ts#L222> for an example of how to use `store.add` in a
-unit test to set up some data in the store. Don't forget to [clearStore afterEach](https://github.com/solidos/solid-ui/blob/5fd8fb0/test/unit/widgets/buttons.test.ts#L214).
+unit test to set up some data in the store. Don't forget to [`clearStore afterEach`](https://github.com/solidos/solid-ui/blob/5fd8fb0/test/unit/widgets/buttons.test.ts#L214).
 
 ### Using custom matchers
 
