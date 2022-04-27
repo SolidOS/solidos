@@ -15,8 +15,8 @@ Tbale of content:
 
 ## Testing guidelines
 
-- When you fix a bug start by creating a test for it to reproduce and then fix it.
-- Tests should be in a dedicated folder called 'test' in the whole SolidOS stack.
+- When you fix a bug, start by creating a test to reproduce it, and then fix it.
+- Tests throughout the SolidOS stack should be in dedicated folders called 'test'.
 
 ## Testing strategy
 
