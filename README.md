@@ -189,7 +189,7 @@ For a longer-term roadmap, we use a [Solid task manager](https://solidos.solidco
 
 The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code, to text, to style. We are looking for UX designers, technical writers, frontend developers, backend developers, DevOps. Don't let these titles intimidate you; they are just some examples. You can find your own place no matter the level of knowledge you are at.
 
-To check possible tasks you can help with immediately, look on the [Newcomer View in the Project Board](https://github.com/orgs/SolidOS/projects/1/views/3). You are welcome to visit us on a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [instant chat](https://gitter.im/solid/solidos) and say 'Hi' or let us know about any blocker you might have.
+To check for tasks you might help with immediately, look at the [Newcomer View in the Project Board](https://github.com/orgs/SolidOS/projects/1/views/3). You are welcome to visit us at a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [ongoing Gitter-based chat](https://gitter.im/solid/solidos) to say 'Hi' or let us know about any blocker you might have encountered.
 
 ### For anyone up to writing some code
 
