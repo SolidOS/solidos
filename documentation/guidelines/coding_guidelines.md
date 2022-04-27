@@ -32,6 +32,7 @@ Comment blocks look like this:
  * comments
  * more comments
  */
+   doSomething()
  ```
 
  One-line comments look like this:
