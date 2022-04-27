@@ -2,7 +2,7 @@
 
 This document helps contributors improve testing habits with guidelines and know-how.
 
-Tbale of content:
+Table of contents:
 
 - [🤗 Welcome CONTRIBUTOR](#-welcome-contributor)
   - [Testing guidelines](#testing-guidelines)
