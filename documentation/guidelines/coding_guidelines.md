@@ -39,7 +39,6 @@ Comment blocks look like this:
  ```js
   // comments
   doSomething()
- */
  ```
 
 ### Adding a TODO
