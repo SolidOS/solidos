@@ -23,9 +23,9 @@ Once a year, you should upgrade the Node version you're using. In April of each 
 
 To upgrade the Node version in SolidOS:
 
-- change the Node version in CI of each SolidOS affected repo (including release.yml if available)
-  - keep the published node version in CI to at least one earlier version before latest release but make sure it is still in LTS by checking: <https://nodejs.org/en/about/releases/>
-- change the officially development supported Node version on SolidOS stack mentioned in `.nvmrc`. The `.nvmrc` file is available on each repo, [for example on SolidOS repo](https://github.com/solid/solidos/blob/main/.nvmrc).
+- change the Node version in CI of each affected SolidOS repo (including `release.yml` if available)
+  - ensure the published node version in CI is at least one version earlier than latest release, but make sure it is still in LTS by checking the [Node Releases](https://nodejs.org/en/about/releases/)
+- update the officially supported development Node version on SolidOS stack mentioned in `.nvmrc`. The `.nvmrc` file is available on each repo, [for example on SolidOS repo](https://github.com/solid/solidos/blob/main/.nvmrc).
 
 ## Dependency upgrades
 
