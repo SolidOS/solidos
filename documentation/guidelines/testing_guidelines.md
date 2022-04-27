@@ -52,6 +52,6 @@ unit test to set up some data in the store. Don't forget to [`clearStore afterEa
 We have added some custom matchers to ease the testing. You can see the full list at `test/setup.ts`, in
 the `expect.extend` part.
 
-- `expect(A).toEqualGraph(B)`: Use this matcher to check whether graphs A and B are equal (meaning containing the
+- `expect(A).toEqualGraph(B)`: Use this matcher to check whether graphs A and B are equal (meaning they contain the
   same set of triples)
 - `expect(A).toContainGraph(B)`: Use this matcher to check whether graph B is contained in graph A.
