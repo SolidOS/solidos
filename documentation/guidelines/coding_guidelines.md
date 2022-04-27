@@ -23,7 +23,7 @@ Table of content:
 
 ### General comments
 
-In general, if the code is clean it is easy to understand the algorithm but sometimes it makes sense to add comments to explain or give an example.
+In general, if the code is clean, it is easy to understand the algorithm, but sometimes it may make sense to include comments to explain or give an example.
 
 Comment blocks look:
 
