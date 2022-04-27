@@ -297,7 +297,7 @@ cd solidos
 npm run setup
 ```
 
-_**Note:** It might prompt you to install a dedicated node version, somthing like `nvm install xxx # version missing mentioned in console log`._
+_**Note:** It might prompt you to install a specific `node` version, something like `nvm install xxx # version missing mentioned in console log`._
 
 _**Note:** In case of errors try to follow what the output messages (errors) suggest in the console to fix the problems. And write us up on [SolidOS team chat](https://gitter.im/solid/solidos)._
 
