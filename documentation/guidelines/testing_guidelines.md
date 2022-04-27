@@ -29,7 +29,7 @@ Tbale of content:
 
 ### Videos about testing knowledge transfer
 
-The SolidOS did a few workshops and presentations about how to do testing in general and on SolidOS stack. You can revisit them [here](https://solidos.solidcommunity.net/public/SolidOS%20team%20meetings/SolidOS_team_videos.html).
+The SolidOS team did a few workshops and presentations about how to do testing in general and on the SolidOS stack. You can revisit them [here](https://solidos.solidcommunity.net/public/SolidOS%20team%20meetings/SolidOS_team_videos.html).
 
 ### General information
 
