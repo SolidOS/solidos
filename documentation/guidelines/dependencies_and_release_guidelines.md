@@ -47,7 +47,7 @@ To upgrade the Node version in SolidOS:
 
 ## Checklist upon relase of a new SolidOS stack
 
-The following is a guideline of what should be considered upon a release. However, it should not be taken as an exhaustive list but more like a basic list.
+The following is a guideline of what should be considered upon a release. It is not an exhaustive list, but covers most situations.
 
 - in each repository to be released you need to do a dependency upgrade with `npx npm-check-updates -u` -> this upgrades all dependencies to major versions. Afterwards one needs to make sure the repo builds and all tests pass
 - each repository should be green in GitHub CI on the `main` branch
