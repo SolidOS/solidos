@@ -67,6 +67,6 @@ The following is a guideline of what should be considered upon a release. It is 
   - mashlib
   - NSS
   - solidos
-***Note:*** The strict build order means for example, if you do a change in `solid-ui`, all following panes that make use of the `solid-ui` changes need to be also upgraded. And then `solid-panes` needs to mandatorily be upgraded to contain the new `solid-ui`version and because `solid-panes` version changes also `mashlib` version needs to change.
+ _**Note:** The strict build order means, for example, if you make a change in `solid-ui`, all the following panes that make use of the `solid-ui` changes also need to be upgraded; then `solid-panes` must be upgraded to contain the new `solid-ui` version, and because `solid-panes` version changes, the `mashlib` version also needs to change._
 
 To ease this work, SolidOS contains a [release script](https://github.com/SolidOS/solidos/blob/main/scripts/release); however, the release script also updates ALL dependencies in ALL repos to major versions, which means the above steps MUST be done beforehand.
