@@ -201,7 +201,7 @@ _**Note:** Please get familiar with [coding](./documentation/guidelines/coding_g
 
 ### For anyone who likes builds or GitHub CI or releases or deployments
 
-There is a process and code in place to help with SolidOS releases. However, we would like to get better and automate as much as possible. Open issues can be found on the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) under the CI category.
+There is an existing process and codebase in place to help with SolidOS releases. However, we would like to get better and automate as much as possible. Open issues can be found on the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) under the CI category.
 
 _**Note:** Please get familiar with [release guidelines](./documentation/guidelines/dependencies_and_release_guidelines.md)._
 
