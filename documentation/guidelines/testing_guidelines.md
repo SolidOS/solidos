@@ -20,10 +20,10 @@ Tbale of content:
 
 ## Testing strategy
 
-- At first we will work to have more integration tests as it is currently hard to write unit tests. As time goes on it will eventually flip. At same time refactor code to be more modular to do unite tests.
-- Both unit tests and integration tests will be in all repos
-- No e2e tests currently - we may do outside of the repos some of them.
-- Add rdflib to the list of repos to be tested.
+- At first, we will work to have more integration tests, as it is currently hard to write unit tests. As time goes on, it will eventually flip. At the same time, we will refactor code to be more modular to do unit tests.
+- Both unit tests and integration tests will be in all repos.
+- No end-to-end (e2e) tests currently; we may do some of these outside of the repos.
+- Add `rdflib` to the list of repos to be tested.
 
 ## Testing know-how
 
