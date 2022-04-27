@@ -44,7 +44,7 @@ Comment blocks look like this:
 
 ### Adding a TODO
 
-An example when you need a TODO is when you refactor code. There will be times you run across code that cannot be easily changed or may be better suited for an alternate branch. In this case you can:
+An example of when you need a TODO is when you refactor code. There may be times you run across code that cannot be easily changed or that may be better suited for an alternate branch. In this case you can:
 
 1. Create a follow-up issue
 2. Document the code by a comment as shown below
