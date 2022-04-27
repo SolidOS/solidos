@@ -15,7 +15,7 @@ Table of content:
 
 ## General rules
 
-- In any given branch/PR there should be no more than a couple files modified. Try to stick to one, however for tests you may need two - one for the test and one for the code you are testing.
+- In any given branch/PR, there should be no more than a couple files modified. In general, try to stick to one, though you may need two for testing — one for the test, and one for the code you are testing.
 - Name branch as you want.
 - PR naming: add **WIP** in the title of the PR if you want a review.
 
