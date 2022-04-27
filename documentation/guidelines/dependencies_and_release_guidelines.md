@@ -29,8 +29,8 @@ To upgrade the Node version in SolidOS:
 
 ## Dependency upgrades
 
-- one has different possibilities to check the dependency status of a repo: `npm outdated`, `npx npm-check-updates`, `npx npm-check`.
-- patch ups versions can be updated without any concerns with `npm update` BUT it only works if the dependencies in package.json is with tilda (~). Tilda allows dependencies to ONLY be updated on the semver version. If a dependency has a caret (^) that dependency is updated also to latest minor release.
+- there are a few ways to check the dependency status of a repo, such as `npm outdated`, `npx npm-check-updates`, and `npx npm-check`.
+- patch-up versions can be updated without any concern using `npm update` BUT this only works if the dependencies in `package.json` include tilde (`~`). Tilde allows dependencies to ONLY be updated on the semver version. If a dependency has a caret (`^`), that dependency is also updated to latest minor release.
 
 ***Note:*** Our work follows the [Semantic Versioning practices](https://semver.org/) in which:
 ***Note:*** Given a version number MAJOR.MINOR.PATCH of a repository, increment the:
