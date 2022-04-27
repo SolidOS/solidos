@@ -47,8 +47,8 @@ Comment blocks look like this:
 An example of when you need a TODO is when you refactor code. There may be times you run across code that cannot be easily changed or that may be better suited for an alternate branch. In this case you can:
 
 1. Create a follow-up issue
-2. Document the code by a comment as shown below
-   `/* @@ TODO comment about what needs to be done and/or why it is a problem, see [link to issue]`
+2. Document the code with a comment such as that shown below
+   `/* @@ TODO [comment about what needs to be done and/or why it is a problem]. See [link to issue]`
 
 ## Refactoring code
 
