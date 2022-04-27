@@ -1,7 +1,7 @@
 
 # 🤗 Welcome CONTRIBUTOR
 
-This document talks about SolidOS stack Node versions and about work required upon release, in particular about dependency upgrades.
+This document talks about SolidOS stack Node versions, and about work required upon release; in particular, about dependency upgrades.
 
 Table of contents:
 
