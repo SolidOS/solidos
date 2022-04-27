@@ -40,8 +40,8 @@ To upgrade the Node version in SolidOS:
 
 ### To update dependencies you can use
 
-- `npx npm-check-updates -u` which updates also major versions
 - `npm update` which updates ONLY safe minor and patch versions
+- `npx npm-check-updates -u` which also updates major versions
 
 - it is also good to run a `npm audit` from time to time and run a `npm audit fix --force`
 
