@@ -54,6 +54,8 @@ An example of when you need a TODO is when you refactor code. There may be times
 
 ### Conversion to TypeScript
 
+One of the long-term goals of the SolidOS stack is to convert the code in TypeScript.
+
 Steps:
 
 1. Rename file to `.ts`
