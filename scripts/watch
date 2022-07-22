@@ -34,12 +34,23 @@ do
   if [[ "$package" == "mashlib" ]]; then
       command="sleep 20 && $command"
   elif [[ "$package" == "node-solid-server" ]]; then
-      command="--root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem"
+      command="./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem"
   fi
   # command="echo '---' && pwd && echo '---'"
 
   command=". $HOME/.nvm/nvm.sh; cd workspaces/$package; nvm use --delete-prefix; $command"
   packageCommands+=("$command")
 done
+
+# The next line will execute:
+# npx concurrently --names rdflib,solid-logic,pane-registry,solid-ui,solid-panes,mashlib,node-solid-server 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/rdflib; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-logic; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/pane-registry; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-ui; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-panes; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/mashlib; nvm use --delete-prefix; sleep 20 && npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/node-solid-server; nvm use --delete-prefix; 
+#./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem
 
 npx concurrently --names "$packageNamesString" "${packageCommands[@]}"
