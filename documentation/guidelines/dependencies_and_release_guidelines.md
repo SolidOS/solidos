@@ -38,6 +38,8 @@ To upgrade the Node version in SolidOS:
 - `MINOR` version when you add functionality in a backwards compatible manner
 - `PATCH` version when you make bug fixes in a backwards compatible manner
 
+When starting a new module always start with version 1.0.0.
+
 ### To update dependencies you can use
 
 - `npm update` which updates ONLY safe minor and patch versions
