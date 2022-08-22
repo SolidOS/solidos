@@ -10,7 +10,7 @@ authSession.info.webId **except during operations on the authSession itself**.
 * use await authn.checkUser() when you need to activate a session after login
 * check urls like http//foo/?uri=http://bar or web app and Dk will not function
 
-The basic idea is that currentUser() is for answering the question "should this user have access to this resource?" while checkUser and session.info.webId are for answering the question "is this user logged in?".  These are the same thing on a normal server but they are two different things when dealing with apps similar to Data-Kitchen.   
+The basic idea is that currentUser() is for answering the question "should this user have access to this resource?" while checkUser and session.info.webId are for answering the question "is this user logged in?".  These are the same thing on a normal server but they are two different things when dealing with apps similar to Data-Kitchen which need to differentiate between having access to the local server without being logged in but needing to login to access private respources on remote pods.   
 
 ## Longer answer :
 
