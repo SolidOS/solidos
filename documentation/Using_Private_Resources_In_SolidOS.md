@@ -2,7 +2,7 @@
 
 ## Short Answer : 
 
-In SolidOS, always use solid-ui.authn.currentUser() to check login status or find the applicable webID; do not directly check
+In SolidOS, always use solid-ui.authn.currentUser() to check if the user has a webID; do not directly check
 authSession.info.webId **except during operations on the authSession itself**.
 
 * use me = authn.currentUser() in places not directly part of authSession management 
