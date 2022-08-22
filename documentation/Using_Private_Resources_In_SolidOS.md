@@ -3,12 +3,14 @@
 ## Short Answer : 
 
 In SolidOS, always use solid-ui.authn.currentUser() to check login status or find the applicable webID; do not directly check
-authSession.info.webId except during operations on the authSession itself.
+authSession.info.webId **except during operations on the authSession itself**.
 
 * use me = authn.currentUser() in places not directly part of authSession management 
-* use me = authn.authSession.info.webId during authSession operations
+* use me = authn.authSession.info.webId during authSession operations such as box.refresh and other login functions
 * use await authn.checkUser() when you need to activate a session after login
 * check urls like http//foo/?uri=http://bar or web app and Dk will not function
+
+The basic idea is that currentUser() is for answering the question "should this user have access to this resource?" while checkUser and session.info.webId are for answering the question "is this user logged in?".  These are the same thing on a normal server but they are two different things when dealing with apps similar to Data-Kitchen.   
 
 ## Longer answer :
 
