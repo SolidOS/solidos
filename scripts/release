@@ -27,7 +27,7 @@ function npmInstallUpdateOf {
   nvm use --delete-prefix
   rm -rf node_modules
   rm package-lock.json
-  npx npm-check-updates -u
+  npx npm-check-updates -u --target minor # patch, minor, major
   # npm install --save-dev eslint@7 # eslint@8 do not works with node.j < 16
 }
 function testBuildPushTagOn {
