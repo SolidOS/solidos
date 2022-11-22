@@ -23,6 +23,10 @@ case $1 in
     FOLDER='contacts-pane'
     GIT_URL='https://github.com/solidos/contacts-pane'
     ;;
+  'css' | 'css-mashlib')
+    FOLDER='css-mashlib'
+    GIT_URL='https://github/solidos/css-mashlib'
+    ;;
   'folder' | 'folder-pane')
     FOLDER='folder-pane'
     GIT_URL='https://github.com/solidos/folder-pane'

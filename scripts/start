@@ -8,4 +8,8 @@ npx lerna bootstrap --force-local
 
 cd workspaces/node-solid-server
 nvm use --delete-prefix
-./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem
+./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem & # & to run in background
+
+cd ../css-mashlib
+nvm use --delete-prefix
+npm run start:clean & # & to run in background

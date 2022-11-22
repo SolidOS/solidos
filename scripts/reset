@@ -12,6 +12,7 @@ mkdir -p workspaces
 rm -rf workspaces/*
 
 declare -a packages=(
+  "css-mashlib"
   "node-solid-server"
   "mashlib"
   "solid-panes"
