@@ -1,0 +1,12 @@
+#!/bin/bash
+
+unset PREFIX npm_config_prefix
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+npx lerna bootstrap --force-local
+
+cd workspaces/node-solid-server
+nvm use --delete-prefix
+./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem & # & to run in background
+
