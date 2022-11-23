@@ -25,7 +25,7 @@ case $1 in
     ;;
   'css' | 'css-mashlib')
     FOLDER='css-mashlib'
-    GIT_URL='https://github/solidos/css-mashlib'
+    GIT_URL='https://github.com/solidos/css-mashlib'
     ;;
   'folder' | 'folder-pane')
     FOLDER='folder-pane'
