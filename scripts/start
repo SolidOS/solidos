@@ -12,4 +12,4 @@ nvm use --delete-prefix
 
 cd ../css-mashlib
 nvm use --delete-prefix
-npm run start:clean & # & to run in background
+npm run start:clean
