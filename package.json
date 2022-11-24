@@ -40,6 +40,5 @@
     "lerna": "3.22.1"
   },
   "dependencies": {
-    "solid-ui": "2.4.22-f9e7cddc"
   }
 }
