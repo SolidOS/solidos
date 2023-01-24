@@ -8,11 +8,11 @@ As of February 2022 this part of the code was further refactored and is now part
 
 ### Code review
 
-For a detailed view of what changed, the team had a code review which was recorded and stored in the team videos, look for [auth-upgrade code review](https://solidos.solidcommunity.net/public/SolidOS%20team%20meetings/SolidOS_team_videos.html). At the same location find also videos about a knowledge transfer regarding the new authentication (look for 'solid OIDC').
+For a detailed view of what changed, the team had a code review which was recorded and stored in the team videos, look for [auth-upgrade code review](https://solidos.solidcommunity.net/public/SolidOS%20team%20meetings/SolidOS_team_videos.html). At the same location find also videos about a knowledge transfer regarding the new authentication (look for 'Solid-OIDC').
 
 ### UX upon login from NSS
 
-There was also a diagram created before and after auth upgrade to record the UX upon login when one comes from the server. See diagrams [here](https://github.com/solidos/solidos/discussions/54).
+There was also a diagram created before and after auth upgrade to record the UX upon login when one comes from the server. See diagrams [here](https://github.com/solidos/solidos/discussions/54) (diagram is NSS dependent).
 
 ## How does this affect the SolidOS developer?
 
@@ -65,3 +65,7 @@ All previous Solid Apps should be updated to be able to work with the current So
 ### Login from an iFrame
 
 One cannot login/logout from an iFrame anymore. 
+
+### Logout
+
+The way logging out is experienced is different. In the decentralized ecosystem one does not simply log into an application but at the OpenID Provider endpoint (Identity Provider IdP). The IdP than consents access to the application to access the resource on the resource server (Pod). So LogOut is at least, in this use case, a double action - do not have access to the application frontend; - do not consent the application to access the resource server anymore. In both cases, these actions need to be coded in the application by invalidating cookies and session. The IdP can possibly expire the access/id token but that depends on the IdP provider configuration.
