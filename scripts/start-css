@@ -8,4 +8,4 @@ npx lerna bootstrap --force-local
 
 cd workspaces/css-mashlib
 nvm use --delete-prefix
-npm run start:clean
+npm run start
