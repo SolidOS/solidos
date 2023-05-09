@@ -4,7 +4,7 @@
 
 [![MIT license](https://img.shields.io/github/license/solidos/solidos)](https://github.com/solidos/solidos/blob/main/LICENSE.md)
 [![SolidOS issues](https://img.shields.io/github/issues/solidos/solidos)](https://github.com/solidos/solidos/issues)
-[![Join the chat at https://gitter.im/solid/solidos](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/solid/solidos)
+[![Matrix](https://img.shields.io/matrix/solid_solidos:gitter.im.svg?label=Join%20the%20chat%20at%20Matrix&logo=matrix&server_fqdn=matrix.org)](https://app.element.io/#/room/#solid_solidos:gitter.im)
 
 If you made it here you must already have heard about [Solid](https://solidproject.org).
 This space is home to the SolidOS code. Keep reading if you want to know:
