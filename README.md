@@ -1,4 +1,4 @@
-;i# 🤗 Welcome to the repo of SolidOS
+# 🤗 Welcome to the repo of SolidOS
 
 <img src="https://raw.githubusercontent.com/solid/community-server/main/templates/images/solid.svg" alt="[Solid logo]" height="150" align="right"/>
 
