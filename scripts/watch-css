@@ -35,7 +35,7 @@ do
   fi
   # command="echo '---' && pwd && echo '---'"
 
-  command=". $HOME/.nvm/nvm.sh; cd workspaces/$package; nvm use --delete-prefix; $command"
+  command=". $NVM_DIR/nvm.sh; cd workspaces/$package; nvm use --delete-prefix; $command"
   packageCommands+=("$command")
 done
 

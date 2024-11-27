@@ -4,5 +4,6 @@
   "features": {
       "ghcr.io/devcontainers/features/node:1": {}
   },
-  "postCreateCommand": "bash scripts/dev"
+  "postCreateCommand": "bash scripts/dev",
+  "forwardPorts": [3000]
 }
