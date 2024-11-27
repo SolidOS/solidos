@@ -8,4 +8,4 @@ export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 nvm install
 scripts/install
 scripts/reset
-scripts/watch-css
+echo Try something like: npm run watch-css
