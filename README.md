@@ -289,7 +289,7 @@ Before you start coding, please review our guidelines:
 
 ### SolidOS first time setup of code
 
-If you use for instance VSCode, you can open this repository in its Dev Container.
+If you use for instance VSCode, you can open this repository in its Dev Container. In solidos folder run `sh ./scripts/dev`
 
 If not, make sure you have the needed environment: [nvm for SolidOS](https://github.com/solidos/solidos/wiki/FAQs#setting-up-nvm-to-develop-for-solidos), npm, Node. If you have problems with node versions on the Apple M1 chip, in the [Troubleshooting SolidOS](https://github.com/solidos/solidos/wiki/Troubleshooting-SolidOS) you can find a solution.
 
