@@ -9,10 +9,11 @@ nvm use --delete-prefix
 npx lerna bootstrap --force-local
 
 declare -a packageNames=(
-  source-pane
-  solid-panes
-  mashlib
-  css-mashlib
+  "solid-logic"
+  "solid-ui"
+  "solid-panes"
+  "mashlib"
+  "css-mashlib"
   )
 
 # Via https://zaiste.net/posts/how-to-join-elements-of-array-bash/
