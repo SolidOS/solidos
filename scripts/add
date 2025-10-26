@@ -41,6 +41,10 @@ case $1 in
     FOLDER='issue-pane'
     GIT_URL='https://github.com/solidos/issue-pane'
     ;;
+  'pivot')
+    FOLDER='pivot'
+    GIT_URL='https://github.com/solid-contrib/pivot'
+    ;;
   'profile' | 'profile-pane')
     FOLDER='profile-pane'
     GIT_URL='https://github.com/solidos/profile-pane'
