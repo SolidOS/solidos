@@ -1,7 +1,7 @@
 #!/bin/bash
 
 unset PREFIX npm_config_prefix
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 nvm use --delete-prefix
@@ -9,10 +9,11 @@ nvm use --delete-prefix
 npx lerna bootstrap --force-local
 
 declare -a packageNames=(
-  source-pane
-  solid-panes
-  mashlib
-  css-mashlib
+  "solid-logic"
+  "solid-ui"
+  "solid-panes"
+  "mashlib"
+  "css-mashlib"
   )
 
 # Via https://zaiste.net/posts/how-to-join-elements-of-array-bash/
@@ -35,7 +36,7 @@ do
   fi
   # command="echo '---' && pwd && echo '---'"
 
-  command=". $HOME/.nvm/nvm.sh; cd workspaces/$package; nvm use --delete-prefix; $command"
+  command=". $NVM_DIR/nvm.sh; cd workspaces/$package; nvm use --delete-prefix; $command"
   packageCommands+=("$command")
 done
 
