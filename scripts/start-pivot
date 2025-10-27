@@ -1,0 +1,12 @@
+#!/bin/bash
+
+unset PREFIX npm_config_prefix
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+npx lerna bootstrap --force-local
+
+cd workspaces/pivot
+nvm use --delete-prefix
+# npm run start
+npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data -p 3000 -b http://localhost:3000 -m .
