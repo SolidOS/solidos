@@ -6,6 +6,13 @@
 [![SolidOS issues](https://img.shields.io/github/issues/solidos/solidos)](https://github.com/solidos/solidos/issues)
 [![Matrix](https://img.shields.io/matrix/solid_solidos:gitter.im.svg?label=Join%20the%20chat%20at%20Matrix&logo=matrix&server_fqdn=matrix.org)](https://app.element.io/#/room/#solid_solidos:gitter.im)
 
+<mark>NEW<mark> 
+
+The refactoring of the SolidOS UI is [funded](https://nlnet.nl/project/SolidDataModules/) by <img src="https://nlnet.nl/logo/banner.svg" style="width: 5%; margin: 0 1% 0 1%;">
+/ <img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" style="width: 5%; margin: 0 1% 0 1%;">
+[Read more]()
+
+
 If you made it here you must already have heard about [Solid](https://solidproject.org).
 This space is home to the SolidOS code. Keep reading if you want to know:
 
