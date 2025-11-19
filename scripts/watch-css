@@ -9,10 +9,12 @@ nvm use --delete-prefix
 npx lerna bootstrap --force-local
 
 declare -a packageNames=(
-  source-pane
-  solid-panes
-  mashlib
-  css-mashlib
+  "solid-logic"
+  "solid-ui"
+  "profile-pane"
+  "solid-panes"
+  "mashlib"
+  "css-mashlib"
   )
 
 # Via https://zaiste.net/posts/how-to-join-elements-of-array-bash/
@@ -21,7 +23,7 @@ function join { local IFS="$1"; shift; echo "$*"; }
 # Build the string of package names for use by concurrently
 packageNamesString=$(join ,  ${packageNames[@]})
 
-# Concurrently start a `watch` task for solid-ui, solid-panes, and mashlib, and start Node Solid Server.
+# Concurrently start a `watch-css` task for solid-logic, solid-ui, solid-panes, and mashlib, css-mashlib and start CSS.
 # Note that mashlib chokes if the watch task of solid-panes is still starting up while it's running;
 # a hacky workaround to that is to delay it by 20 seconds before starting (`sleep 20`).
 packageCommands=()
@@ -39,15 +41,15 @@ do
   packageCommands+=("$command")
 done
 
+npx concurrently --names "$packageNamesString" "${packageCommands[@]}"
+
 # The next line will execute:
 # npx concurrently --names rdflib,solid-logic,pane-registry,solid-ui,solid-panes,mashlib,node-solid-server 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/rdflib; nvm use --delete-prefix; npm run watch 
 #. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-logic; nvm use --delete-prefix; npm run watch 
 #. /Users/imyshor/.nvm/nvm.sh; cd workspaces/pane-registry; nvm use --delete-prefix; npm run watch 
 #. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-ui; nvm use --delete-prefix; npm run watch 
 #. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-panes; nvm use --delete-prefix; npm run watch 
 #. /Users/imyshor/.nvm/nvm.sh; cd workspaces/mashlib; nvm use --delete-prefix; sleep 20 && npm run watch 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/node-solid-server; nvm use --delete-prefix; 
-#./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem
+#npx community-solid-server -c ./config/http-mashlib-suffix-file.json -f ./data
 
-npx concurrently --names "$packageNamesString" "${packageCommands[@]}"
+
