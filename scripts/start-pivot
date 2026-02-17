@@ -9,6 +9,6 @@ npx lerna bootstrap --force-local
 cd workspaces/pivot
 nvm use --delete-prefix
 # npm run start
-command='npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data -p 3100 -b http://localhost:3100 -m .'
+command='npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data-suffix -p 3100 -b http://localhost:3100 -m .'
 # nohup $command > /dev/null 2>&1 &
 $command
