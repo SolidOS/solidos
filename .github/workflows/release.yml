@@ -1,0 +1,48 @@
+name: Solidos Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Publish mode
+        required: true
+        default: test
+        type: choice
+        options:
+          - test
+          - stable
+      config:
+        description: Config file path
+        required: true
+        default: release.config.json
+      dry_run:
+        description: Dry run (no commands executed)
+        required: true
+        default: 'false'
+      clone_missing:
+        description: Clone repos if missing
+        required: true
+        default: 'true'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Run release orchestrator
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          node scripts/release-orchestrator.js \
+            --config ${{ inputs.config }} \
+            --mode ${{ inputs.mode }} \
+            --dry-run=${{ inputs.dry_run }} \
+            --clone-missing=${{ inputs.clone_missing }}
