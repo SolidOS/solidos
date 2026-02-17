@@ -1,0 +1,54 @@
+#!/bin/bash
+
+unset PREFIX npm_config_prefix
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+nvm use --delete-prefix
+
+npx lerna bootstrap --force-local
+
+declare -a packageNames=(
+  "solid-logic"
+  "solid-ui"
+  "solid-panes"
+  "mashlib"
+  "pivot"
+  )
+
+# Via https://zaiste.net/posts/how-to-join-elements-of-array-bash/
+function join { local IFS="$1"; shift; echo "$*"; }
+
+# Build the string of package names for use by concurrently
+packageNamesString=$(join ,  ${packageNames[@]})
+
+# Concurrently start a `watch` task for solid-ui, solid-panes, and mashlib, and start Node Solid Server.
+# Note that mashlib chokes if the watch task of solid-panes is still starting up while it's running;
+# a hacky workaround to that is to delay it by 20 seconds before starting (`sleep 20`).
+packageCommands=()
+for package in "${packageNames[@]}"
+do
+  command="npm run watch"
+  if [[ "$package" == "mashlib" ]]; then
+      command="sleep 20 && $command"
+  elif [[ "$package" == "pivot" ]]; then
+      command="npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data -p 3100 -b http://localhost:3100 -m ."
+  fi
+  # command="echo '---' && pwd && echo '---'"
+
+  command=". $NVM_DIR/nvm.sh; cd workspaces/$package; nvm use --delete-prefix; $command"
+  packageCommands+=("$command")
+done
+
+# The next line will execute:
+# npx concurrently --names rdflib,solid-logic,pane-registry,solid-ui,solid-panes,mashlib,node-solid-server 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/rdflib; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-logic; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/pane-registry; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-ui; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-panes; nvm use --delete-prefix; npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/mashlib; nvm use --delete-prefix; sleep 20 && npm run watch 
+#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/node-solid-server; nvm use --delete-prefix; 
+#./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem
+
+npx concurrently --names "$packageNamesString" "${packageCommands[@]}"

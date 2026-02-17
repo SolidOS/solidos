@@ -41,15 +41,23 @@ case $1 in
     FOLDER='issue-pane'
     GIT_URL='https://github.com/solidos/issue-pane'
     ;;
+  'pivot')
+    FOLDER='pivot'
+    GIT_URL='https://github.com/solid-contrib/pivot'
+    ;;
   'profile' | 'profile-pane')
     FOLDER='profile-pane'
     GIT_URL='https://github.com/solidos/profile-pane'
     ;;
   'jose')
-    GIT_URL='https://github.com/solid/jose'
+    GIT_URL='https://github.com/nodeSolidServer/jose'
     ;;
   'keychain')
     GIT_URL='https://github.com/solid/keychain'
+    ;;
+  'kvplus' |'kvplus-files')
+    FOLDER='kvplus-files'
+    GIT_URL='https://github.com/nodeSolidServer/kvplus-files'
     ;;
   'markdown' | 'markdown-pane')
     FOLDER='markdown-pane' 
@@ -63,25 +71,25 @@ case $1 in
     GIT_URL='https://github.com/solidos/meeting-pane'
     ;;
   'node-solid-server')
-    GIT_URL='https://github.com/solid/node-solid-server'
+    GIT_URL='https://github.com/nodeSolidServer/node-solid-server'
     ;;
   'node-solid-ws')
-    GIT_URL='https://github.com/solid/node-solid-ws.git'
+    GIT_URL='https://github.com/nodeSolidServer/node-solid-ws.git'
     ;;
   'node-webid')
     GIT_URL='https://github.com/linkeddata/node-webid.git'
     ;;
   'oidc-auth-manager')
-    GIT_URL='https://github.com/solid/oidc-auth-manager.git'
+    GIT_URL='https://github.com/nodeSolidServer/oidc-auth-manager.git'
     ;;
   'oidc-op')
-    GIT_URL='https://github.com/solid/oidc-op'
+    GIT_URL='https://github.com/nodeSolidServer/oidc-op'
     ;;
   'oidc-rp')
-    GIT_URL='https://github.com/solid/oidc-rp'
+    GIT_URL='https://github.com/nodeSolidServer/oidc-rp'
     ;;
   'oidc-rs')
-    GIT_URL='https://github.com/solid/oidc-rs'
+    GIT_URL='https://github.com/nodeSolidServer/oidc-rs'
     ;;
   'pane-registry' | 'registry')
     GIT_URL='https://github.com/solidos/pane-registry'
@@ -117,7 +125,7 @@ case $1 in
     GIT_URL='https://github.com/solidos/money-pane.git'
     ;;
   'solid-multi-rp-client')
-    GIT_URL='https://github.com/solid/solid-multi-rp-client.git'
+    GIT_URL='https://github.com/nodeSolidServer/solid-multi-rp-client.git'
     ;;
   'solid-namespace')
     GIT_URL='https://github.com/solid/solid-namespace'
