@@ -32,7 +32,7 @@ do
   if [[ "$package" == "mashlib" ]]; then
       command="sleep 20 && $command"
   elif [[ "$package" == "pivot" ]]; then
-      command="npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data -p 3000 -b http://localhost:3000 -m ."
+      command="npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data -p 3100 -b http://localhost:3100 -m ."
   fi
   # command="echo '---' && pwd && echo '---'"
 
