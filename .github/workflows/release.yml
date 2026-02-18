@@ -31,9 +31,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # Required for OIDC
-      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,10 +41,9 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
 
-      - name: Update npm to latest (required for OIDC)
-        run: npm install -g npm@latest
-
       - name: Run release orchestrator
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           BRANCH_ARG=""
           if [ -n "${{ inputs.branch }}" ]; then
