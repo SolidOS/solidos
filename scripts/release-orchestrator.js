@@ -216,6 +216,8 @@ function main() {
     if (!fs.existsSync(repoDir)) {
       if (cloneMissing && repo.repo) {
         run(`git clone ${repo.repo} ${repoDir}`, configDir, dryRun);
+        // Fetch all branches after cloning (clone only gets default branch)
+        run(`git fetch origin`, repoDir, dryRun);
       } else {
         console.log('Skipping: repo directory not found.');
         continue;
