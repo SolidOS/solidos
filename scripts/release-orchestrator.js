@@ -259,21 +259,69 @@ function main() {
       runSteps(repo.afterInstall, repoDir, dryRun, npmTag);
     }
 
-    // Check for changes AFTER install (which may have modified files)
-    // Skip this check in dry-run mode (to show full workflow)
-    const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
-    const shouldCheckDiff = !dryRun && skipIfNoDiff;
+    // Check for changes AFTER install (only for stable mode)
+    // Test mode always publishes
+    // Stable mode skips if no diff, unless branch was explicitly specified or dry-run
+    let shouldMergeDev = false;
     
-    if (shouldCheckDiff) {
-      const { ahead: aheadAfterInstall } = getAheadBehind(repoDir, branch);
-      if (aheadAfterInstall === 0) {
-        console.log('No changes vs origin after install. Skipping publish.');
-        summary.push({
-          name: repo.name,
-          status: 'skipped',
-          reason: 'no-diff'
-        });
-        continue;
+    if (mode === 'stable') {
+      const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
+      const shouldCheckDiff = !dryRun && skipIfNoDiff && !branchOverride;
+      
+      if (shouldCheckDiff) {
+        // For stable mode: check if dev branch has changes that main doesn't
+        const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+        
+        // Ensure we have latest dev refs
+        try {
+          runQuiet(`git fetch origin ${devBranch}:refs/remotes/origin/${devBranch}`, repoDir);
+        } catch (err) {
+          console.log(`Warning: Could not fetch ${devBranch}: ${err.message}`);
+        }
+        
+        // Count commits that dev has but main doesn't
+        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${devBranch}`, repoDir)) || 0;
+        
+        if (commitsAhead === 0) {
+          console.log(`No changes in origin/${devBranch} vs ${branch}. Skipping publish.`);
+          summary.push({
+            name: repo.name,
+            status: 'skipped',
+            reason: 'no-diff'
+          });
+          continue;
+        } else {
+          console.log(`Found ${commitsAhead} commit(s) in ${devBranch} not in ${branch}. Will merge and publish.`);
+          shouldMergeDev = true;
+        }
+      }
+    }
+    
+    // For stable mode: check if we need to merge dev (even if skipIfNoDiff is disabled)
+    if (mode === 'stable' && !shouldMergeDev) {
+      const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+      
+      try {
+        runQuiet(`git fetch origin ${devBranch}:refs/remotes/origin/${devBranch}`, repoDir);
+        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${devBranch}`, repoDir)) || 0;
+        
+        if (commitsAhead > 0) {
+          console.log(`Found ${commitsAhead} commit(s) in ${devBranch} not in ${branch}. Will merge before publish.`);
+          shouldMergeDev = true;
+        }
+      } catch (err) {
+        console.log(`Warning: Could not check ${devBranch}: ${err.message}`);
+      }
+    }
+    
+    // Merge dev into main before publishing (stable mode only)
+    if (mode === 'stable' && shouldMergeDev) {
+      const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+      console.log(`Merging origin/${devBranch} into ${branch}...`);
+      try {
+        run(`git merge origin/${devBranch} -m "Merge ${devBranch} into ${branch} for release [skip ci]"`, repoDir, dryRun);
+      } catch (err) {
+        throw new Error(`Failed to merge origin/${devBranch} into ${branch}. Please resolve conflicts manually.`);
       }
     }
 
