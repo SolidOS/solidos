@@ -23,6 +23,10 @@ on:
         description: Clone repos if missing
         required: true
         default: 'true'
+      branch:
+        description: Branch override (optional)
+        required: false
+        default: ''
 
 jobs:
   release:
@@ -41,8 +45,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          BRANCH_ARG=""
+          if [ -n "${{ inputs.branch }}" ]; then
+            BRANCH_ARG="--branch ${{ inputs.branch }}"
+          fi
           node scripts/release-orchestrator.js \
             --config ${{ inputs.config }} \
             --mode ${{ inputs.mode }} \
             --dry-run=${{ inputs.dry_run }} \
-            --clone-missing=${{ inputs.clone_missing }}
+            --clone-missing=${{ inputs.clone_missing }} \
+            $BRANCH_ARG
