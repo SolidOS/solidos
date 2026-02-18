@@ -74,15 +74,15 @@ function ensureClean(repoDir, dryRun) {
 }
 
 function ensureBranch(repoDir, branch, dryRun) {
-  // Check if branch exists
+  // Check if branch exists on remote first
   try {
-    runQuiet(`git rev-parse --verify ${branch}`, repoDir);
+    runQuiet(`git rev-parse --verify origin/${branch}`, repoDir);
   } catch (err) {
-    throw new Error(`Branch '${branch}' does not exist in this repository.`);
+    throw new Error(`Branch '${branch}' does not exist on origin.`);
   }
   
+  run(`git fetch origin`, repoDir, dryRun);
   run(`git checkout ${branch}`, repoDir, dryRun);
-  run('git fetch origin', repoDir, dryRun);
   run(`git pull --ff-only origin ${branch}`, repoDir, dryRun);
 }
 
