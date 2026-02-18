@@ -211,7 +211,7 @@ function publishStable(repoDir, modeConfig, dryRun) {
     : '';
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   console.log(`Publishing ${packageName || 'package'}@${version} with tag ${modeConfig.npmTag || 'latest'}...`);
-  run(`npm publish ${tag} --ignore-scripts`.trim(), repoDir, dryRun);
+  run(`npm publish ${tag} --ignore-scripts --no-provenance`.trim(), repoDir, dryRun);
 
   if (modeConfig.gitPush !== false && modeConfig.gitTag !== false) {
     const branch = modeConfig.branch || 'main';
@@ -257,7 +257,7 @@ function publishTest(repoDir, modeConfig, dryRun) {
   const tag = modeConfig.npmTag || 'test';
   console.log(`Publishing ${name || 'package'}@${version} with tag ${tag}...`);
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
-  run(`npm publish --tag ${tag} --ignore-scripts`, repoDir, dryRun);
+  run(`npm publish --tag ${tag} --ignore-scripts --no-provenance`, repoDir, dryRun);
 
   console.log('Note: test publish updated package.json/package-lock.json.');
   console.log('      Use git restore to clean if you do not want to keep it.');
