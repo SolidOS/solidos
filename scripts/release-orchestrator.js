@@ -74,15 +74,20 @@ function ensureClean(repoDir, dryRun) {
 }
 
 function ensureBranch(repoDir, branch, dryRun) {
-  // Check if branch exists
-  try {
-    runQuiet(`git rev-parse --verify ${branch}`, repoDir);
-  } catch (err) {
-    throw new Error(`Branch '${branch}' does not exist in this repository.`);
+  // Fetch all remote branches
+  run(`git fetch origin --all`, repoDir, dryRun);
+  
+  // Only verify branch exists if not dry-run (actual fetch happened)
+  if (!dryRun) {
+    try {
+      runQuiet(`git rev-parse --verify origin/${branch}`, repoDir);
+    } catch (err) {
+      throw new Error(`Branch '${branch}' does not exist on origin.`);
+    }
   }
   
-  run(`git checkout ${branch}`, repoDir, dryRun);
-  run('git fetch origin', repoDir, dryRun);
+  // Switch to branch (creates local tracking branch if needed)
+  run(`git switch ${branch} 2>/dev/null || git switch -c ${branch} origin/${branch}`, repoDir, dryRun);
   run(`git pull --ff-only origin ${branch}`, repoDir, dryRun);
 }
 
