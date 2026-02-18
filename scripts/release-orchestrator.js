@@ -82,7 +82,7 @@ function ensureBranch(repoDir, branch, dryRun) {
   }
   
   run(`git fetch origin`, repoDir, dryRun);
-  run(`git checkout ${branch}`, repoDir, dryRun);
+  run(`git switch ${branch} 2>/dev/null || git switch -c ${branch} origin/${branch}`, repoDir, dryRun);
   run(`git pull --ff-only origin ${branch}`, repoDir, dryRun);
 }
 
