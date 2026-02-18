@@ -145,6 +145,16 @@ function parseNpmInstallCmd(cmd, tag) {
   return mainCmd;
 }
 
+function packageVersionExists(name, version, repoDir) {
+  if (!name || !version) return false;
+  try {
+    const output = runQuiet(`npm view ${name}@${version} version`, repoDir);
+    return output.trim() !== '';
+  } catch (err) {
+    return false;
+  }
+}
+
 function publishStable(repoDir, modeConfig, dryRun) {
   const bump = modeConfig.versionBump || 'patch';
   if (modeConfig.gitTag === false) {
@@ -153,12 +163,15 @@ function publishStable(repoDir, modeConfig, dryRun) {
     run(`npm version ${bump} -m "Release %s"`, repoDir, dryRun);
   }
 
+  const pkg = getPackageJson(repoDir);
+  const packageName = pkg ? pkg.name : null;
   const version = getPackageVersion(repoDir);
 
   const tag = modeConfig.npmTag && modeConfig.npmTag !== 'latest'
     ? `--tag ${modeConfig.npmTag}`
     : '';
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
+  console.log(`Publishing ${packageName || 'package'}@${version} with tag ${modeConfig.npmTag || 'latest'}...`);
   run(`npm publish ${tag} --ignore-scripts`.trim(), repoDir, dryRun);
 
   if (modeConfig.gitPush !== false && modeConfig.gitTag !== false) {
@@ -166,23 +179,41 @@ function publishStable(repoDir, modeConfig, dryRun) {
     run(`git push origin ${branch} --follow-tags`, repoDir, dryRun);
   }
 
-  return { version, tag: modeConfig.npmTag || 'latest' };
+  return { packageName, version, tag: modeConfig.npmTag || 'latest' };
 }
 
 function publishTest(repoDir, modeConfig, dryRun) {
   const preid = modeConfig.preid || 'test';
   run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
 
-  const version = getPackageVersion(repoDir);
+  const pkg = getPackageJson(repoDir);
+  const name = pkg ? pkg.name : null;
+  let version = getPackageVersion(repoDir);
+  let attempts = 0;
+  const maxAttempts = 5;
+
+  if (!dryRun && name) {
+    while (attempts < maxAttempts && packageVersionExists(name, version, repoDir)) {
+      console.log(`Version ${version} already published. Bumping prerelease...`);
+      run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+      version = getPackageVersion(repoDir);
+      attempts += 1;
+    }
+
+    if (attempts === maxAttempts && packageVersionExists(name, version, repoDir)) {
+      throw new Error(`Unable to find an unpublished prerelease version after ${maxAttempts} attempts.`);
+    }
+  }
 
   const tag = modeConfig.npmTag || 'test';
+  console.log(`Publishing ${name || 'package'}@${version} with tag ${tag}...`);
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   run(`npm publish --tag ${tag} --ignore-scripts`, repoDir, dryRun);
 
   console.log('Note: test publish updated package.json/package-lock.json.');
   console.log('      Use git restore to clean if you do not want to keep it.');
 
-  return { version, tag };
+  return { packageName: name, version, tag };
 }
 
 function main() {
@@ -356,16 +387,20 @@ function main() {
       summary.push({
         name: repo.name,
         status: dryRun ? 'dry-run' : 'published',
+        packageName: result.packageName || null,
         version: result.version,
-        tag: result.tag
+        tag: result.tag,
+        publishedAs: result.packageName ? `${result.packageName}@${result.version}` : null
       });
     } else if (mode === 'stable') {
       const result = publishStable(repoDir, effectiveModeConfig, dryRun);
       summary.push({
         name: repo.name,
         status: dryRun ? 'dry-run' : 'published',
+        packageName: result.packageName || null,
         version: result.version,
-        tag: result.tag
+        tag: result.tag,
+        publishedAs: result.packageName ? `${result.packageName}@${result.version}` : null
       });
     } else {
       throw new Error(`Unknown mode: ${mode}`);
