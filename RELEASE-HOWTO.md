@@ -30,22 +30,32 @@ solidos/ (main branch)
 
 **Workflow:**
 ```
-You click "Run workflow" button in GitHub Actions
+You click "Run workflow" button in GitHub Actions (mode=test or mode=stable)
           ↓
 release.yml starts
           ↓
-Runs: node scripts/release-orchestrator.js --mode stable ...
+Runs: node scripts/release-orchestrator.js --mode <test|stable> ...
           ↓
 Script reads release.config.json (list of repos to release)
           ↓
 For each repo listed:
   - Clone if missing (optional)
+  - Checkout branch (dev for test, main for stable)
   - npm install
+  - afterInstall with @test or @latest tags (with fallback)
+  
+  [Stable mode only: Check skip logic]
+    - Compare origin/dev vs main
+    - If dev has new commits → merge origin/dev into main with [skip ci]
+    - If no changes and --branch not specified → skip this repo
+  
+  [Test mode: always continues]
+  
   - npm test
   - npm run build
-  - npm version (bump patch/minor/major)
-  - npm publish (to npm registry)
-  - git push + tags (for stable only)
+  - npm version (bump patch/minor/major/prerelease)
+  - npm publish (to npm registry with @test or @latest tag)
+  - git push + tags (stable only)
           ↓
 Generates release-summary.json
 ```
@@ -88,21 +98,27 @@ node scripts/release-orchestrator.js --mode test --dry-run=true
 - Publishes to npm with `@test` tag
 - Does NOT create git tags
 - Results in GitHub Actions logs and artifacts
-- **Use case:** Pre-release versions for testing
+- **Always publishes** (no skip logic)
+- **Use case:** Pre-release versions for testing from dev branch
 
 **Scenario 3: GitHub Stable Release**
 - Click Actions → "Solidos Release" → Run workflow
 - Inputs: mode=stable, dry_run=false
+- Automatically merges origin/dev → main if dev has new commits
 - Publishes to npm with `@latest` tag
 - Creates git tags and pushes to GitHub
 - Results in GitHub Actions logs and artifacts
-- **Use case:** Production releases
+- Skips if dev has no new commits (unless --branch=main specified)
+- **Use case:** Production releases to @latest
 
 Local dry-run
 - Show the exact commands without running them:
   node scripts/release-orchestrator.js --mode test --dry-run
 - Override the branch:
   node scripts/release-orchestrator.js --mode test --dry-run --branch develop
+- Force stable publish regardless of changes:
+  node scripts/release-orchestrator.js --mode stable --branch main
+- Dry-run allows untracked files (ignored for convenience)
 
 CI runs (GitHub Actions)
 - Trigger workflow "Solidos Release" with inputs:
@@ -118,6 +134,7 @@ Command-line Options
 - --dry-run: true or false (default: false)
 - --clone-missing: true or false (default: false)
 - --branch: override branch for all repos (optional)
+  - Also disables skip logic in stable mode (forces publish)
 - --summary-path: path to output summary file (default: release-summary.json)
 
 Branch Configuration
@@ -128,39 +145,62 @@ By default, both test and stable modes use the `main` branch. To use different b
 ```json
 {
   "defaultBranch": "main",
-  "modes": {
-    "test": {
-      "branch": "develop",
+  "modes": [
+    {
+      "name": "test",
+      "branch": "dev",
       "versionBump": "prerelease",
-      "preid": "test"
+      "preid": "test",
+      "npmTag": "test"
     },
-    "stable": {
+    {
+      "name": "stable",
       "branch": "main",
-      "versionBump": "patch"
+      "versionBump": "patch",
+      "npmTag": "latest"
     }
-  },
+  ],
   "repos": [
     {
       "name": "solid-panes",
-      "path": "./workspaces/solid-panes"
+      "path": "./workspaces/solid-panes",
+      "afterInstall": [
+        "npm install profile-pane"
+      ]
     }
   ]
 }
 ```
 
-Now:
-- Test releases pull from `develop` branch
-- Stable releases pull from `main` branch
+Behavior:
+- **Test mode:** 
+  - Pulls from `dev` branch
+  - Always publishes (no skip)
+  - afterInstall `npm install profile-pane` becomes `npm install profile-pane@test || npm install profile-pane@latest`
+- **Stable mode:**
+  - Pulls from `main` branch
+  - Auto-merges origin/dev if it has new commits
+  - Skips if no changes (unless --branch=main specified)
 
 Publish modes
 - test:
+  - Runs on: dev branch (or configured branch)
   - npm version prerelease --preid test
-  - npm publish --tag test
+  - npm publish --tag test --ignore-scripts
   - does NOT create git tags or push
+  - **Always publishes** (no skip check)
+  - If the prerelease version already exists, it auto-bumps again before publishing
+  - Temporarily disables preversion/version/postversion scripts during version bump
+  - afterInstall commands use @test tag with @latest fallback
 - stable:
+  - Runs on: main branch (or configured branch)
+  - Checks if origin/dev has commits that main doesn't
+  - If yes: auto-merges origin/dev → main (may fail on conflicts)
   - npm version patch (or configured bump)
-  - npm publish (latest)
+  - npm publish (latest) with --ignore-scripts
   - creates git tags and pushes by default
+  - Skips if no changes (unless --branch explicitly specified)
+  - afterInstall commands use @latest tag
 
 Multiple configs
 - Create additional config files (for example):
@@ -170,15 +210,26 @@ Multiple configs
 - Use with: --config release.config.test.json
 
 Skip logic
-- If there is no git diff vs origin/main (or configured branch), the repo is skipped.
+- **Test mode:** Always publishes (no skip logic)
+- **Stable mode:**
+  - Compares origin/dev vs main to detect unpublished changes
+  - If origin/dev has commits that main doesn't: merges and publishes
+  - If no changes: skips publishing
+  - Override: `--branch=main` forces publish regardless of changes
+  - Merge happens automatically before publish (fails if conflicts)
+  - Merge commit includes `[skip ci]` to prevent redundant ci.yml runs
 
 Summary output
 - A summary is printed at the end and written to release-summary.json.
 - Override with: --summary-path path/to/summary.json
 
-npm install test builds
-- npm install <pkg>@test installs the latest package published under the "test" dist-tag.
-- You can also install a specific test version by pinning it explicitly.
+npm install with dist-tags
+- **Test mode:** afterInstall commands automatically inject @test tags
+  - Example: `npm install solid-ui` becomes `npm install solid-ui@test`
+  - Fallback: If @test doesn't exist, tries @latest automatically
+  - Command: `npm install solid-ui@test || npm install solid-ui@latest`
+- **Stable mode:** afterInstall commands use @latest tags (default npm behavior)
+- Manual install: `npm install <pkg>@test` to get test versions
 
 Config options (release.config.json)
 - defaultBranch: branch name used if repo does not override.
@@ -225,6 +276,12 @@ Each workspace repo (solid-panes, folder-pane, etc.) has its own `ci.yml` workfl
    └─ [waiting for manual release trigger]
    └─ You click "Run workflow" in Actions
       └─ release.yml runs → publishes to npm
+         └─ (stable mode) auto-merges dev→main with [skip ci]
+         └─ pushes version tags and commits
+         └─ ci.yml does NOT run (prevented by [skip ci])
 ```
 
-**Important:** Waiting PRs are NOT automatically published. You must manually trigger the release after merging.
+**Important Notes:**
+- Waiting PRs are NOT automatically published. You must manually trigger the release after merging.
+- When stable mode merges dev→main automatically, it uses `[skip ci]` in the commit message to prevent redundant ci.yml runs in individual repos.
+- Tests/builds already ran in the release orchestrator, so skipping ci.yml avoids duplicate work.

@@ -75,7 +75,7 @@ function ensureClean(repoDir, dryRun) {
 
 function ensureBranch(repoDir, branch, dryRun) {
   // Fetch all remote branches
-  run(`git fetch origin --all`, repoDir, dryRun);
+  run(`git fetch --all`, repoDir, dryRun);
   
   // Only verify branch exists if not dry-run (actual fetch happened)
   if (!dryRun) {
@@ -145,42 +145,124 @@ function parseNpmInstallCmd(cmd, tag) {
   return mainCmd;
 }
 
-function publishStable(repoDir, modeConfig, dryRun) {
-  const bump = modeConfig.versionBump || 'patch';
-  if (modeConfig.gitTag === false) {
-    run(`npm version ${bump} --no-git-tag-version`, repoDir, dryRun);
-  } else {
-    run(`npm version ${bump} -m "Release %s"`, repoDir, dryRun);
+function disableVersionScripts(repoDir) {
+  const pkgPath = path.join(repoDir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return null;
+  const pkg = readJson(pkgPath);
+  if (!pkg.scripts) return null;
+
+  const original = { ...pkg.scripts };
+  const updated = { ...pkg.scripts };
+  let changed = false;
+
+  for (const key of Object.keys(updated)) {
+    if (key === 'preversion' || key === 'postversion' || key === 'version') {
+      updated[`ignore:${key}`] = updated[key];
+      delete updated[key];
+      changed = true;
+    }
   }
 
+  if (!changed) return null;
+
+  pkg.scripts = updated;
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+  return original;
+}
+
+function restoreVersionScripts(repoDir, originalScripts) {
+  if (!originalScripts) return;
+  const pkgPath = path.join(repoDir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return;
+  const pkg = readJson(pkgPath);
+  pkg.scripts = originalScripts;
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+}
+
+function packageVersionExists(name, version, repoDir) {
+  if (!name || !version) return false;
+  try {
+    const output = runQuiet(`npm view ${name}@${version} version`, repoDir);
+    return output.trim() !== '';
+  } catch (err) {
+    return false;
+  }
+}
+
+function publishStable(repoDir, modeConfig, dryRun) {
+  const bump = modeConfig.versionBump || 'patch';
+  const originalScripts = disableVersionScripts(repoDir);
+  try {
+    if (modeConfig.gitTag === false) {
+      run(`npm version ${bump} --no-git-tag-version`, repoDir, dryRun);
+    } else {
+      run(`npm version ${bump} -m "Release %s"`, repoDir, dryRun);
+    }
+  } finally {
+    restoreVersionScripts(repoDir, originalScripts);
+  }
+
+  const pkg = getPackageJson(repoDir);
+  const packageName = pkg ? pkg.name : null;
   const version = getPackageVersion(repoDir);
 
   const tag = modeConfig.npmTag && modeConfig.npmTag !== 'latest'
     ? `--tag ${modeConfig.npmTag}`
     : '';
-  run(`npm publish ${tag}`.trim(), repoDir, dryRun);
+  // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
+  console.log(`Publishing ${packageName || 'package'}@${version} with tag ${modeConfig.npmTag || 'latest'}...`);
+  run(`npm publish ${tag} --ignore-scripts --no-provenance`.trim(), repoDir, dryRun);
 
   if (modeConfig.gitPush !== false && modeConfig.gitTag !== false) {
     const branch = modeConfig.branch || 'main';
     run(`git push origin ${branch} --follow-tags`, repoDir, dryRun);
   }
 
-  return { version, tag: modeConfig.npmTag || 'latest' };
+  return { packageName, version, tag: modeConfig.npmTag || 'latest' };
 }
 
 function publishTest(repoDir, modeConfig, dryRun) {
   const preid = modeConfig.preid || 'test';
-  run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+  const originalScripts = disableVersionScripts(repoDir);
+  try {
+    run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+  } finally {
+    restoreVersionScripts(repoDir, originalScripts);
+  }
 
-  const version = getPackageVersion(repoDir);
+  const pkg = getPackageJson(repoDir);
+  const name = pkg ? pkg.name : null;
+  let version = getPackageVersion(repoDir);
+  let attempts = 0;
+  const maxAttempts = 5;
+
+  if (!dryRun && name) {
+    while (attempts < maxAttempts && packageVersionExists(name, version, repoDir)) {
+      console.log(`Version ${version} already published. Bumping prerelease...`);
+      const retryOriginalScripts = disableVersionScripts(repoDir);
+      try {
+        run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+      } finally {
+        restoreVersionScripts(repoDir, retryOriginalScripts);
+      }
+      version = getPackageVersion(repoDir);
+      attempts += 1;
+    }
+
+    if (attempts === maxAttempts && packageVersionExists(name, version, repoDir)) {
+      throw new Error(`Unable to find an unpublished prerelease version after ${maxAttempts} attempts.`);
+    }
+  }
 
   const tag = modeConfig.npmTag || 'test';
-  run(`npm publish --tag ${tag}`, repoDir, dryRun);
+  console.log(`Publishing ${name || 'package'}@${version} with tag ${tag}...`);
+  // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
+  run(`npm publish --tag ${tag} --ignore-scripts --no-provenance`, repoDir, dryRun);
 
   console.log('Note: test publish updated package.json/package-lock.json.');
   console.log('      Use git restore to clean if you do not want to keep it.');
 
-  return { version, tag };
+  return { packageName: name, version, tag };
 }
 
 function main() {
@@ -259,21 +341,69 @@ function main() {
       runSteps(repo.afterInstall, repoDir, dryRun, npmTag);
     }
 
-    // Check for changes AFTER install (which may have modified files)
-    // Skip this check in dry-run mode (to show full workflow)
-    const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
-    const shouldCheckDiff = !dryRun && skipIfNoDiff;
+    // Check for changes AFTER install (only for stable mode)
+    // Test mode always publishes
+    // Stable mode skips if no diff, unless branch was explicitly specified or dry-run
+    let shouldMergeDev = false;
     
-    if (shouldCheckDiff) {
-      const { ahead: aheadAfterInstall } = getAheadBehind(repoDir, branch);
-      if (aheadAfterInstall === 0) {
-        console.log('No changes vs origin after install. Skipping publish.');
-        summary.push({
-          name: repo.name,
-          status: 'skipped',
-          reason: 'no-diff'
-        });
-        continue;
+    if (mode === 'stable') {
+      const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
+      const shouldCheckDiff = !dryRun && skipIfNoDiff && !branchOverride;
+      
+      if (shouldCheckDiff) {
+        // For stable mode: check if dev branch has changes that main doesn't
+        const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+        
+        // Ensure we have latest dev refs
+        try {
+          runQuiet(`git fetch origin ${devBranch}:refs/remotes/origin/${devBranch}`, repoDir);
+        } catch (err) {
+          console.log(`Warning: Could not fetch ${devBranch}: ${err.message}`);
+        }
+        
+        // Count commits that dev has but main doesn't
+        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${devBranch}`, repoDir)) || 0;
+        
+        if (commitsAhead === 0) {
+          console.log(`No changes in origin/${devBranch} vs ${branch}. Skipping publish.`);
+          summary.push({
+            name: repo.name,
+            status: 'skipped',
+            reason: 'no-diff'
+          });
+          continue;
+        } else {
+          console.log(`Found ${commitsAhead} commit(s) in ${devBranch} not in ${branch}. Will merge and publish.`);
+          shouldMergeDev = true;
+        }
+      }
+    }
+    
+    // For stable mode: check if we need to merge dev (even if skipIfNoDiff is disabled)
+    if (mode === 'stable' && !shouldMergeDev) {
+      const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+      
+      try {
+        runQuiet(`git fetch origin ${devBranch}:refs/remotes/origin/${devBranch}`, repoDir);
+        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${devBranch}`, repoDir)) || 0;
+        
+        if (commitsAhead > 0) {
+          console.log(`Found ${commitsAhead} commit(s) in ${devBranch} not in ${branch}. Will merge before publish.`);
+          shouldMergeDev = true;
+        }
+      } catch (err) {
+        console.log(`Warning: Could not check ${devBranch}: ${err.message}`);
+      }
+    }
+    
+    // Merge dev into main before publishing (stable mode only)
+    if (mode === 'stable' && shouldMergeDev) {
+      const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+      console.log(`Merging origin/${devBranch} into ${branch}...`);
+      try {
+        run(`git merge origin/${devBranch} -m "Merge ${devBranch} into ${branch} for release [skip ci]"`, repoDir, dryRun);
+      } catch (err) {
+        throw new Error(`Failed to merge origin/${devBranch} into ${branch}. Please resolve conflicts manually.`);
       }
     }
 
@@ -306,16 +436,20 @@ function main() {
       summary.push({
         name: repo.name,
         status: dryRun ? 'dry-run' : 'published',
+        packageName: result.packageName || null,
         version: result.version,
-        tag: result.tag
+        tag: result.tag,
+        publishedAs: result.packageName ? `${result.packageName}@${result.version}` : null
       });
     } else if (mode === 'stable') {
       const result = publishStable(repoDir, effectiveModeConfig, dryRun);
       summary.push({
         name: repo.name,
         status: dryRun ? 'dry-run' : 'published',
+        packageName: result.packageName || null,
         version: result.version,
-        tag: result.tag
+        tag: result.tag,
+        publishedAs: result.packageName ? `${result.packageName}@${result.version}` : null
       });
     } else {
       throw new Error(`Unknown mode: ${mode}`);
