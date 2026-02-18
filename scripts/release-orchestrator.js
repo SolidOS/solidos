@@ -145,6 +145,40 @@ function parseNpmInstallCmd(cmd, tag) {
   return mainCmd;
 }
 
+function disableVersionScripts(repoDir) {
+  const pkgPath = path.join(repoDir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return null;
+  const pkg = readJson(pkgPath);
+  if (!pkg.scripts) return null;
+
+  const original = { ...pkg.scripts };
+  const updated = { ...pkg.scripts };
+  let changed = false;
+
+  for (const key of Object.keys(updated)) {
+    if (key === 'preversion' || key === 'postversion' || key === 'version') {
+      updated[`ignore:${key}`] = updated[key];
+      delete updated[key];
+      changed = true;
+    }
+  }
+
+  if (!changed) return null;
+
+  pkg.scripts = updated;
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+  return original;
+}
+
+function restoreVersionScripts(repoDir, originalScripts) {
+  if (!originalScripts) return;
+  const pkgPath = path.join(repoDir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return;
+  const pkg = readJson(pkgPath);
+  pkg.scripts = originalScripts;
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+}
+
 function packageVersionExists(name, version, repoDir) {
   if (!name || !version) return false;
   try {
@@ -157,10 +191,15 @@ function packageVersionExists(name, version, repoDir) {
 
 function publishStable(repoDir, modeConfig, dryRun) {
   const bump = modeConfig.versionBump || 'patch';
-  if (modeConfig.gitTag === false) {
-    run(`npm version ${bump} --no-git-tag-version`, repoDir, dryRun);
-  } else {
-    run(`npm version ${bump} -m "Release %s"`, repoDir, dryRun);
+  const originalScripts = disableVersionScripts(repoDir);
+  try {
+    if (modeConfig.gitTag === false) {
+      run(`npm version ${bump} --no-git-tag-version`, repoDir, dryRun);
+    } else {
+      run(`npm version ${bump} -m "Release %s"`, repoDir, dryRun);
+    }
+  } finally {
+    restoreVersionScripts(repoDir, originalScripts);
   }
 
   const pkg = getPackageJson(repoDir);
@@ -184,7 +223,12 @@ function publishStable(repoDir, modeConfig, dryRun) {
 
 function publishTest(repoDir, modeConfig, dryRun) {
   const preid = modeConfig.preid || 'test';
-  run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+  const originalScripts = disableVersionScripts(repoDir);
+  try {
+    run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+  } finally {
+    restoreVersionScripts(repoDir, originalScripts);
+  }
 
   const pkg = getPackageJson(repoDir);
   const name = pkg ? pkg.name : null;
@@ -195,7 +239,12 @@ function publishTest(repoDir, modeConfig, dryRun) {
   if (!dryRun && name) {
     while (attempts < maxAttempts && packageVersionExists(name, version, repoDir)) {
       console.log(`Version ${version} already published. Bumping prerelease...`);
-      run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+      const retryOriginalScripts = disableVersionScripts(repoDir);
+      try {
+        run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+      } finally {
+        restoreVersionScripts(repoDir, retryOriginalScripts);
+      }
       version = getPackageVersion(repoDir);
       attempts += 1;
     }

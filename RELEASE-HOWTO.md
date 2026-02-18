@@ -190,6 +190,7 @@ Publish modes
   - does NOT create git tags or push
   - **Always publishes** (no skip check)
   - If the prerelease version already exists, it auto-bumps again before publishing
+  - Temporarily disables preversion/version/postversion scripts during version bump
   - afterInstall commands use @test tag with @latest fallback
 - stable:
   - Runs on: main branch (or configured branch)
