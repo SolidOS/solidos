@@ -25,7 +25,7 @@
     {
       "name": "profile-pane",
       "path": "workspaces/profile-pane",
-      "repo": "https://github.com/solid/profile-pane.git",
+      "repo": "https://github.com/SolidOS/profile-pane.git",
       "afterInstall": [
         "npm install rdflib@latest"
       ]
@@ -33,7 +33,7 @@
     {
       "name": "solid-panes",
       "path": "workspaces/solid-panes",
-      "repo": "https://github.com/solid/solid-panes.git",
+      "repo": "https://github.com/SolidOS/solid-panes.git",
       "afterInstall": [
           "npm install profile-pane"
       ]
@@ -41,7 +41,7 @@
     {
       "name": "mashlib",
       "path": "workspaces/mashlib",
-      "repo": "https://github.com/solid/mashlib.git",
+      "repo": "https://github.com/SolidOS/mashlib.git",
       "afterInstall": [
         "npm install solid-panes"
       ]

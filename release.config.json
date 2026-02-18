@@ -25,7 +25,7 @@
     {
       "name": "solid-logic",
       "path": "workspaces/solid-logic",
-      "repo": "https://github.com/solid/solid-logic.git",
+      "repo": "https://github.com/SolidOS/solid-logic.git",
       "afterInstall": [
         "npm install rdflib@latest solid-namespace@latest"
       ]
@@ -33,7 +33,7 @@
     {
       "name": "pane-registry",
       "path": "workspaces/pane-registry",
-      "repo": "https://github.com/solid/pane-registry.git",
+      "repo": "https://github.com/SolidOS/pane-registry.git",
       "afterInstall": [
         "npm install solid-logic rdflib@latest"
       ]
@@ -41,7 +41,7 @@
     {
       "name": "solid-ui",
       "path": "workspaces/solid-ui",
-      "repo": "https://github.com/solid/solid-ui.git",
+      "repo": "https://github.com/SolidOS/solid-ui.git",
       "afterInstall": [
         "npm install pane-registry solid-logic rdflib@latest solid-namespace@latest"
       ]
@@ -49,7 +49,7 @@
     {
       "name": "activitystreams-pane",
       "path": "workspaces/activitystreams-pane",
-      "repo": "https://github.com/solid/activitystreams-pane.git",
+      "repo": "https://github.com/SolidOS/activitystreams-pane.git",
       "afterInstall": [
         "npm install solid-ui pane-registry solid-logic rdflib@latest"
       ]
@@ -57,7 +57,7 @@
     {
       "name": "chat-pane",
       "path": "workspaces/chat-pane",
-      "repo": "https://github.com/solid/chat-pane.git",
+      "repo": "https://github.com/SolidOS/chat-pane.git",
       "afterInstall": [
         "npm install solid-ui solid-logic rdflib@latest"
       ]
@@ -65,7 +65,7 @@
     {
       "name": "folder-pane",
       "path": "workspaces/folder-pane",
-      "repo": "https://github.com/solid/folder-pane.git",
+      "repo": "https://github.com/SolidOS/folder-pane.git",
       "afterInstall": [
         "npm install solid-ui solid-logic rdflib@latest"
       ]
@@ -73,7 +73,7 @@
     {
       "name": "issue-pane",
       "path": "workspaces/issue-pane",
-      "repo": "https://github.com/solid/issue-pane.git",
+      "repo": "https://github.com/SolidOS/issue-pane.git",
       "afterInstall": [
         "npm install solid-ui solid-logic rdflib@latest"
       ]
@@ -81,7 +81,7 @@
     {
       "name": "meeting-pane",
       "path": "workspaces/meeting-pane",
-      "repo": "https://github.com/solid/meeting-pane.git",
+      "repo": "https://github.com/SolidOS/meeting-pane.git",
       "afterInstall": [
         "npm install solid-ui solid-logic rdflib@latest"
       ]
@@ -89,7 +89,7 @@
     {
       "name": "contacts-pane",
       "path": "workspaces/contacts-pane",
-      "repo": "https://github.com/solid/contacts-pane.git",
+      "repo": "https://github.com/SolidOS/contacts-pane.git",
       "afterInstall": [
         "npm install solid-ui solid-logic rdflib@latest"
       ]
@@ -97,7 +97,7 @@
     {
       "name": "profile-pane",
       "path": "workspaces/profile-pane",
-      "repo": "https://github.com/solid/profile-pane.git",
+      "repo": "https://github.com/SolidOS/profile-pane.git",
       "afterInstall": [
         "npm install chat-pane solid-ui pane-registry solid-logic rdflib@latest"
       ]
@@ -105,7 +105,7 @@
     {
       "name": "source-pane",
       "path": "workspaces/source-pane",
-      "repo": "https://github.com/solid/source-pane.git",
+      "repo": "https://github.com/SolidOS/source-pane.git",
       "afterInstall": [
         "npm install solid-ui solid-logic rdflib@latest"
       ]
@@ -113,7 +113,7 @@
     {
       "name": "solid-panes",
       "path": "workspaces/solid-panes",
-      "repo": "https://github.com/solid/solid-panes.git",
+      "repo": "https://github.com/SolidOS/solid-panes.git",
       "afterInstall": [
           "npm install activitystreams-pane chat-pane contacts-pane folder-pane issue-pane meeting-pane pane-registry profile-pane source-pane solid-ui solid-logic solid-namespace@latest rdflib@latest"
       ]
@@ -121,7 +121,7 @@
     {
       "name": "mashlib",
       "path": "workspaces/mashlib",
-      "repo": "https://github.com/solid/mashlib.git",
+      "repo": "https://github.com/SolidOS/mashlib.git",
       "afterInstall": [
         "npm install solid-panes solid-ui solid-logic rdflib@latest"
       ]
