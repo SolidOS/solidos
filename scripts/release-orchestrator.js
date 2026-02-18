@@ -75,7 +75,7 @@ function ensureClean(repoDir, dryRun) {
 
 function ensureBranch(repoDir, branch, dryRun) {
   // Fetch all remote branches
-  run(`git fetch origin --all`, repoDir, dryRun);
+  run(`git fetch --all`, repoDir, dryRun);
   
   // Only verify branch exists if not dry-run (actual fetch happened)
   if (!dryRun) {
