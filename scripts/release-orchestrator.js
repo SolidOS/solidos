@@ -60,14 +60,27 @@ function hasScript(pkg, scriptName) {
   return !!(pkg && pkg.scripts && pkg.scripts[scriptName]);
 }
 
-function ensureClean(repoDir) {
+function ensureClean(repoDir, dryRun) {
   const status = runQuiet('git status --porcelain', repoDir);
   if (status) {
-    throw new Error('Working tree not clean. Commit or stash changes first.');
+    const message = 'Working tree not clean. Commit or stash changes first.';
+    if (dryRun) {
+      console.log(`[WARNING] ${message}`);
+      console.log('Continuing because this is a dry-run...');
+    } else {
+      throw new Error(message);
+    }
   }
 }
 
 function ensureBranch(repoDir, branch, dryRun) {
+  // Check if branch exists
+  try {
+    runQuiet(`git rev-parse --verify ${branch}`, repoDir);
+  } catch (err) {
+    throw new Error(`Branch '${branch}' does not exist in this repository.`);
+  }
+  
   run(`git checkout ${branch}`, repoDir, dryRun);
   run('git fetch origin', repoDir, dryRun);
   run(`git pull --ff-only origin ${branch}`, repoDir, dryRun);
@@ -97,21 +110,34 @@ function parseNpmInstallCmd(cmd, tag) {
   }
 
   const result = ['npm', 'install'];
+  const fallback = ['npm', 'install'];
+  
   for (let i = 2; i < parts.length; i++) {
     const part = parts[i];
     
     // Keep flags, option values, and packages with existing tags as-is
     if (part.startsWith('-') || part.startsWith('@') || part.includes('@')) {
       result.push(part);
+      fallback.push(part);
     } else if (part === '') {
       // Skip empty strings
       continue;
     } else {
       // This is a package name, add tag
       result.push(`${part}@${tag}`);
+      fallback.push(`${part}@latest`);
     }
   }
-  return result.join(' ');
+  
+  const mainCmd = result.join(' ');
+  
+  // For test mode, add fallback to @latest if @test doesn't exist
+  if (tag === 'test') {
+    const fallbackCmd = fallback.join(' ');
+    return `${mainCmd} || ${fallbackCmd}`;
+  }
+  
+  return mainCmd;
 }
 
 function publishStable(repoDir, modeConfig, dryRun) {
@@ -159,6 +185,7 @@ function main() {
   const dryRun = toBool(args['dry-run'], false);
   const cloneMissing = toBool(args['clone-missing'], false);
   const summaryPath = path.resolve(process.cwd(), args['summary-path'] || 'release-summary.json');
+  const branchOverride = args.branch; // Command-line branch override
   const isCi = process.env.GITHUB_ACTIONS === 'true';
 
   if (!isCi && !dryRun) {
@@ -181,7 +208,7 @@ function main() {
 
   for (const repo of config.repos) {
     const repoDir = path.resolve(configDir, repo.path);
-    const branch = repo.branch || modeConfig.branch || config.defaultBranch || 'main';
+    const branch = branchOverride || repo.branch || modeConfig.branch || config.defaultBranch || 'main';
     const effectiveModeConfig = { ...modeConfig, branch };
 
     console.log(`\n==> ${repo.name} (${repoDir})`);
@@ -195,33 +222,52 @@ function main() {
       }
     }
 
-    ensureClean(repoDir);
-    ensureBranch(repoDir, branch, dryRun);
+    ensureClean(repoDir, dryRun);
+    
+    try {
+      ensureBranch(repoDir, branch, dryRun);
+    } catch (err) {
+      console.log(`Skipping: ${err.message}`);
+      summary.push({
+        name: repo.name,
+        status: 'skipped',
+        reason: 'branch-not-found'
+      });
+      continue;
+    }
 
     const { behind, ahead } = getAheadBehind(repoDir, branch);
     if (behind > 0) {
       throw new Error(`Local branch behind origin/${branch}. Pull first.`);
     }
 
-    const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
-    if (skipIfNoDiff && ahead === 0) {
-      console.log('No changes vs origin. Skipping publish.');
-      summary.push({
-        name: repo.name,
-        status: 'skipped',
-        reason: 'no-diff'
-      });
-      continue;
-    }
-
     const pkg = getPackageJson(repoDir);
 
+    // Run install phase first (may modify files)
     if (repo.install !== false) {
       const installCmd = repo.install || config.defaultInstall || 'npm install';
       runSteps(repo.beforeInstall, repoDir, dryRun);
       run(installCmd, repoDir, dryRun);
       const npmTag = effectiveModeConfig.npmTag || 'latest';
       runSteps(repo.afterInstall, repoDir, dryRun, npmTag);
+    }
+
+    // Check for changes AFTER install (which may have modified files)
+    // Skip this check in dry-run mode (to show full workflow)
+    const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
+    const shouldCheckDiff = !dryRun && skipIfNoDiff;
+    
+    if (shouldCheckDiff) {
+      const { ahead: aheadAfterInstall } = getAheadBehind(repoDir, branch);
+      if (aheadAfterInstall === 0) {
+        console.log('No changes vs origin after install. Skipping publish.');
+        summary.push({
+          name: repo.name,
+          status: 'skipped',
+          reason: 'no-diff'
+        });
+        continue;
+      }
     }
 
     if (repo.test !== false) {

@@ -1,0 +1,50 @@
+{
+  "defaultBranch": "main",
+  "skipIfNoDiff": true,
+  "defaultInstall": "npm install",
+  "defaultTest": "npm test",
+  "defaultBuild": "npm run build",
+  "modes": {
+    "stable": {
+      "branch": "main",
+      "versionBump": "patch",
+      "npmTag": "latest",
+      "gitTag": true,
+      "gitPush": true
+    },
+    "test": {
+      "branch": "dev",
+      "versionBump": "prerelease",
+      "preid": "test",
+      "npmTag": "test",
+      "gitTag": false,
+      "gitPush": false
+    }
+  },
+  "repos": [
+    {
+      "name": "profile-pane",
+      "path": "workspaces/profile-pane",
+      "repo": "https://github.com/solid/profile-pane.git",
+      "afterInstall": [
+        "npm install rdflib@latest"
+      ]
+    },
+    {
+      "name": "solid-panes",
+      "path": "workspaces/solid-panes",
+      "repo": "https://github.com/solid/solid-panes.git",
+      "afterInstall": [
+          "npm install profile-pane"
+      ]
+    },
+    {
+      "name": "mashlib",
+      "path": "workspaces/mashlib",
+      "repo": "https://github.com/solid/mashlib.git",
+      "afterInstall": [
+        "npm install solid-panes"
+      ]
+    }
+  ]
+}

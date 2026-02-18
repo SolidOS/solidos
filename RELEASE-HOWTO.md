@@ -101,6 +101,8 @@ node scripts/release-orchestrator.js --mode test --dry-run=true
 Local dry-run
 - Show the exact commands without running them:
   node scripts/release-orchestrator.js --mode test --dry-run
+- Override the branch:
+  node scripts/release-orchestrator.js --mode test --dry-run --branch develop
 
 CI runs (GitHub Actions)
 - Trigger workflow "Solidos Release" with inputs:
@@ -108,6 +110,15 @@ CI runs (GitHub Actions)
   - config: release.config.json (or another config file)
   - dry_run: true or false
   - clone_missing: true or false
+  - branch: optional branch name override
+
+Command-line Options
+- --mode: test or stable (default: stable)
+- --config: path to config file (default: release.config.json)
+- --dry-run: true or false (default: false)
+- --clone-missing: true or false (default: false)
+- --branch: override branch for all repos (optional)
+- --summary-path: path to output summary file (default: release-summary.json)
 
 Branch Configuration
 
