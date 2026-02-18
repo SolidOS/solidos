@@ -186,7 +186,7 @@ Publish modes
 - test:
   - Runs on: dev branch (or configured branch)
   - npm version prerelease --preid test
-  - npm publish --tag test
+  - npm publish --tag test --ignore-scripts
   - does NOT create git tags or push
   - **Always publishes** (no skip check)
   - afterInstall commands use @test tag with @latest fallback
@@ -195,7 +195,7 @@ Publish modes
   - Checks if origin/dev has commits that main doesn't
   - If yes: auto-merges origin/dev → main (may fail on conflicts)
   - npm version patch (or configured bump)
-  - npm publish (latest)
+  - npm publish (latest) with --ignore-scripts
   - creates git tags and pushes by default
   - Skips if no changes (unless --branch explicitly specified)
   - afterInstall commands use @latest tag
