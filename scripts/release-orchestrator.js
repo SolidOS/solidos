@@ -223,35 +223,61 @@ function publishStable(repoDir, modeConfig, dryRun) {
 
 function publishTest(repoDir, modeConfig, dryRun) {
   const preid = modeConfig.preid || 'test';
-  const originalScripts = disableVersionScripts(repoDir);
-  try {
-    run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
-  } finally {
-    restoreVersionScripts(repoDir, originalScripts);
-  }
-
   const pkg = getPackageJson(repoDir);
   const name = pkg ? pkg.name : null;
-  let version = getPackageVersion(repoDir);
-  let attempts = 0;
-  const maxAttempts = 5;
+  const baseVersion = pkg ? pkg.version : null;
 
+  // Get the latest @test version from npm
+  let latestTestVersion = null;
   if (!dryRun && name) {
-    while (attempts < maxAttempts && packageVersionExists(name, version, repoDir)) {
-      console.log(`Version ${version} already published. Bumping prerelease...`);
-      const retryOriginalScripts = disableVersionScripts(repoDir);
+    try {
+      const result = runQuiet(`npm view ${name}@${preid} version`, repoDir);
+      if (result && result.trim()) {
+        latestTestVersion = result.trim();
+      }
+    } catch (err) {
+      // No @test version published yet, that's fine
+    }
+  }
+
+  let version;
+
+  // If we found a @test version with the same base, increment from it
+  if (latestTestVersion && baseVersion && latestTestVersion.startsWith(`${baseVersion}-${preid}`)) {
+    const match = latestTestVersion.match(new RegExp(`^${baseVersion.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-${preid}\\.(\\d+)$`));
+    if (match && match[1]) {
+      const nextCounter = parseInt(match[1], 10) + 1;
+      version = `${baseVersion}-${preid}.${nextCounter}`;
+      console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
+
+      // Update package.json manually with this version
+      const pkgPath = path.join(repoDir, 'package.json');
+      const pkgData = readJson(pkgPath);
+      pkgData.version = version;
+      fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+    } else {
+      // Couldn't parse the version format, do normal prerelease bump
+      console.log(`Found @${preid} version but couldn't parse format. Doing normal prerelease bump...`);
+      const originalScripts = disableVersionScripts(repoDir);
       try {
         run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
       } finally {
-        restoreVersionScripts(repoDir, retryOriginalScripts);
+        restoreVersionScripts(repoDir, originalScripts);
       }
       version = getPackageVersion(repoDir);
-      attempts += 1;
     }
-
-    if (attempts === maxAttempts && packageVersionExists(name, version, repoDir)) {
-      throw new Error(`Unable to find an unpublished prerelease version after ${maxAttempts} attempts.`);
+  } else {
+    // No existing @test version or base changed, do normal prerelease bump
+    if (latestTestVersion) {
+      console.log(`Latest @${preid} (${latestTestVersion}) is for different base version. Doing normal prerelease bump...`);
     }
+    const originalScripts = disableVersionScripts(repoDir);
+    try {
+      run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+    } finally {
+      restoreVersionScripts(repoDir, originalScripts);
+    }
+    version = getPackageVersion(repoDir);
   }
 
   const tag = modeConfig.npmTag || 'test';
@@ -325,9 +351,12 @@ function main() {
       continue;
     }
 
-    const { behind, ahead } = getAheadBehind(repoDir, branch);
-    if (behind > 0) {
-      throw new Error(`Local branch behind origin/${branch}. Pull first.`);
+    // Skip ahead/behind check in dry-run since git commands don't actually execute
+    if (!dryRun) {
+      const { behind, ahead } = getAheadBehind(repoDir, branch);
+      if (behind > 0) {
+        throw new Error(`Local branch behind origin/${branch}. Pull first.`);
+      }
     }
 
     const pkg = getPackageJson(repoDir);
