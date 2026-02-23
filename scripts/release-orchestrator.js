@@ -225,7 +225,16 @@ function publishTest(repoDir, modeConfig, dryRun) {
   const preid = modeConfig.preid || 'test';
   const pkg = getPackageJson(repoDir);
   const name = pkg ? pkg.name : null;
-  const baseVersion = pkg ? pkg.version : null;
+  let baseVersion = pkg ? pkg.version : null;
+
+  // If current version is already a prerelease (e.g., 3.1.2-test.0), extract the base version
+  // This handles the case where a previous publish left package.json at a prerelease version
+  if (baseVersion) {
+    const preidMatch = baseVersion.match(new RegExp(`^(.+?)-${preid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.\\d+$`));
+    if (preidMatch) {
+      baseVersion = preidMatch[1];
+    }
+  }
 
   // Get the latest @test version from npm
   let latestTestVersion = null;
