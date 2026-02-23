@@ -225,48 +225,67 @@ function publishTest(repoDir, modeConfig, dryRun) {
   const preid = modeConfig.preid || 'test';
   const pkg = getPackageJson(repoDir);
   const name = pkg ? pkg.name : null;
-  let baseVersion = pkg ? pkg.version : null;
+  let localVersion = pkg ? pkg.version : null;
 
-  // If current version is already a prerelease (e.g., 3.1.2-test.0), extract the base version
-  // This handles the case where a previous publish left package.json at a prerelease version
-  if (baseVersion) {
-    const preidMatch = baseVersion.match(new RegExp(`^(.+?)-${preid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.\\d+$`));
-    if (preidMatch) {
-      baseVersion = preidMatch[1];
-    }
-  }
+  console.log(`Local package.json version: ${localVersion}`);
 
-  // Get the latest @test version from npm
+  // Get the latest @test version from npm FIRST to understand what's already published
   let latestTestVersion = null;
-  if (!dryRun && name) {
+  if (name) {
     try {
       const result = runQuiet(`npm view ${name}@${preid} version`, repoDir);
       if (result && result.trim()) {
         latestTestVersion = result.trim();
+        console.log(`Latest published @${preid} version: ${latestTestVersion}`);
       }
     } catch (err) {
       // No @test version published yet, that's fine
+      console.log(`No @${preid} version published yet`);
     }
   }
 
   let version;
 
-  // If we found a @test version with the same base, increment from it
-  if (latestTestVersion && baseVersion && latestTestVersion.startsWith(`${baseVersion}-${preid}`)) {
-    const match = latestTestVersion.match(new RegExp(`^${baseVersion.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-${preid}\\.(\\d+)$`));
-    if (match && match[1]) {
-      const nextCounter = parseInt(match[1], 10) + 1;
-      version = `${baseVersion}-${preid}.${nextCounter}`;
-      console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
+  // Strategy: Always compute baseVersion from the latest published @test version first
+  // This ensures we're incrementing from what npm sees, not what our local checkout has
+  if (latestTestVersion) {
+    // Extract the base version from the latest published @test version
+    const publishedMatch = latestTestVersion.match(new RegExp(`^(.+?)-${preid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.\\d+$`));
+    if (publishedMatch && publishedMatch[1]) {
+      const publishedBaseVersion = publishedMatch[1];
+      console.log(`Base version from published @${preid}: ${publishedBaseVersion}`);
+      
+      // Extract counter from latest @test version
+      const counterMatch = latestTestVersion.match(new RegExp(`^${publishedBaseVersion.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-${preid}\\.(\\d+)$`));
+      if (counterMatch && counterMatch[1]) {
+        const nextCounter = parseInt(counterMatch[1], 10) + 1;
+        version = `${publishedBaseVersion}-${preid}.${nextCounter}`;
+        console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
 
-      // Update package.json manually with this version
-      const pkgPath = path.join(repoDir, 'package.json');
-      const pkgData = readJson(pkgPath);
-      pkgData.version = version;
-      fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+        // Update package.json manually with this version
+        const pkgPath = path.join(repoDir, 'package.json');
+        const pkgData = readJson(pkgPath);
+        pkgData.version = version;
+        fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+      } else {
+        // Couldn't parse the counter, do normal prerelease bump
+        console.log(`Found @${preid} version but couldn't parse counter. Doing normal prerelease bump...`);
+        const originalScripts = disableVersionScripts(repoDir);
+        try {
+          run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+        } finally {
+          restoreVersionScripts(repoDir, originalScripts);
+        }
+        version = getPackageVersion(repoDir);
+        if (dryRun) {
+          console.log(`[dry-run simulation] Prerelease version would be: ${version}`);
+        } else {
+          console.log(`After prerelease bump: ${version}`);
+        }
+      }
     } else {
-      // Couldn't parse the version format, do normal prerelease bump
-      console.log(`Found @${preid} version but couldn't parse format. Doing normal prerelease bump...`);
+      // Couldn't parse base version from latest @test, do normal prerelease bump
+      console.log(`Found @${preid} (${latestTestVersion}) but couldn't parse base version. Doing normal prerelease bump...`);
       const originalScripts = disableVersionScripts(repoDir);
       try {
         run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
@@ -274,12 +293,15 @@ function publishTest(repoDir, modeConfig, dryRun) {
         restoreVersionScripts(repoDir, originalScripts);
       }
       version = getPackageVersion(repoDir);
+      if (dryRun) {
+        console.log(`[dry-run simulation] Prerelease version would be: ${version}`);
+      } else {
+        console.log(`After prerelease bump: ${version}`);
+      }
     }
   } else {
-    // No existing @test version or base changed, do normal prerelease bump
-    if (latestTestVersion) {
-      console.log(`Latest @${preid} (${latestTestVersion}) is for different base version. Doing normal prerelease bump...`);
-    }
+    // No existing @test version, do normal prerelease bump from local version
+    console.log(`No @${preid} version found. Doing normal prerelease bump from local version...`);
     const originalScripts = disableVersionScripts(repoDir);
     try {
       run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
@@ -287,6 +309,14 @@ function publishTest(repoDir, modeConfig, dryRun) {
       restoreVersionScripts(repoDir, originalScripts);
     }
     version = getPackageVersion(repoDir);
+    if (dryRun && localVersion) {
+      // In dry-run, simulate the bump
+      const nextVersion = `${localVersion}-${preid}.0`;
+      console.log(`[dry-run simulation] Prerelease version would be: ${nextVersion}`);
+      version = nextVersion;
+    } else {
+      console.log(`After prerelease bump: ${version}`);
+    }
   }
 
   const tag = modeConfig.npmTag || 'test';
