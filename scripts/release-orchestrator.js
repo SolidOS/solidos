@@ -244,21 +244,73 @@ function publishTest(repoDir, modeConfig, dryRun) {
     }
   }
 
+  // Get the latest stable version from npm
+  let latestStableVersion = null;
+  if (name) {
+    try {
+      const result = runQuiet(`npm view ${name}@latest version`, repoDir);
+      if (result && result.trim()) {
+        latestStableVersion = result.trim();
+        console.log(`Latest published @latest version: ${latestStableVersion}`);
+      }
+    } catch (err) {
+      console.log(`No @latest version published yet`);
+    }
+  }
+
   let version;
 
   // Strategy: Always compute baseVersion from the latest published @test version first
   // This ensures we're incrementing from what npm sees, not what our local checkout has
   if (latestTestVersion) {
-    // Extract the base version from the latest published @test version
-    const publishedMatch = latestTestVersion.match(new RegExp(`^(.+?)-${preid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.\\d+$`));
-    if (publishedMatch && publishedMatch[1]) {
-      const publishedBaseVersion = publishedMatch[1];
-      console.log(`Base version from published @${preid}: ${publishedBaseVersion}`);
+    // Extract the base version and counter from the latest published @test version
+    // Match pattern 1: X.Y.Z-preid.N (standard test version with counter)
+    // Match pattern 2: X.Y.Z (just a version, no test suffix yet)
+    const regexPattern = `^(\\d+\\.\\d+\\.\\d+)(?:.*)?-${preid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.(\\d+)$`;
+    console.log(`[DEBUG] Testing regex: ${regexPattern}`);
+    console.log(`[DEBUG] Against version: ${latestTestVersion}`);
+    const counterMatch = latestTestVersion.match(new RegExp(regexPattern));
+    console.log(`[DEBUG] Regex match result:`, counterMatch);
+    
+    if (counterMatch && counterMatch[1]) {
+      // Found a version with -test.N pattern
+      const publishedBaseVersion = counterMatch[1];
+      const publishedCounter = parseInt(counterMatch[2], 10);
+      console.log(`Base version from published @${preid}: ${publishedBaseVersion}, counter: ${publishedCounter}`);
       
-      // Extract counter from latest @test version
-      const counterMatch = latestTestVersion.match(new RegExp(`^${publishedBaseVersion.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-${preid}\\.(\\d+)$`));
-      if (counterMatch && counterMatch[1]) {
-        const nextCounter = parseInt(counterMatch[1], 10) + 1;
+      // Check if the base version from @test matches the latest stable
+      // If yes, we need to bump to the next patch version for the test
+      if (latestStableVersion && publishedBaseVersion === latestStableVersion) {
+        console.log(`Base version ${publishedBaseVersion} matches latest stable. Bumping to next patch for test...`);
+        // Increment patch version and start at -test.0
+        const versionParts = publishedBaseVersion.split('.');
+        if (versionParts.length >= 3) {
+          versionParts[2] = String(parseInt(versionParts[2], 10) + 1);
+          const newBaseVersion = versionParts.join('.');
+          version = `${newBaseVersion}-${preid}.0`;
+          console.log(`Bumping to ${version}...`);
+        } else {
+          // Fallback to normal bump if version format is unexpected
+          console.log(`Unexpected version format. Doing normal prerelease bump...`);
+          const originalScripts = disableVersionScripts(repoDir);
+          try {
+            run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+          } finally {
+            restoreVersionScripts(repoDir, originalScripts);
+          }
+          version = getPackageVersion(repoDir);
+        }
+        
+        // Update package.json manually with this version
+        if (version && !dryRun) {
+          const pkgPath = path.join(repoDir, 'package.json');
+          const pkgData = readJson(pkgPath);
+          pkgData.version = version;
+          fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+        }
+      } else {
+        // Base version doesn't match stable, increment the test counter
+        const nextCounter = parseInt(counterMatch[2], 10) + 1;
         version = `${publishedBaseVersion}-${preid}.${nextCounter}`;
         console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
 
@@ -267,9 +319,58 @@ function publishTest(repoDir, modeConfig, dryRun) {
         const pkgData = readJson(pkgPath);
         pkgData.version = version;
         fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+      }
+    } else {
+      // Couldn't find exact -test.N pattern, but we do have a @test version
+      // Extract just the X.Y.Z base from latestTestVersion
+      const baseVersionMatch = latestTestVersion.match(/^(\d+\.\d+\.\d+)/);
+      if (baseVersionMatch && baseVersionMatch[1]) {
+        const publishedBaseVersion = baseVersionMatch[1];
+        console.log(`Found @${preid} version but no -${preid}.N pattern. Extracted base: ${publishedBaseVersion}`);
+        
+        // Check if this base version matches the latest stable
+        if (latestStableVersion && publishedBaseVersion === latestStableVersion) {
+          console.log(`Base version ${publishedBaseVersion} matches latest stable. Bumping to next patch for test...`);
+          const versionParts = publishedBaseVersion.split('.');
+          if (versionParts.length >= 3) {
+            versionParts[2] = String(parseInt(versionParts[2], 10) + 1);
+            const newBaseVersion = versionParts.join('.');
+            version = `${newBaseVersion}-${preid}.0`;
+            console.log(`Bumping to ${version}...`);
+          } else {
+            console.log(`Unexpected version format. Doing normal prerelease bump...`);
+            const originalScripts = disableVersionScripts(repoDir);
+            try {
+              run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+            } finally {
+              restoreVersionScripts(repoDir, originalScripts);
+            }
+            version = getPackageVersion(repoDir);
+          }
+          
+          // Update package.json manually with this version
+          if (version && !dryRun) {
+            const pkgPath = path.join(repoDir, 'package.json');
+            const pkgData = readJson(pkgPath);
+            pkgData.version = version;
+            fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+          }
+        } else {
+          // Base version doesn't match stable, use this version as starting point for -test
+          version = `${publishedBaseVersion}-${preid}.0`;
+          console.log(`Base version ${publishedBaseVersion} differs from stable. Starting test version at ${version}...`);
+          
+          // Update package.json manually with this version
+          if (!dryRun) {
+            const pkgPath = path.join(repoDir, 'package.json');
+            const pkgData = readJson(pkgPath);
+            pkgData.version = version;
+            fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+          }
+        }
       } else {
-        // Couldn't parse the counter, do normal prerelease bump
-        console.log(`Found @${preid} version but couldn't parse counter. Doing normal prerelease bump...`);
+        // Couldn't parse base version at all, do normal prerelease bump
+        console.log(`Found @${preid} (${latestTestVersion}) but couldn't parse base version. Doing normal prerelease bump...`);
         const originalScripts = disableVersionScripts(repoDir);
         try {
           run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
@@ -283,39 +384,58 @@ function publishTest(repoDir, modeConfig, dryRun) {
           console.log(`After prerelease bump: ${version}`);
         }
       }
-    } else {
-      // Couldn't parse base version from latest @test, do normal prerelease bump
-      console.log(`Found @${preid} (${latestTestVersion}) but couldn't parse base version. Doing normal prerelease bump...`);
-      const originalScripts = disableVersionScripts(repoDir);
-      try {
-        run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
-      } finally {
-        restoreVersionScripts(repoDir, originalScripts);
-      }
-      version = getPackageVersion(repoDir);
-      if (dryRun) {
-        console.log(`[dry-run simulation] Prerelease version would be: ${version}`);
-      } else {
-        console.log(`After prerelease bump: ${version}`);
-      }
     }
   } else {
-    // No existing @test version, do normal prerelease bump from local version
-    console.log(`No @${preid} version found. Doing normal prerelease bump from local version...`);
-    const originalScripts = disableVersionScripts(repoDir);
-    try {
-      run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
-    } finally {
-      restoreVersionScripts(repoDir, originalScripts);
-    }
-    version = getPackageVersion(repoDir);
-    if (dryRun && localVersion) {
-      // In dry-run, simulate the bump
-      const nextVersion = `${localVersion}-${preid}.0`;
-      console.log(`[dry-run simulation] Prerelease version would be: ${nextVersion}`);
-      version = nextVersion;
+    // No existing @test version, but we can be smart about versioning
+    console.log(`No @${preid} version found. Determining strategy for first test release...`);
+    
+    // Extract base version from local version (just X.Y.Z, strip any pre-release identifiers)
+    const localBaseMatch = localVersion.match(/^(\d+\.\d+\.\d+)/);
+    const localBaseVersion = localBaseMatch ? localBaseMatch[1] : localVersion;
+    console.log(`Local base version: ${localBaseVersion}`);
+    
+    if (latestStableVersion && localBaseVersion === latestStableVersion) {
+      // Local version base matches latest stable, so bump patch and start at -test.0
+      console.log(`Local base ${localBaseVersion} matches latest stable. Bumping to next patch for test...`);
+      const versionParts = localBaseVersion.split('.');
+      if (versionParts.length >= 3) {
+        versionParts[2] = String(parseInt(versionParts[2], 10) + 1);
+        const newBaseVersion = versionParts.join('.');
+        version = `${newBaseVersion}-${preid}.0`;
+        console.log(`Using ${version} for test release...`);
+        
+        if (!dryRun) {
+          const pkgPath = path.join(repoDir, 'package.json');
+          const pkgData = readJson(pkgPath);
+          pkgData.version = version;
+          fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+        }
+      } else {
+        // Fallback to normal prerelease bump if format is unexpected
+        console.log(`Unexpected version format. Doing normal prerelease bump...`);
+        const originalScripts = disableVersionScripts(repoDir);
+        try {
+          run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
+        } finally {
+          restoreVersionScripts(repoDir, originalScripts);
+        }
+        version = getPackageVersion(repoDir);
+      }
     } else {
-      console.log(`After prerelease bump: ${version}`);
+      // Local version is newer than stable (or no stable exists), use it with -test.0
+      version = `${localBaseVersion}-${preid}.0`;
+      console.log(`Local base ${localBaseVersion} is ahead of stable. Starting test at ${version}...`);
+      
+      if (!dryRun) {
+        const pkgPath = path.join(repoDir, 'package.json');
+        const pkgData = readJson(pkgPath);
+        pkgData.version = version;
+        fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
+      }
+    }
+    
+    if (dryRun) {
+      console.log(`[dry-run simulation] Test version would be: ${version}`);
     }
   }
 
