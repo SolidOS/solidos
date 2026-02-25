@@ -1,0 +1,66 @@
+{
+  "defaultBranch": "main",
+  "skipIfNoDiff": true,
+  "defaultInstall": "npm install",
+  "defaultTest": "npm test",
+  "defaultBuild": "npm run build",
+  "modes": {
+    "stable": {
+      "branch": "main",
+      "versionBump": "patch",
+      "npmTag": "latest",
+      "gitTag": true,
+      "gitPush": true
+    },
+    "test": {
+      "branch": "dev",
+      "versionBump": "prerelease",
+      "preid": "test",
+      "npmTag": "test",
+      "gitTag": false,
+      "gitPush": false
+    }
+  },
+  "repos": [
+    {
+      "name": "solid-ui",
+      "path": "workspaces/solid-ui",
+      "repo": "https://github.com/SolidOS/solid-ui.git",
+      "afterInstall": [
+        "npm install pane-registry@latest solid-logic@latest rdflib@latest solid-namespace@latest"
+      ]
+    },
+    {
+      "name": "contacts-pane",
+      "path": "workspaces/contacts-pane",
+      "repo": "https://github.com/SolidOS/contacts-pane.git",
+      "afterInstall": [
+        "npm install solid-ui solid-logic@latest rdflib@latest"
+      ]
+    },
+    {
+      "name": "profile-pane",
+      "path": "workspaces/profile-pane",
+      "repo": "https://github.com/SolidOS/profile-pane.git",
+      "afterInstall": [
+        "npm install chat-pane@latest contacts-pane solid-ui pane-registry@latest solid-logic@latest rdflib@latest"
+      ]
+    },
+    {
+      "name": "solid-panes",
+      "path": "workspaces/solid-panes",
+      "repo": "https://github.com/SolidOS/solid-panes.git",
+      "afterInstall": [
+          "npm install activitystreams-pane@latest chat-pane@latest contacts-pane folder-pane@latest issue-pane@latest meeting-pane@latest pane-registry@latest profile-pane source-pane@latest solid-ui solid-logic@latest solid-namespace@latest rdflib@latest"
+      ]
+    },
+    {
+      "name": "mashlib",
+      "path": "workspaces/mashlib",
+      "repo": "https://github.com/SolidOS/mashlib.git",
+      "afterInstall": [
+        "npm install solid-panes solid-ui solid-logic@latest rdflib@latest"
+      ]
+    }
+  ]
+}

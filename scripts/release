@@ -2,7 +2,7 @@
 set -e
 
 unset PREFIX npm_config_prefix
-export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 function gitCheckoutMainOf {
@@ -81,8 +81,9 @@ updateRepo folder-pane # folder-pane (solid-ui, solid-logic)
 updateRepo issue-pane # issue-pane (solid-ui, pane-registry, rdflib)
 updateRepo meeting-pane # meeting-pane (solid-ui, solid-logic, rdflib)
 updateRepo contacts-pane # contacts-pane (solid-ui, pane-registry, solid-logic, rdflib)
-updateRepo profile-pane # profile-pane (chat-pane, solid-ui, pane-registry, solid-logic, rdflib)
+updateRepo profile-pane # profile-pane (contacts-pane, solid-ui, pane-registry, solid-logic, rdflib)
 updateRepo source-pane # source-pane (solid-ui)
+updateRepo folder-pane # folder-pane (solid-ui, solid-logic)
 updateRepo solid-panes # solid-panes (chat-pane, contacts-pane, folder-pane, issue-pane, meeting-pane, pane-registry, rdflib, solid-ui, source-pane)
 
 updateRepo mashlib # mashlib (rdflib, solid-panes, solid-ui)
