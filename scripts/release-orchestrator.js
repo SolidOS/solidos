@@ -189,6 +189,38 @@ function packageVersionExists(name, version, repoDir) {
   }
 }
 
+function waitForNpmVersion(name, version, repoDir, timeoutMs = 60000, pollIntervalMs = 2000) {
+  if (!name || !version) return true; // Skip check if no name/version
+  
+  const startTime = Date.now();
+  let pollCount = 0;
+  
+  while (Date.now() - startTime < timeoutMs) {
+    pollCount++;
+    if (pollCount > 1) {
+      console.log(`  Polling npm registry for ${name}@${version}... (attempt ${pollCount})`);
+    }
+    
+    if (packageVersionExists(name, version, repoDir)) {
+      console.log(`✓ ${name}@${version} is now available on npm`);
+      return true;
+    }
+    
+    const elapsed = Math.round((Date.now() - startTime) / 1000);
+    if (elapsed < timeoutMs / 1000) {
+      console.log(`  Not yet available (${elapsed}s elapsed, waiting ${pollIntervalMs}ms before retry...)`);
+      // Sleep before retrying
+      const sleepUntil = Date.now() + pollIntervalMs;
+      while (Date.now() < sleepUntil) {
+        // Busy wait (could use a promise-based sleep, but keeping it simple)
+      }
+    }
+  }
+  
+  console.warn(`⚠ Timeout waiting for ${name}@${version} to be available on npm (waited ${timeoutMs}ms)`);
+  return false;
+}
+
 function publishStable(repoDir, modeConfig, dryRun) {
   const bump = modeConfig.versionBump || 'patch';
   const originalScripts = disableVersionScripts(repoDir);
@@ -212,6 +244,15 @@ function publishStable(repoDir, modeConfig, dryRun) {
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   console.log(`Publishing ${packageName || 'package'}@${version} with tag ${modeConfig.npmTag || 'latest'}...`);
   run(`npm publish ${tag} --ignore-scripts --no-provenance`.trim(), repoDir, dryRun);
+
+  // Wait for the version to be available on npm registry
+  if (!dryRun && packageName && version) {
+    console.log(`Waiting for ${packageName}@${version} to be available on npm...`);
+    const registryReady = waitForNpmVersion(packageName, version, repoDir, 120000, 3000);
+    if (!registryReady) {
+      console.warn(`Warning: ${packageName}@${version} may not be available yet. Dependent packages may fail to install.`);
+    }
+  }
 
   if (modeConfig.gitPush !== false && modeConfig.gitTag !== false) {
     const branch = modeConfig.branch || 'main';
@@ -443,6 +484,15 @@ function publishTest(repoDir, modeConfig, dryRun) {
   console.log(`Publishing ${name || 'package'}@${version} with tag ${tag}...`);
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   run(`npm publish --tag ${tag} --ignore-scripts --no-provenance`, repoDir, dryRun);
+
+  // Wait for the version to be available on npm registry
+  if (!dryRun && name && version) {
+    console.log(`Waiting for ${name}@${version} to be available on npm...`);
+    const registryReady = waitForNpmVersion(name, version, repoDir, 120000, 3000);
+    if (!registryReady) {
+      console.warn(`Warning: ${name}@${version} may not be available yet. Packages depending on this may fail to install.`);
+    }
+  }
 
   console.log('Note: test publish updated package.json/package-lock.json.');
   console.log('      Use git restore to clean if you do not want to keep it.');
