@@ -41,6 +41,88 @@ function runQuiet(cmd, cwd) {
   return execSync(cmd, { cwd, stdio: 'pipe', encoding: 'utf8', shell: true }).trim();
 }
 
+function normalizePathForPack(value) {
+  return String(value || '').replace(/\\/g, '/').replace(/^\.\//, '');
+}
+
+function getPackedFilePaths(repoDir) {
+  try {
+    const output = runQuiet('npm pack --dry-run --json', repoDir);
+    const parsed = JSON.parse(output);
+    const files = Array.isArray(parsed) && parsed[0] && Array.isArray(parsed[0].files)
+      ? parsed[0].files
+      : [];
+    return files
+      .map((file) => normalizePathForPack(file.path))
+      .filter(Boolean);
+  } catch (err) {
+    throw new Error(`Unable to inspect npm pack output: ${err.message}`);
+  }
+}
+
+function computeMissingArtifacts(pkg, packedPaths) {
+  const requiredFiles = [];
+  const requiredDirs = [];
+
+  if (pkg && typeof pkg.main === 'string' && pkg.main.trim()) {
+    requiredFiles.push(normalizePathForPack(pkg.main));
+  }
+
+  if (pkg && typeof pkg.types === 'string' && pkg.types.trim()) {
+    requiredFiles.push(normalizePathForPack(pkg.types));
+  }
+
+  if (pkg && Array.isArray(pkg.files)) {
+    for (const entry of pkg.files) {
+      if (typeof entry !== 'string') continue;
+      const normalized = normalizePathForPack(entry.trim());
+      if (!normalized) continue;
+      if (normalized.endsWith('/')) {
+        requiredDirs.push(normalized);
+      }
+    }
+  }
+
+  const missingFiles = requiredFiles.filter((filePath) => !packedPaths.includes(filePath));
+  const missingDirs = requiredDirs.filter((dirPath) => !packedPaths.some((filePath) => filePath.startsWith(dirPath)));
+
+  return {
+    missingFiles,
+    missingDirs,
+    missingList: [
+      ...missingFiles,
+      ...missingDirs.map((dirPath) => `${dirPath}*`)
+    ]
+  };
+}
+
+function ensurePublishableArtifacts(repoDir, dryRun) {
+  if (dryRun) return;
+
+  const pkg = getPackageJson(repoDir);
+  if (!pkg) return;
+
+  const checkMissing = () => {
+    const packedPaths = getPackedFilePaths(repoDir);
+    return computeMissingArtifacts(pkg, packedPaths);
+  };
+
+  let missing = checkMissing();
+  if (missing.missingList.length === 0) return;
+
+  if (!hasScript(pkg, 'build')) {
+    throw new Error(`Missing publish artifacts (${missing.missingList.join(', ')}) and no build script is available.`);
+  }
+
+  console.log(`Missing publish artifacts: ${missing.missingList.join(', ')}. Running build before publish...`);
+  run('npm run build', repoDir, dryRun);
+
+  missing = checkMissing();
+  if (missing.missingList.length > 0) {
+    throw new Error(`Publish aborted: package still missing required artifacts after build (${missing.missingList.join(', ')}).`);
+  }
+}
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
@@ -241,6 +323,7 @@ function publishStable(repoDir, modeConfig, dryRun) {
   const tag = modeConfig.npmTag && modeConfig.npmTag !== 'latest'
     ? `--tag ${modeConfig.npmTag}`
     : '';
+  ensurePublishableArtifacts(repoDir, dryRun);
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   console.log(`Publishing ${packageName || 'package'}@${version} with tag ${modeConfig.npmTag || 'latest'}...`);
   run(`npm publish ${tag} --ignore-scripts --no-provenance`.trim(), repoDir, dryRun);
@@ -481,6 +564,7 @@ function publishTest(repoDir, modeConfig, dryRun) {
   }
 
   const tag = modeConfig.npmTag || 'test';
+  ensurePublishableArtifacts(repoDir, dryRun);
   console.log(`Publishing ${name || 'package'}@${version} with tag ${tag}...`);
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   run(`npm publish --tag ${tag} --ignore-scripts --no-provenance`, repoDir, dryRun);
