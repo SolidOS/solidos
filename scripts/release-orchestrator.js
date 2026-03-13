@@ -96,7 +96,7 @@ function computeMissingArtifacts(pkg, packedPaths) {
   };
 }
 
-function ensurePublishableArtifacts(repoDir, dryRun) {
+function ensurePublishableArtifacts(repoDir, dryRun, buildCmd = 'npm run build') {
   if (dryRun) return;
 
   const pkg = getPackageJson(repoDir);
@@ -115,7 +115,7 @@ function ensurePublishableArtifacts(repoDir, dryRun) {
   }
 
   console.log(`Missing publish artifacts: ${missing.missingList.join(', ')}. Running build before publish...`);
-  run('npm run build', repoDir, dryRun);
+  run(buildCmd, repoDir, dryRun);
 
   missing = checkMissing();
   if (missing.missingList.length > 0) {
@@ -303,7 +303,7 @@ function waitForNpmVersion(name, version, repoDir, timeoutMs = 60000, pollInterv
   return false;
 }
 
-function publishStable(repoDir, modeConfig, dryRun) {
+function publishStable(repoDir, modeConfig, dryRun, buildCmd) {
   const bump = modeConfig.versionBump || 'patch';
   const originalScripts = disableVersionScripts(repoDir);
   try {
@@ -323,7 +323,7 @@ function publishStable(repoDir, modeConfig, dryRun) {
   const tag = modeConfig.npmTag && modeConfig.npmTag !== 'latest'
     ? `--tag ${modeConfig.npmTag}`
     : '';
-  ensurePublishableArtifacts(repoDir, dryRun);
+  ensurePublishableArtifacts(repoDir, dryRun, buildCmd);
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   console.log(`Publishing ${packageName || 'package'}@${version} with tag ${modeConfig.npmTag || 'latest'}...`);
   run(`npm publish ${tag} --ignore-scripts --no-provenance`.trim(), repoDir, dryRun);
@@ -345,7 +345,7 @@ function publishStable(repoDir, modeConfig, dryRun) {
   return { packageName, version, tag: modeConfig.npmTag || 'latest' };
 }
 
-function publishTest(repoDir, modeConfig, dryRun) {
+function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
   const preid = modeConfig.preid || 'test';
   const pkg = getPackageJson(repoDir);
   const name = pkg ? pkg.name : null;
@@ -564,7 +564,7 @@ function publishTest(repoDir, modeConfig, dryRun) {
   }
 
   const tag = modeConfig.npmTag || 'test';
-  ensurePublishableArtifacts(repoDir, dryRun);
+  ensurePublishableArtifacts(repoDir, dryRun, buildCmd);
   console.log(`Publishing ${name || 'package'}@${version} with tag ${tag}...`);
   // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   run(`npm publish --tag ${tag} --ignore-scripts --no-provenance`, repoDir, dryRun);
@@ -740,11 +740,12 @@ function main() {
       runSteps(repo.afterTest, repoDir, dryRun);
     }
 
+    const effectiveBuildCmd = repo.build || config.defaultBuild || 'npm run build';
+
     if (repo.build !== false) {
-      const buildCmd = repo.build || config.defaultBuild || 'npm run build';
       runSteps(repo.beforeBuild, repoDir, dryRun);
       if (hasScript(pkg, 'build') || repo.build) {
-        run(buildCmd, repoDir, dryRun);
+        run(effectiveBuildCmd, repoDir, dryRun);
       } else {
         console.log('No build script found. Skipping build.');
       }
@@ -754,7 +755,7 @@ function main() {
     runSteps(repo.beforePublish, repoDir, dryRun);
 
     if (mode === 'test') {
-      const result = publishTest(repoDir, effectiveModeConfig, dryRun);
+      const result = publishTest(repoDir, effectiveModeConfig, dryRun, effectiveBuildCmd);
       summary.push({
         name: repo.name,
         status: dryRun ? 'dry-run' : 'published',
@@ -764,7 +765,7 @@ function main() {
         publishedAs: result.packageName ? `${result.packageName}@${result.version}` : null
       });
     } else if (mode === 'stable') {
-      const result = publishStable(repoDir, effectiveModeConfig, dryRun);
+      const result = publishStable(repoDir, effectiveModeConfig, dryRun, effectiveBuildCmd);
       summary.push({
         name: repo.name,
         status: dryRun ? 'dry-run' : 'published',
