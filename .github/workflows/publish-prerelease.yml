@@ -1,0 +1,71 @@
+name: Reusable Publish Test
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: Node.js version to use
+        type: string
+        required: false
+        default: '22'
+
+jobs:
+  prerelease-check:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.check.outputs.name }}
+      version: ${{ steps.check.outputs.version }}
+      is_prerelease: ${{ steps.check.outputs.is_prerelease }}
+      exists: ${{ steps.check.outputs.exists }}
+      should_publish: ${{ steps.check.outputs.should_publish }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+          registry-url: https://registry.npmjs.org
+      - name: Check prerelease publishability
+        id: check
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          IS_PRERELEASE=false
+          if [ "${VERSION#*-}" != "$VERSION" ]; then
+            IS_PRERELEASE=true
+          fi
+          echo "is_prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+
+          EXISTS=false
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            EXISTS=true
+          fi
+          echo "exists=$EXISTS" >> "$GITHUB_OUTPUT"
+
+          if [ "$IS_PRERELEASE" = "true" ] && [ "$EXISTS" = "false" ]; then
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  npm-publish-build:
+    needs: prerelease-check
+    if: needs.prerelease-check.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+          registry-url: https://registry.npmjs.org
+      - name: Update npm to latest (required for OIDC)
+        run: npm install -g npm@latest
+      - name: Disable pre- and post-publish actions
+        run: sed -i -E 's/"((pre|post)publish)/"ignore:\1/' package.json
+      - name: Publish to npm
+        run: npm publish --tag dev
