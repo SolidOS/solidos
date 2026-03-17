@@ -5,9 +5,9 @@ on:
     inputs:
       node_version:
         description: Node.js version to use
-        type: string
+        type: number
         required: false
-        default: '22'
+        default: 22
 
 jobs:
   prerelease-check:
