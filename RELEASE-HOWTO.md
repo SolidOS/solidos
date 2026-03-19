@@ -18,6 +18,20 @@ solidos/ (main branch)
     └── (other repos)               ← Nothing special needed
 ```
 
+## Org Owner Setup (5 Minutes)
+
+Before the release workflow can publish stable versions from GitHub Actions:
+
+1. Create a fine-grained PAT for release automation.
+2. Grant it `Contents: Read and write` and `Metadata: Read` on the SolidOS repos to be released.
+3. In `solidos/solidos` → Settings → Secrets and variables → Actions, add:
+  - `GIT_PUSH_TOKEN`
+  - `NPM_TOKEN`
+4. Confirm target repos allow the token/account to push to `main`, or decide to use a PR-based merge flow instead.
+5. Run the `Solidos Release` workflow manually with:
+  - `mode=test` for prerelease publishing
+  - `mode=stable` for `@latest`
+
 ## How It Works
 
 **Three execution modes:**
@@ -127,6 +141,31 @@ CI runs (GitHub Actions)
   - dry_run: true or false
   - clone_missing: true or false
   - branch: optional branch name override
+
+  Fine-Grained PAT for Git Push (GIT_PUSH_TOKEN)
+  - Stable mode needs to push commits/tags to multiple SolidOS repos.
+  - `GITHUB_TOKEN` is often limited to the current repository.
+  - Configure `GIT_PUSH_TOKEN` as a repository secret in `solidos/solidos`.
+
+  Recommended setup (fine-grained PAT):
+  1. Create a new fine-grained PAT in GitHub (do not reuse a broad personal token).
+  2. Resource owner: `SolidOS` organization.
+  3. Repository access:
+    - Prefer "Only select repositories" and include repos listed in `release.config.json`.
+    - "All repositories" also works if needed.
+  4. Permissions:
+    - `Contents`: `Read and write` (required for clone/push/tags)
+    - `Metadata`: `Read` (required)
+    - `Actions`: `Read` (optional)
+  5. If branch protection blocks direct push to `main`, allow this token/account to bypass rules, or switch to a PR-based merge flow.
+  6. Save token as secret:
+    - Repo: `solidos/solidos`
+    - Secret name: `GIT_PUSH_TOKEN`
+
+  Security notes:
+  - Do not use high-risk scopes like `delete_repo` or `delete:packages`.
+  - Use a dedicated token for release automation.
+  - Rotate regularly and immediately on suspected exposure.
 
 Command-line Options
 - --mode: test or stable (default: stable)
@@ -246,6 +285,7 @@ Config options (release.config.json)
 
 Notes
 - CI uses npm OIDC with NODE_AUTH_TOKEN set in GitHub Actions.
+- CI uses `GIT_PUSH_TOKEN` (preferred) or falls back to `GITHUB_TOKEN` for git clone/push authentication.
 - If a repo requires special install steps, add them under afterInstall in the config.
 
 Individual Repos and Their CI Workflows

@@ -1,0 +1,80 @@
+name: NPM Unpublish
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: NPM package name (e.g. solid-logic)
+        required: true
+        type: string
+      version:
+        description: Exact version to unpublish (e.g. 4.0.5)
+        required: true
+        type: string
+      dry_run:
+        description: Dry run only (do not execute unpublish)
+        required: true
+        default: true
+        type: boolean
+      confirm:
+        description: Type UNPUBLISH to proceed
+        required: true
+        type: string
+
+jobs:
+  unpublish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Validate confirmation token
+        run: |
+          if [ "${{ inputs.confirm }}" != "UNPUBLISH" ]; then
+            echo "Confirmation failed. Set confirm=UNPUBLISH to continue."
+            exit 1
+          fi
+
+      - name: Validate npm auth token
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm whoami
+
+      - name: Show target
+        run: |
+          echo "Target: ${{ inputs.package_name }}@${{ inputs.version }}"
+          echo "Dry run: ${{ inputs.dry_run }}"
+
+      - name: Dry run check
+        if: ${{ inputs.dry_run }}
+        run: |
+          echo "Dry run enabled. No unpublish command executed."
+          echo "Would run: npm unpublish ${{ inputs.package_name }}@${{ inputs.version }} --force"
+
+      - name: Unpublish exact version
+        if: ${{ !inputs.dry_run }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm unpublish ${{ inputs.package_name }}@${{ inputs.version }} --force
+
+      - name: Verify version is no longer available
+        if: ${{ !inputs.dry_run }}
+        run: |
+          set +e
+          npm view ${{ inputs.package_name }}@${{ inputs.version }} version
+          status=$?
+          if [ $status -eq 0 ]; then
+            echo "Version still resolvable from npm registry."
+            exit 1
+          fi
+          echo "Unpublish appears successful (version not resolvable)."
