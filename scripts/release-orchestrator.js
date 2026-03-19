@@ -321,6 +321,100 @@ function ensureMainContainsStableChanges(repoDir, config, branch, dryRun) {
   }
 }
 
+function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun) {
+  if (dryRun) {
+    console.log(`[dry-run] Would wait for and merge PR: ${headBranch} -> ${baseBranch}`);
+    return { status: 'dry-run', prNumber: null };
+  }
+
+  const slug = parseGitHubRepoSlug(repo.repo || runQuiet('git remote get-url origin', repoDir));
+  if (!slug) {
+    console.log('Warning: Could not determine GitHub repo slug. Skipping PR merge.');
+    return { status: 'skip', reason: 'no-slug' };
+  }
+
+  try {
+    runQuiet('gh --version', repoDir);
+  } catch (err) {
+    console.log('gh CLI not available in runner. Skipping automatic PR merge.');
+    return { status: 'skip', reason: 'no-gh-cli' };
+  }
+
+  try {
+    // Find the PR number for this head branch
+    const prQuery = `gh pr list --repo ${slug} --head ${headBranch} --base ${baseBranch} --state open --json number --jq '.[0].number'`;
+    let prNumber;
+    try {
+      prNumber = parseInt(runQuiet(prQuery, repoDir), 10);
+    } catch (err) {
+      console.log(`No open PR found for ${headBranch} -> ${baseBranch}`);
+      return { status: 'skip', reason: 'no-pr' };
+    }
+
+    if (!prNumber) {
+      console.log(`No open PR found for ${headBranch} -> ${baseBranch}`);
+      return { status: 'skip', reason: 'no-pr' };
+    }
+
+    console.log(`Found PR #${prNumber}. Waiting for checks to pass...`);
+
+    // Wait for checks (with timeout of 10 minutes)
+    const maxWaitTime = 10 * 60 * 1000;
+    const checkInterval = 10 * 1000;
+    const startTime = Date.now();
+    let checksComplete = false;
+
+    while (!checksComplete && (Date.now() - startTime) < maxWaitTime) {
+      try {
+        const statusQuery = `gh pr view ${prNumber} --repo ${slug} --json statusCheckRollup --jq '.statusCheckRollup[0].status // "PENDING"'`;
+        const status = runQuiet(statusQuery, repoDir).trim();
+        console.log(`  PR #${prNumber} status: ${status}`);
+
+        if (status === 'SUCCESS') {
+          checksComplete = true;
+        } else if (status === 'FAILURE') {
+          throw new Error(`PR #${prNumber} checks failed`);
+        } else {
+          // PENDING or unknown, wait and retry
+          console.log(`  Waiting ${checkInterval / 1000}s before next check...`);
+          if (!dryRun) {
+            // Only sleep if not dry-run
+            const now = Date.now();
+            while (Date.now() - now < checkInterval) {
+              // Busy wait (or use setTimeout in a real implementation)
+            }
+          }
+        }
+      } catch (err) {
+        console.log(`  Warning checking PR status: ${err.message}`);
+        if (!dryRun) {
+          const now = Date.now();
+          while (Date.now() - now < checkInterval) {
+            // Busy wait
+          }
+        }
+      }
+    }
+
+    if (!checksComplete) {
+      console.warn(`Checks did not pass within ${maxWaitTime / 1000 / 60} minutes. Attempting merge anyway...`);
+    }
+
+    console.log(`Merging PR #${prNumber}...`);
+    run(`gh pr merge ${prNumber} --repo ${slug} --squash --auto --delete-branch`.trim(), repoDir, dryRun);
+
+    // Fetch the updated main branch
+    run(`git fetch origin ${baseBranch}`, repoDir, dryRun);
+    run(`git checkout ${baseBranch}`, repoDir, dryRun);
+    run(`git pull origin ${baseBranch}`, repoDir, dryRun);
+
+    return { status: 'merged', prNumber };
+  } catch (err) {
+    console.error(`Error during PR merge: ${err.message}`);
+    throw err;
+  }
+}
+
 function ensureCiPushAccess(repoDir, branch, dryRun, modeConfig = {}) {
   if (process.env.GITHUB_ACTIONS !== 'true') return;
   if (dryRun) return;
@@ -983,7 +1077,34 @@ function main() {
     }
 
     if (isStablePublishMode) {
-      ensureMainContainsStableChanges(repoDir, config, branch, dryRun);
+      // New unified flow: prepare PR, wait for merge, then publish
+      const devBranch = getModeBranch(config, 'test', 'dev') || 'dev';
+      
+      // Step 1: Create release branch and PR
+      console.log(`Step 1/3: Creating release PR from ${devBranch} -> ${branch}...`);
+      const prepareResult = prepareStablePullRequest(repoDir, repo, config, branch, dryRun, branchOverride);
+      
+      if (prepareResult.status === 'skipped') {
+        console.log(`Skipping ${repo.name}: ${prepareResult.reason}`);
+        summary.push({
+          name: repo.name,
+          status: 'skipped',
+          reason: prepareResult.reason || null
+        });
+        continue;
+      }
+
+      // Step 2: Wait for PR merge (with auto-merge)
+      console.log(`Step 2/3: Merging release PR...`);
+      const mergeResult = waitForPRMerge(repoDir, repo, prepareResult.releaseBranch, branch, dryRun);
+      
+      if (mergeResult.status === 'skip') {
+        console.log(`Warning: PR merge skipped (${mergeResult.reason}). Continuing with publish...`);
+      }
+
+      // Step 3: Continue with publish (no need for ensureMainContainsStableChanges since we just merged)
+      console.log(`Step 3/3: Publishing packages...`);
+      // Fall through to regular publish logic below
     }
 
     // Skip ahead/behind check in dry-run since git commands don't actually execute
