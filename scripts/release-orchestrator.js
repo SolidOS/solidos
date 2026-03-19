@@ -526,7 +526,39 @@ function waitForNpmVersion(name, version, repoDir, timeoutMs = 60000, pollInterv
   return false;
 }
 
+function ensureCleanBeforeVersion(repoDir, dryRun, options = {}) {
+  const status = runQuiet('git status --porcelain', repoDir);
+  if (!status) return;
+
+  const autoCommit = toBool(options.autoCommit, false);
+  const commitMessage = options.commitMessage || 'chore(release): sync release prep changes [skip ci]';
+  const preview = status.split('\n').slice(0, 20).join('\n');
+
+  if (dryRun) {
+    console.log('[dry-run] Working tree has changes before npm version.');
+    console.log(preview);
+    return;
+  }
+
+  if (!autoCommit) {
+    throw new Error(`Working tree not clean before npm version.\n${preview}`);
+  }
+
+  console.log('Working tree has release-prep changes. Auto-committing before npm version...');
+  run('git add -A', repoDir, dryRun);
+  const staged = runQuiet('git diff --cached --name-only', repoDir);
+  if (!staged) {
+    throw new Error('Working tree had changes but nothing was staged for commit before npm version.');
+  }
+  run(`git commit -m "${commitMessage}"`, repoDir, dryRun);
+}
+
 function publishStable(repoDir, modeConfig, dryRun, buildCmd) {
+  ensureCleanBeforeVersion(repoDir, dryRun, {
+    autoCommit: modeConfig.autoCommitBeforeVersion ?? (process.env.GITHUB_ACTIONS === 'true'),
+    commitMessage: modeConfig.preVersionCommitMessage || 'chore(release): sync release prep changes [skip ci]'
+  });
+
   const bump = modeConfig.versionBump || 'patch';
   const originalScripts = disableVersionScripts(repoDir);
   try {
