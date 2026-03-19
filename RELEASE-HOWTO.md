@@ -40,11 +40,13 @@ Before the release workflow can publish stable versions from GitHub Actions:
 |----------|---------|-------|-----------|
 | **Local Testing** | `node scripts/release-orchestrator.js --dry-run=true` | Your computer | ❌ No (prints what would happen) |
 | **Test Release** | Manual trigger: mode=test | GitHub Actions | ✅ Yes (@test tag) |
-| **Stable Release** | Manual trigger: mode=stable | GitHub Actions | ✅ Yes (@latest tag) |
+| **Stable Release (Direct Push)** | Manual trigger: mode=stable | GitHub Actions | ✅ Yes (@latest tag) |
+| **Stable Prepare PR** | Manual trigger: mode=stable-prepare-pr | GitHub Actions | ❌ No (creates release branch + PR) |
+| **Stable Publish After Merge** | Manual trigger: mode=stable-publish | GitHub Actions | ✅ Yes (@latest tag) |
 
 **Workflow:**
 ```
-You click "Run workflow" button in GitHub Actions (mode=test or mode=stable)
+You click "Run workflow" button in GitHub Actions (mode=test / stable / stable-prepare-pr / stable-publish)
           ↓
 release.yml starts
           ↓
@@ -73,6 +75,11 @@ For each repo listed:
           ↓
 Generates release-summary.json
 ```
+
+  Two-step stable flow for protected main branches:
+  1. Run `mode=stable-prepare-pr` to create and push `release/*` branches and open PRs to `main`.
+  2. Merge the PRs via your normal protected-branch process.
+  3. Run `mode=stable-publish` to publish from merged `main` without direct push to `main`.
 
 ## Key Points
 

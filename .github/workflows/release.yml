@@ -11,6 +11,8 @@ on:
         options:
           - test
           - stable
+          - stable-prepare-pr
+          - stable-publish
       config:
         description: Config file path
         required: true
