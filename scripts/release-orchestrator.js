@@ -23,6 +23,12 @@ function parseArgs(argv) {
   return args;
 }
 
+function preferGhToken() {
+  if (process.env.GIT_PUSH_TOKEN && !process.env.GH_TOKEN) {
+    process.env.GH_TOKEN = process.env.GIT_PUSH_TOKEN;
+  }
+}
+
 function toBool(value, defaultValue = false) {
   if (value === undefined) return defaultValue;
   if (typeof value === 'boolean') return value;
@@ -307,7 +313,10 @@ function maybeCreatePullRequest(repoDir, repo, baseBranch, headBranch, dryRun, o
     return { status: 'created' };
   } catch (err) {
     if (required) {
-      throw new Error(`PR create failed for ${repo.name}: ${err.message}`);
+      throw new Error(
+        `PR create failed for ${repo.name}: ${err.message}. ` +
+        'Ensure GH_TOKEN/GIT_PUSH_TOKEN has access to target repo and Pull requests: Read and write permission.'
+      );
     }
     console.log(`PR create skipped for ${repo.name}: ${err.message}`);
     return { status: 'skipped', reason: 'create-failed' };
@@ -1075,6 +1084,7 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
 }
 
 function main() {
+  preferGhToken();
   const args = parseArgs(process.argv.slice(2));
   const mode = args.mode || 'stable';
   const configPath = path.resolve(process.cwd(), args.config || 'release.config.json');
