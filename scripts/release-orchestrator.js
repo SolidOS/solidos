@@ -23,6 +23,12 @@ function parseArgs(argv) {
   return args;
 }
 
+function sleepMs(ms) {
+  const duration = Math.max(0, Number(ms) || 0);
+  if (duration === 0) return;
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, duration);
+}
+
 function preferGhToken() {
   if (process.env.GIT_PUSH_TOKEN && !process.env.GH_TOKEN) {
     process.env.GH_TOKEN = process.env.GIT_PUSH_TOKEN;
@@ -440,52 +446,52 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
       return { status: 'skip', reason: 'no-pr' };
     }
 
-    console.log(`Found PR #${prNumber}. Waiting for checks to pass...`);
+    console.log(`Found PR #${prNumber}. Requesting auto-merge...`);
+    run(`gh pr merge ${prNumber} --repo ${slug} --merge --auto --delete-branch`.trim(), repoDir, dryRun);
 
-    // Wait for checks (with timeout of 10 minutes)
-    const maxWaitTime = 10 * 60 * 1000;
-    const checkInterval = 10 * 1000;
+    // Wait for GitHub to merge the PR after checks/rules are satisfied.
+    const maxWaitTime = 20 * 60 * 1000;
+    const pollInterval = 15 * 1000;
     const startTime = Date.now();
-    let checksComplete = false;
 
-    while (!checksComplete && (Date.now() - startTime) < maxWaitTime) {
+    while ((Date.now() - startTime) < maxWaitTime) {
+      let payload;
       try {
-        const statusQuery = `gh pr view ${prNumber} --repo ${slug} --json statusCheckRollup --jq '.statusCheckRollup[0].status // "PENDING"'`;
-        const status = runQuiet(statusQuery, repoDir).trim();
-        console.log(`  PR #${prNumber} status: ${status}`);
-
-        if (status === 'SUCCESS') {
-          checksComplete = true;
-        } else if (status === 'FAILURE') {
-          throw new Error(`PR #${prNumber} checks failed`);
-        } else {
-          // PENDING or unknown, wait and retry
-          console.log(`  Waiting ${checkInterval / 1000}s before next check...`);
-          if (!dryRun) {
-            // Only sleep if not dry-run
-            const now = Date.now();
-            while (Date.now() - now < checkInterval) {
-              // Busy wait (or use setTimeout in a real implementation)
-            }
-          }
-        }
+        const query = `gh pr view ${prNumber} --repo ${slug} --json state,mergedAt,mergeStateStatus,statusCheckRollup`;
+        payload = JSON.parse(runQuiet(query, repoDir) || '{}');
       } catch (err) {
-        console.log(`  Warning checking PR status: ${err.message}`);
-        if (!dryRun) {
-          const now = Date.now();
-          while (Date.now() - now < checkInterval) {
-            // Busy wait
-          }
-        }
+        console.log(`  Warning reading PR state: ${err.message}`);
+        sleepMs(pollInterval);
+        continue;
       }
+
+      const state = payload.state || 'UNKNOWN';
+      const mergedAt = payload.mergedAt || null;
+      const mergeStateStatus = payload.mergeStateStatus || 'UNKNOWN';
+      const checks = Array.isArray(payload.statusCheckRollup) ? payload.statusCheckRollup : [];
+      const pendingChecks = checks.filter((c) => {
+        const s = String((c && c.status) || '').toUpperCase();
+        return s === 'PENDING' || s === 'IN_PROGRESS' || s === 'QUEUED' || s === 'EXPECTED';
+      }).length;
+
+      console.log(`  PR #${prNumber}: state=${state}, mergeState=${mergeStateStatus}, pendingChecks=${pendingChecks}`);
+
+      if (mergedAt) {
+        console.log(`PR #${prNumber} merged at ${mergedAt}.`);
+        break;
+      }
+
+      if (state === 'CLOSED' && !mergedAt) {
+        throw new Error(`PR #${prNumber} was closed without merge.`);
+      }
+
+      sleepMs(pollInterval);
     }
 
-    if (!checksComplete) {
-      console.warn(`Checks did not pass within ${maxWaitTime / 1000 / 60} minutes. Attempting merge anyway...`);
+    const mergedAtFinal = runQuiet(`gh pr view ${prNumber} --repo ${slug} --json mergedAt --jq '.mergedAt // ""'`, repoDir).trim();
+    if (!mergedAtFinal) {
+      throw new Error(`Timed out waiting for PR #${prNumber} to merge.`);
     }
-
-    console.log(`Merging PR #${prNumber}...`);
-  run(`gh pr merge ${prNumber} --repo ${slug} --merge --auto --delete-branch`.trim(), repoDir, dryRun);
 
     // Fetch the updated main branch
     run(`git fetch origin ${baseBranch}`, repoDir, dryRun);
