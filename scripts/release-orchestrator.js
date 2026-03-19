@@ -450,40 +450,6 @@ function parseNpmInstallCmd(cmd, tag) {
   return mainCmd;
 }
 
-function disableVersionScripts(repoDir) {
-  const pkgPath = path.join(repoDir, 'package.json');
-  if (!fs.existsSync(pkgPath)) return null;
-  const pkg = readJson(pkgPath);
-  if (!pkg.scripts) return null;
-
-  const original = { ...pkg.scripts };
-  const updated = { ...pkg.scripts };
-  let changed = false;
-
-  for (const key of Object.keys(updated)) {
-    if (key === 'preversion' || key === 'postversion' || key === 'version') {
-      updated[`ignore:${key}`] = updated[key];
-      delete updated[key];
-      changed = true;
-    }
-  }
-
-  if (!changed) return null;
-
-  pkg.scripts = updated;
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-  return original;
-}
-
-function restoreVersionScripts(repoDir, originalScripts) {
-  if (!originalScripts) return;
-  const pkgPath = path.join(repoDir, 'package.json');
-  if (!fs.existsSync(pkgPath)) return;
-  const pkg = readJson(pkgPath);
-  pkg.scripts = originalScripts;
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-}
-
 function packageVersionExists(name, version, repoDir) {
   if (!name || !version) return false;
   try {
@@ -560,15 +526,10 @@ function publishStable(repoDir, modeConfig, dryRun, buildCmd) {
   });
 
   const bump = modeConfig.versionBump || 'patch';
-  const originalScripts = disableVersionScripts(repoDir);
-  try {
-    if (modeConfig.gitTag === false) {
-      run(`npm version ${bump} --no-git-tag-version`, repoDir, dryRun);
-    } else {
-      run(`npm version ${bump} -m "Release %s"`, repoDir, dryRun);
-    }
-  } finally {
-    restoreVersionScripts(repoDir, originalScripts);
+  if (modeConfig.gitTag === false) {
+    run(`npm version ${bump} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
+  } else {
+    run(`npm version ${bump} -m "Release %s" --ignore-scripts`, repoDir, dryRun);
   }
 
   const pkg = getPackageJson(repoDir);
@@ -671,12 +632,7 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
         } else {
           // Fallback to normal bump if version format is unexpected
           console.log(`Unexpected version format. Doing normal prerelease bump...`);
-          const originalScripts = disableVersionScripts(repoDir);
-          try {
-            run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
-          } finally {
-            restoreVersionScripts(repoDir, originalScripts);
-          }
+          run(`npm version prerelease --preid ${preid} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
           version = getPackageVersion(repoDir);
         }
         
@@ -718,12 +674,7 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
             console.log(`Bumping to ${version}...`);
           } else {
             console.log(`Unexpected version format. Doing normal prerelease bump...`);
-            const originalScripts = disableVersionScripts(repoDir);
-            try {
-              run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
-            } finally {
-              restoreVersionScripts(repoDir, originalScripts);
-            }
+            run(`npm version prerelease --preid ${preid} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
             version = getPackageVersion(repoDir);
           }
           
@@ -750,12 +701,7 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
       } else {
         // Couldn't parse base version at all, do normal prerelease bump
         console.log(`Found @${preid} (${latestTestVersion}) but couldn't parse base version. Doing normal prerelease bump...`);
-        const originalScripts = disableVersionScripts(repoDir);
-        try {
-          run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
-        } finally {
-          restoreVersionScripts(repoDir, originalScripts);
-        }
+        run(`npm version prerelease --preid ${preid} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
         version = getPackageVersion(repoDir);
         if (dryRun) {
           console.log(`[dry-run simulation] Prerelease version would be: ${version}`);
@@ -792,12 +738,7 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
       } else {
         // Fallback to normal prerelease bump if format is unexpected
         console.log(`Unexpected version format. Doing normal prerelease bump...`);
-        const originalScripts = disableVersionScripts(repoDir);
-        try {
-          run(`npm version prerelease --preid ${preid} --no-git-tag-version`, repoDir, dryRun);
-        } finally {
-          restoreVersionScripts(repoDir, originalScripts);
-        }
+        run(`npm version prerelease --preid ${preid} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
         version = getPackageVersion(repoDir);
       }
     } else {
