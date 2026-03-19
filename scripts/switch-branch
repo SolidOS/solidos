@@ -14,13 +14,13 @@ mkdir -p workspaces
 rm -rf workspaces/*
 
 declare -a packages=(
-  "rdflib"
   "solid-logic"
   "pane-registry"
   "solid-ui"
+  "profile-pane"
   "solid-panes"
   "mashlib"
-  "node-solid-server")
+  "css-mashlib")
 
 # Clone and npm install dependent packages
 for package in "${packages[@]}"

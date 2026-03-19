@@ -10,7 +10,7 @@
 
 The refactoring of the SolidOS UI is [funded](https://nlnet.nl/project/SolidDataModules/) by <img src="https://nlnet.nl/logo/banner.svg" style="width: 5%; margin: 0 1% 0 1%;">
 / <img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" style="width: 5%; margin: 0 1% 0 1%;">
-[Read more]()
+[Read more](https://github.com/SolidOS/solidos/tree/main/NLNetFunding)
 
 
 If you made it here you must already have heard about [Solid](https://solidproject.org).

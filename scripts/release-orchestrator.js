@@ -138,6 +138,20 @@ function getPackageVersion(repoDir) {
   return pkg ? pkg.version : null;
 }
 
+function getModeConfig(config, modeName) {
+  if (!config || !config.modes) return {};
+  if (Array.isArray(config.modes)) {
+    return config.modes.find((m) => m && m.name === modeName) || {};
+  }
+  return config.modes[modeName] || {};
+}
+
+function getModeBranch(config, modeName, fallback = null) {
+  const modeConfig = getModeConfig(config, modeName);
+  if (modeConfig && modeConfig.branch) return modeConfig.branch;
+  return fallback;
+}
+
 function hasScript(pkg, scriptName) {
   return !!(pkg && pkg.scripts && pkg.scripts[scriptName]);
 }
@@ -173,6 +187,49 @@ function ensureBranch(repoDir, branch, dryRun) {
   run(`git pull --ff-only origin ${branch}`, repoDir, dryRun);
 }
 
+function ensureCiGitSetup(repoDir, dryRun) {
+  if (process.env.GITHUB_ACTIONS !== 'true') return;
+
+  if (!dryRun) {
+    const currentName = runQuiet('git config --get user.name || true', repoDir);
+    const currentEmail = runQuiet('git config --get user.email || true', repoDir);
+
+    if (!currentName) {
+      run('git config user.name "github-actions[bot]"', repoDir, dryRun);
+    }
+    if (!currentEmail) {
+      run('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"', repoDir, dryRun);
+    }
+  }
+
+  const token = process.env.GIT_PUSH_TOKEN || process.env.GITHUB_TOKEN;
+  if (!token) return;
+
+  const remoteUrl = runQuiet('git remote get-url origin', repoDir);
+  if (!remoteUrl || remoteUrl.includes('x-access-token:')) return;
+
+  const match = remoteUrl.match(/^https:\/\/github\.com\/(.+)$/i);
+  if (!match || !match[1]) return;
+
+  const authenticatedUrl = `https://x-access-token:${token}@github.com/${match[1]}`;
+  run(`git remote set-url origin "${authenticatedUrl}"`, repoDir, dryRun);
+}
+
+function withCiGitAuth(url) {
+  const raw = String(url || '').trim();
+  if (!raw) return raw;
+  if (process.env.GITHUB_ACTIONS !== 'true') return raw;
+
+  const token = process.env.GIT_PUSH_TOKEN || process.env.GITHUB_TOKEN;
+  if (!token) return raw;
+
+  const match = raw.match(/^https:\/\/github\.com\/(.+)$/i);
+  if (!match || !match[1]) return raw;
+  if (raw.includes('x-access-token:')) return raw;
+
+  return `https://x-access-token:${token}@github.com/${match[1]}`;
+}
+
 function getAheadBehind(repoDir, branch) {
   const raw = runQuiet(`git rev-list --left-right --count origin/${branch}...HEAD`, repoDir);
   const [behind, ahead] = raw.split('\t').map(Number);
@@ -188,6 +245,172 @@ function runSteps(steps, repoDir, dryRun, tag = null) {
     }
     run(cmd, repoDir, dryRun);
   }
+}
+
+function extractNpmInstallPackages(cmd) {
+  const parts = String(cmd || '').trim().split(/\s+/);
+  if (parts.length < 3 || parts[0] !== 'npm' || parts[1] !== 'install') {
+    return [];
+  }
+
+  const packages = [];
+  let skipNext = false;
+  const flagsWithValues = new Set([
+    '--tag', '--registry', '--workspace', '--workspaces', '--save-prefix',
+    '--fetch-retries', '--fetch-retry-factor', '--fetch-retry-mintimeout',
+    '--fetch-retry-maxtimeout', '--prefer-dedupe', '--omit', '--include',
+    '-w'
+  ]);
+
+  for (let i = 2; i < parts.length; i += 1) {
+    const part = parts[i];
+    if (!part) continue;
+
+    if (skipNext) {
+      skipNext = false;
+      continue;
+    }
+
+    if (part.startsWith('-')) {
+      if (!part.includes('=') && flagsWithValues.has(part)) {
+        skipNext = true;
+      }
+      continue;
+    }
+
+    if (
+      part.startsWith('.') || part.startsWith('/') || part.startsWith('file:') ||
+      part.startsWith('git+') || part.startsWith('http://') || part.startsWith('https://')
+    ) {
+      continue;
+    }
+
+    const parsed = parseNpmPackageSpecifier(part);
+    if (parsed && parsed.name) {
+      packages.push(parsed.name);
+    }
+  }
+
+  return packages;
+}
+
+function parseNpmPackageSpecifier(spec) {
+  const value = String(spec || '').trim();
+  if (!value) return null;
+
+  if (value.startsWith('@')) {
+    const slashIndex = value.indexOf('/');
+    if (slashIndex === -1) return null;
+    const versionSep = value.lastIndexOf('@');
+    if (versionSep > slashIndex) {
+      return { name: value.slice(0, versionSep), requested: value.slice(versionSep + 1) };
+    }
+    return { name: value, requested: null };
+  }
+
+  const versionSep = value.indexOf('@');
+  if (versionSep > 0) {
+    return { name: value.slice(0, versionSep), requested: value.slice(versionSep + 1) };
+  }
+
+  return { name: value, requested: null };
+}
+
+function getInstalledPackageVersion(repoDir, packageName) {
+  const modulePath = path.join(repoDir, 'node_modules', ...packageName.split('/'), 'package.json');
+  if (!fs.existsSync(modulePath)) return null;
+
+  try {
+    const pkg = readJson(modulePath);
+    return pkg && pkg.version ? String(pkg.version) : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function buildLockedVersion(installedVersion, prefix) {
+  const normalizedPrefix = prefix === undefined || prefix === null ? '' : String(prefix);
+  return `${normalizedPrefix}${installedVersion}`;
+}
+
+function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun) {
+  const npmTag = modeConfig.npmTag || 'latest';
+  const commands = Array.isArray(repo.afterInstall) ? repo.afterInstall : [];
+  const packageNames = new Set();
+
+  for (const rawCmd of commands) {
+    const installCmd = parseNpmInstallCmd(rawCmd, npmTag);
+    const firstSegment = installCmd.split('||')[0].trim();
+    const parsedPackages = extractNpmInstallPackages(firstSegment);
+    for (const pkgName of parsedPackages) {
+      packageNames.add(pkgName);
+    }
+  }
+
+  if (packageNames.size === 0) {
+    return;
+  }
+
+  const pkgPath = path.join(repoDir, 'package.json');
+  if (!fs.existsSync(pkgPath)) {
+    return;
+  }
+
+  const lockFields = modeConfig.lockDependencyFields || config.lockDependencyFields || ['dependencies', 'devDependencies'];
+  const versionPrefix = modeConfig.lockDependencyPrefix ?? config.lockDependencyPrefix ?? '';
+  const packageJson = readJson(pkgPath);
+  let changed = false;
+
+  for (const packageName of packageNames) {
+    const installedVersion = getInstalledPackageVersion(repoDir, packageName);
+    if (!installedVersion) {
+      console.log(`Warning: Could not resolve installed version for ${packageName}; skipping lock update.`);
+      continue;
+    }
+
+    const lockedVersion = buildLockedVersion(installedVersion, versionPrefix);
+    for (const field of lockFields) {
+      if (!packageJson[field] || typeof packageJson[field] !== 'object') continue;
+      if (!Object.prototype.hasOwnProperty.call(packageJson[field], packageName)) continue;
+
+      if (packageJson[field][packageName] !== lockedVersion) {
+        console.log(`Locking ${field}.${packageName}: ${packageJson[field][packageName]} -> ${lockedVersion}`);
+        packageJson[field][packageName] = lockedVersion;
+        changed = true;
+      }
+    }
+  }
+
+  if (!changed) {
+    return;
+  }
+
+  if (dryRun) {
+    console.log('[dry-run] Would update package.json dependency versions from installed packages.');
+    return;
+  }
+
+  fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, 2) + '\n');
+
+  // Refresh lockfile(s) after pinning dependencies.
+  const lockInstallCmd = modeConfig.lockInstallCommand || config.lockInstallCommand || 'npm install';
+  run(lockInstallCmd, repoDir, dryRun);
+
+  const filesToStage = ['package.json', 'package-lock.json', 'npm-shrinkwrap.json']
+    .filter((fileName) => fs.existsSync(path.join(repoDir, fileName)));
+
+  if (filesToStage.length === 0) {
+    return;
+  }
+
+  run(`git add ${filesToStage.join(' ')}`, repoDir, dryRun);
+  const stagedStatus = runQuiet('git diff --cached --name-only', repoDir);
+  if (!stagedStatus) {
+    return;
+  }
+
+  const commitMessage = modeConfig.lockCommitMessage || 'chore(release): lock tested dependency versions [skip ci]';
+  run(`git commit -m "${commitMessage}"`, repoDir, dryRun);
 }
 
 function parseNpmInstallCmd(cmd, tag) {
@@ -593,6 +816,7 @@ function main() {
   const summaryPath = path.resolve(process.cwd(), args['summary-path'] || 'release-summary.json');
   const branchOverride = args.branch; // Command-line branch override
   const isCi = process.env.GITHUB_ACTIONS === 'true';
+  const effectiveCloneMissing = isCi ? true : cloneMissing;
 
   if (!isCi && !dryRun) {
     throw new Error('Publishing is only allowed in GitHub Actions. Use --dry-run locally.');
@@ -604,7 +828,7 @@ function main() {
 
   const config = readJson(configPath);
   const configDir = path.dirname(configPath);
-  const modeConfig = (config.modes && config.modes[mode]) || {};
+  const modeConfig = getModeConfig(config, mode);
 
   if (!config.repos || !Array.isArray(config.repos)) {
     throw new Error('Config must include a repos array.');
@@ -620,8 +844,9 @@ function main() {
     console.log(`\n==> ${repo.name} (${repoDir})`);
 
     if (!fs.existsSync(repoDir)) {
-      if (cloneMissing && repo.repo) {
-        run(`git clone ${repo.repo} ${repoDir}`, configDir, dryRun);
+      if (effectiveCloneMissing && repo.repo) {
+        const cloneUrl = withCiGitAuth(repo.repo);
+        run(`git clone ${cloneUrl} ${repoDir}`, configDir, dryRun);
         // Fetch all branches after cloning (clone only gets default branch)
         run(`git fetch origin`, repoDir, dryRun);
       } else {
@@ -643,6 +868,8 @@ function main() {
       });
       continue;
     }
+
+    ensureCiGitSetup(repoDir, dryRun);
 
     // Skip ahead/behind check in dry-run since git commands don't actually execute
     if (!dryRun) {
@@ -674,7 +901,7 @@ function main() {
       
       if (shouldCheckDiff) {
         // For stable mode: check if dev branch has changes that main doesn't
-        const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+        const devBranch = getModeBranch(config, 'test', 'dev') || 'dev';
         
         // Ensure we have latest dev refs
         try {
@@ -703,7 +930,7 @@ function main() {
     
     // For stable mode: check if we need to merge dev (even if skipIfNoDiff is disabled)
     if (mode === 'stable' && !shouldMergeDev) {
-      const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+      const devBranch = getModeBranch(config, 'test', 'dev') || 'dev';
       
       try {
         runQuiet(`git fetch origin ${devBranch}:refs/remotes/origin/${devBranch}`, repoDir);
@@ -720,13 +947,18 @@ function main() {
     
     // Merge dev into main before publishing (stable mode only)
     if (mode === 'stable' && shouldMergeDev) {
-      const devBranch = config.modes.find(m => m.name === 'test')?.branch || 'dev';
+      const devBranch = getModeBranch(config, 'test', 'dev') || 'dev';
       console.log(`Merging origin/${devBranch} into ${branch}...`);
       try {
         run(`git merge origin/${devBranch} -m "Merge ${devBranch} into ${branch} for release [skip ci]"`, repoDir, dryRun);
       } catch (err) {
         throw new Error(`Failed to merge origin/${devBranch} into ${branch}. Please resolve conflicts manually.`);
       }
+    }
+
+    // Stable mode: lock dependency versions based on what afterInstall actually installed.
+    if (mode === 'stable') {
+      lockStableDependencyVersions(repoDir, repo, config, effectiveModeConfig, dryRun);
     }
 
     if (repo.test !== false) {
