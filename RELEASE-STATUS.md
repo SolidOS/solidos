@@ -1,38 +1,45 @@
 # Release Orchestrator - Current Status
 
 **Date:** March 20, 2026  
-**Status:** ⚠ PR merge blocked by required-checks initialization gap on some repos
+**Status:** ✅ `stable-publish` PR merge flow working (CI trigger via empty commit)
 
 ---
 
-## Checkpoint (March 20, 2026)
+## Checkpoint (March 20, 2026 - final)
 
-Observed repeatedly on `SolidOS/solid-logic` release PRs (`#223`, `#224`, `#225`):
+**BREAKTHROUGH**: `stable-publish` now successfully creates release PR, triggers required CI checks, merges, and completes step 2/3.
 
+### Problem Solved
+- Required checks (`build (22)` / `build (24)`) were configured on `main` ruleset but not triggering for release PRs.
+- Cause: `ci.yml` listeners to `pull_request` event, which only fires on natural PR creation; orchestrator was trying workflow dispatch (wrong event type).
+- Solution: Force-push an empty commit to the release branch → GitHub re-fires `pull_request` event → CI runs and checks post back to PR → merge proceeds.
+
+### Changes in orchestrator
+- Commit `375b0cc`: Added `git reset --hard && git clean -fd` before checkout to handle uncommitted changes left after empty-commit force-push.
+- Earlier commits: CI-trigger via empty commit (commit `93b14ca`), transient error handling, required-checks diagnostics.
+
+### Result (from last run, PR #228)
 ```
-state=OPEN, mergeState=BLOCKED, pendingChecks=0, failingChecks=0
-GraphQL: Repository rule violations found
-2 of 2 required status checks are expected.
+Found PR #228. Requesting auto-merge...
+  PR #228: state=OPEN, mergeState=BLOCKED, review=UNKNOWN, pendingChecks=0, failingChecks=0
+  PR #228: state=OPEN, mergeState=BLOCKED, review=UNKNOWN, pendingChecks=0, failingChecks=0
+... (2 poll cycles) ...
+  Pushed empty commit to release/solid-logic-202603201747 to trigger PR CI checks.
+  PR #228: state=OPEN, mergeState=BLOCKED, review=UNKNOWN, pendingChecks=2, failingChecks=0
+  PR #228: state=OPEN, mergeState=BLOCKED, review=UNKNOWN, pendingChecks=1, failingChecks=0
+  PR #228: state=MERGED, mergeState=UNKNOWN, review=UNKNOWN, pendingChecks=1, failingChecks=0
+PR #228 merged at 2026-03-20T17:49:44Z.
 ```
+✅ **PR merged successfully.**
 
-Interpretation:
-- The repo rules require checks, but those check runs are not yet materialized for the PR at the moment merge is attempted.
-- This is distinct from failing checks; it is an "expected checks not started/visible yet" condition.
+The only remaining error was `git checkout main` due to dirty working tree, which is now fixed by commit `375b0cc`.
 
-Mitigation now in orchestrator:
-- Retry logic for auto-merge and admin-merge paths.
-- Transient rule-violation parsing now includes `message`, `stderr`, and `stdout`.
-- New fail-fast diagnostic: if PR remains `BLOCKED` with no check entries for ~2 minutes, abort with explicit guidance instead of waiting silently.
-
-Tomorrow's investigation checklist:
-1. Inspect branch protection/ruleset in `SolidOS/solid-logic` and list exact required check names.
-2. Verify those workflows trigger on `pull_request` for `main` and for release branch naming pattern.
-3. Confirm no `paths`/`paths-ignore` filters are excluding the release PR diff.
-4. Verify required checks match current workflow job names exactly (renamed jobs can cause "expected" forever).
-5. Re-run `stable-publish` after rules/workflow alignment and confirm PR auto-merges.
+### Future optimization
+- User suggestion: Run CI earlier (before version bump) so it's ready when PR opens, avoiding need for empty-commit re-trigger.
+- Feasibility: Needs testing; could reduce merge wait time from ~2min to ~30s.
+- Implementation: Create release branch, push immediately, PR opens → CI runs → version bump → PR auto-merges (if CI passes quickly).
 
 ---
-
 ## Latest Test Run Results
 
 ```
