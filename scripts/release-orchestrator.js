@@ -446,15 +446,109 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
       return { status: 'skip', reason: 'no-pr' };
     }
 
-    console.log(`Found PR #${prNumber}. Merging with admin override...`);
-    run(`gh pr merge ${prNumber} --repo ${slug} --merge --admin --delete-branch`.trim(), repoDir, dryRun);
-
-    // --admin merges immediately; verify it succeeded
-    const mergedAtFinal = runQuiet(`gh pr view ${prNumber} --repo ${slug} --json mergedAt --jq '.mergedAt // ""'`, repoDir).trim();
-    if (!mergedAtFinal) {
-      throw new Error(`PR #${prNumber} was not merged. Check branch protection settings or token admin rights.`);
+    console.log(`Found PR #${prNumber}. Requesting auto-merge...`);
+    let autoMergeRequested = false;
+    try {
+      run(`gh pr merge ${prNumber} --repo ${slug} --merge --auto --delete-branch`.trim(), repoDir, dryRun);
+      autoMergeRequested = true;
+    } catch (err) {
+      const message = String(err.message || err);
+      // Some repos reject auto-merge requests while checks are still being initialized.
+      if (
+        /Repository rule violations found/i.test(message) ||
+        /required status checks are expected/i.test(message) ||
+        /required status check/i.test(message)
+      ) {
+        console.log(`  Auto-merge not accepted yet: ${message.split('\n')[0]}`);
+      } else {
+        throw err;
+      }
     }
-    console.log(`PR #${prNumber} merged at ${mergedAtFinal}.`);
+
+    const maxWaitTime = 20 * 60 * 1000;
+    const pollInterval = 15 * 1000;
+    const startTime = Date.now();
+    let finalMergedAt = '';
+
+    while ((Date.now() - startTime) < maxWaitTime) {
+      let payload;
+      try {
+        const query = `gh pr view ${prNumber} --repo ${slug} --json state,mergedAt,mergeStateStatus,reviewDecision,statusCheckRollup`;
+        payload = JSON.parse(runQuiet(query, repoDir) || '{}');
+      } catch (err) {
+        console.log(`  Warning reading PR state: ${err.message}`);
+        sleepMs(pollInterval);
+        continue;
+      }
+
+      const state = payload.state || 'UNKNOWN';
+      const mergedAt = payload.mergedAt || '';
+      const mergeStateStatus = payload.mergeStateStatus || 'UNKNOWN';
+      const reviewDecision = payload.reviewDecision || 'UNKNOWN';
+      const checks = Array.isArray(payload.statusCheckRollup) ? payload.statusCheckRollup : [];
+
+      const pendingChecks = checks.filter((c) => {
+        const s = String((c && c.status) || '').toUpperCase();
+        return s === 'PENDING' || s === 'IN_PROGRESS' || s === 'QUEUED' || s === 'EXPECTED';
+      }).length;
+
+      const failingChecks = checks.filter((c) => {
+        const conclusion = String((c && c.conclusion) || '').toUpperCase();
+        return conclusion === 'FAILURE' || conclusion === 'TIMED_OUT' || conclusion === 'CANCELLED' || conclusion === 'ACTION_REQUIRED';
+      }).length;
+
+      console.log(
+        `  PR #${prNumber}: state=${state}, mergeState=${mergeStateStatus}, review=${reviewDecision}, pendingChecks=${pendingChecks}, failingChecks=${failingChecks}`
+      );
+
+      if (mergedAt) {
+        finalMergedAt = mergedAt;
+        break;
+      }
+
+      if (state === 'CLOSED') {
+        throw new Error(`PR #${prNumber} was closed without merge.`);
+      }
+
+      if (failingChecks > 0) {
+        throw new Error(`PR #${prNumber} has failing required checks.`);
+      }
+
+      // Retry requesting auto-merge once checks have started appearing.
+      if (!autoMergeRequested && pendingChecks > 0) {
+        try {
+          run(`gh pr merge ${prNumber} --repo ${slug} --merge --auto --delete-branch`.trim(), repoDir, dryRun);
+          autoMergeRequested = true;
+          console.log(`  Auto-merge request accepted for PR #${prNumber}.`);
+        } catch (err) {
+          console.log(`  Auto-merge still blocked: ${String(err.message || err).split('\n')[0]}`);
+        }
+      }
+
+      // If everything is green but merge still blocked (e.g. review requirement), try admin merge.
+      if (pendingChecks === 0 && mergeStateStatus === 'BLOCKED') {
+        try {
+          run(`gh pr merge ${prNumber} --repo ${slug} --merge --admin --delete-branch`.trim(), repoDir, dryRun);
+        } catch (err) {
+          const message = String(err.message || err);
+          if (!/required status checks are expected/i.test(message) && !/Repository rule violations found/i.test(message)) {
+            throw err;
+          }
+        }
+      }
+
+      sleepMs(pollInterval);
+    }
+
+    if (!finalMergedAt) {
+      finalMergedAt = runQuiet(`gh pr view ${prNumber} --repo ${slug} --json mergedAt --jq '.mergedAt // ""'`, repoDir).trim();
+    }
+
+    if (!finalMergedAt) {
+      throw new Error(`Timed out waiting for PR #${prNumber} to merge.`);
+    }
+
+    console.log(`PR #${prNumber} merged at ${finalMergedAt}.`);
 
     // Fetch the updated main branch
     run(`git fetch origin ${baseBranch}`, repoDir, dryRun);
