@@ -955,15 +955,36 @@ function bumpStableVersion(repoDir, modeConfig, dryRun) {
   });
 
   const bump = modeConfig.versionBump || 'patch';
-  if (modeConfig.gitTag === false) {
-    run(`npm version ${bump} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
-  } else {
-    run(`npm version ${bump} -m "Release %s" --ignore-scripts`, repoDir, dryRun);
+  const pkg = getPackageJson(repoDir);
+  const packageName = pkg ? pkg.name : null;
+
+  const doVersionBump = () => {
+    if (modeConfig.gitTag === false) {
+      run(`npm version ${bump} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
+      // --no-git-tag-version only edits package.json; commit the change explicitly.
+      run(`git add package.json package-lock.json`, repoDir, dryRun);
+      const bumpedVer = getPackageVersion(repoDir);
+      run(`git commit -m "Release ${bumpedVer} [skip ci]" --allow-empty`, repoDir, dryRun);
+    } else {
+      run(`npm version ${bump} -m "Release %s" --ignore-scripts`, repoDir, dryRun);
+    }
+  };
+
+  doVersionBump();
+
+  // If a previous partial run already published this version to npm, bump once more to get a clean version.
+  if (!dryRun && packageName) {
+    const bumpedVersion = getPackageVersion(repoDir);
+    if (packageVersionExists(packageName, bumpedVersion, repoDir)) {
+      console.log(`Version ${packageName}@${bumpedVersion} already exists on npm (previous partial run). Bumping again...`);
+      doVersionBump();
+      console.log(`New version: ${getPackageVersion(repoDir)}`);
+    }
   }
 
-  const pkg = getPackageJson(repoDir);
+  const updatedPkg = getPackageJson(repoDir);
   return {
-    packageName: pkg ? pkg.name : null,
+    packageName: updatedPkg ? updatedPkg.name : null,
     version: getPackageVersion(repoDir),
     tag: modeConfig.npmTag || 'latest'
   };
