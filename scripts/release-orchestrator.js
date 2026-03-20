@@ -546,16 +546,17 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
         blockedNoChecksCycles = 0;
       }
 
-      // If the PR is blocked and no checks have appeared, proactively trigger CI in the target repo.
-      // This helps repos where required checks are configured but PR-triggered runs are delayed or skipped.
+      // If the PR is blocked and no checks have appeared, force-push an empty commit to trigger PR CI.
+      // This re-triggers the pull_request event and materializes required checks on the PR.
       if (!ciKickoffAttempted && blockedNoChecksCycles >= 2) {
         try {
-          run(`gh workflow run ${requiredChecksWorkflow} --repo ${slug} --ref ${headBranch}`.trim(), repoDir, dryRun);
+          run(`git commit --allow-empty -m "Trigger CI checks"`, repoDir, dryRun);
+          run(`git push -f origin ${headBranch}`, repoDir, dryRun);
           ciKickoffAttempted = true;
-          console.log(`  Triggered ${requiredChecksWorkflow} on ${headBranch} to materialize required checks.`);
+          console.log(`  Pushed empty commit to ${headBranch} to trigger PR CI checks.`);
         } catch (err) {
           ciKickoffAttempted = true;
-          console.log(`  Warning: Could not trigger ${requiredChecksWorkflow} on ${headBranch}: ${err.message}`);
+          console.log(`  Warning: Could not push to ${headBranch}: ${err.message}`);
         }
       }
 
