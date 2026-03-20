@@ -1,7 +1,35 @@
 # Release Orchestrator - Current Status
 
-**Date:** March 19, 2026  
-**Status:** ⚠ Stable flow semantics clarified (publish-from-main objective documented)
+**Date:** March 20, 2026  
+**Status:** ⚠ PR merge blocked by required-checks initialization gap on some repos
+
+---
+
+## Checkpoint (March 20, 2026)
+
+Observed repeatedly on `SolidOS/solid-logic` release PRs (`#223`, `#224`, `#225`):
+
+```
+state=OPEN, mergeState=BLOCKED, pendingChecks=0, failingChecks=0
+GraphQL: Repository rule violations found
+2 of 2 required status checks are expected.
+```
+
+Interpretation:
+- The repo rules require checks, but those check runs are not yet materialized for the PR at the moment merge is attempted.
+- This is distinct from failing checks; it is an "expected checks not started/visible yet" condition.
+
+Mitigation now in orchestrator:
+- Retry logic for auto-merge and admin-merge paths.
+- Transient rule-violation parsing now includes `message`, `stderr`, and `stdout`.
+- New fail-fast diagnostic: if PR remains `BLOCKED` with no check entries for ~2 minutes, abort with explicit guidance instead of waiting silently.
+
+Tomorrow's investigation checklist:
+1. Inspect branch protection/ruleset in `SolidOS/solid-logic` and list exact required check names.
+2. Verify those workflows trigger on `pull_request` for `main` and for release branch naming pattern.
+3. Confirm no `paths`/`paths-ignore` filters are excluding the release PR diff.
+4. Verify required checks match current workflow job names exactly (renamed jobs can cause "expected" forever).
+5. Re-run `stable-publish` after rules/workflow alignment and confirm PR auto-merges.
 
 ---
 

@@ -470,6 +470,8 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
     const startTime = Date.now();
     let finalMergedAt = '';
     let sawAnyChecks = false;
+    let blockedNoChecksCycles = 0;
+    const blockedNoChecksLimit = 8; // ~2 minutes at 15s polling
 
     const isTransientRuleViolation = (err) => {
       const text = [
@@ -518,6 +520,12 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
         `  PR #${prNumber}: state=${state}, mergeState=${mergeStateStatus}, review=${reviewDecision}, pendingChecks=${pendingChecks}, failingChecks=${failingChecks}`
       );
 
+      if (mergeStateStatus === 'BLOCKED' && checks.length === 0 && pendingChecks === 0) {
+        blockedNoChecksCycles += 1;
+      } else {
+        blockedNoChecksCycles = 0;
+      }
+
       if (mergedAt) {
         finalMergedAt = mergedAt;
         break;
@@ -529,6 +537,13 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
 
       if (failingChecks > 0) {
         throw new Error(`PR #${prNumber} has failing required checks.`);
+      }
+
+      if (blockedNoChecksCycles >= blockedNoChecksLimit) {
+        throw new Error(
+          `PR #${prNumber} stayed BLOCKED with no status checks for ${(blockedNoChecksCycles * pollInterval) / 1000}s. ` +
+          `This usually means required checks are configured but not running for this PR (workflow trigger/path filter/permissions mismatch).`
+        );
       }
 
       // Retry requesting auto-merge once checks have started appearing.
