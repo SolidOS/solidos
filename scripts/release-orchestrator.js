@@ -446,6 +446,24 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
       return { status: 'skip', reason: 'no-pr' };
     }
 
+    let requiredCheckContexts = [];
+    try {
+      const rawContexts = runQuiet(
+        `gh api repos/${slug}/branches/${baseBranch}/protection --jq '.required_status_checks.checks[].context'`,
+        repoDir
+      );
+      requiredCheckContexts = String(rawContexts || '')
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (requiredCheckContexts.length > 0) {
+        console.log(`Required status checks on ${baseBranch}: ${requiredCheckContexts.join(', ')}`);
+      }
+    } catch (err) {
+      // Rulesets API visibility varies by token/repo configuration; keep merge flow working even if introspection fails.
+      console.log(`Warning: Could not read required status checks for ${baseBranch}: ${err.message}`);
+    }
+
     console.log(`Found PR #${prNumber}. Requesting auto-merge...`);
     let autoMergeRequested = false;
     try {
@@ -540,9 +558,13 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
       }
 
       if (blockedNoChecksCycles >= blockedNoChecksLimit) {
+        const requiredLabel = requiredCheckContexts.length > 0
+          ? ` Required checks configured: ${requiredCheckContexts.join(', ')}.`
+          : '';
         throw new Error(
           `PR #${prNumber} stayed BLOCKED with no status checks for ${(blockedNoChecksCycles * pollInterval) / 1000}s. ` +
-          `This usually means required checks are configured but not running for this PR (workflow trigger/path filter/permissions mismatch).`
+          `This usually means required checks are configured but not running for this PR (workflow trigger/path filter/permissions mismatch).` +
+          requiredLabel
         );
       }
 
