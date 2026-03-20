@@ -490,6 +490,8 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
     let sawAnyChecks = false;
     let blockedNoChecksCycles = 0;
     const blockedNoChecksLimit = 8; // ~2 minutes at 15s polling
+    let ciKickoffAttempted = false;
+    const requiredChecksWorkflow = options.requiredChecksWorkflow || 'ci.yml';
 
     const isTransientRuleViolation = (err) => {
       const text = [
@@ -542,6 +544,19 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
         blockedNoChecksCycles += 1;
       } else {
         blockedNoChecksCycles = 0;
+      }
+
+      // If the PR is blocked and no checks have appeared, proactively trigger CI in the target repo.
+      // This helps repos where required checks are configured but PR-triggered runs are delayed or skipped.
+      if (!ciKickoffAttempted && blockedNoChecksCycles >= 2) {
+        try {
+          run(`gh workflow run ${requiredChecksWorkflow} --repo ${slug} --ref ${headBranch}`.trim(), repoDir, dryRun);
+          ciKickoffAttempted = true;
+          console.log(`  Triggered ${requiredChecksWorkflow} on ${headBranch} to materialize required checks.`);
+        } catch (err) {
+          ciKickoffAttempted = true;
+          console.log(`  Warning: Could not trigger ${requiredChecksWorkflow} on ${headBranch}: ${err.message}`);
+        }
       }
 
       if (mergedAt) {
@@ -1434,7 +1449,10 @@ function main() {
       maybeCreatePullRequest(repoDir, repo, branch, stablePublishReleaseBranch, dryRun, { required: true });
 
       console.log('Step 2/3: Auto-merging release PR...');
-      waitForPRMerge(repoDir, repo, stablePublishReleaseBranch, branch, dryRun, { required: true });
+      waitForPRMerge(repoDir, repo, stablePublishReleaseBranch, branch, dryRun, {
+        required: true,
+        requiredChecksWorkflow: effectiveModeConfig.requiredChecksWorkflow || 'ci.yml'
+      });
 
       ensureBranch(repoDir, branch, dryRun);
 
