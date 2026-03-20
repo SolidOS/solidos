@@ -621,6 +621,10 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
 
     console.log(`PR #${prNumber} merged at ${finalMergedAt}.`);
 
+    // Clean working tree before switching branches (force-push of empty commit may leave local changes)
+    run(`git reset --hard`, repoDir, dryRun);
+    run(`git clean -fd`, repoDir, dryRun);
+
     // Fetch the updated main branch
     run(`git fetch origin ${baseBranch}`, repoDir, dryRun);
     run(`git checkout ${baseBranch}`, repoDir, dryRun);
