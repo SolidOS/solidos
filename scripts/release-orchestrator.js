@@ -786,7 +786,7 @@ function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun)
   }
 
   const lockFields = modeConfig.lockDependencyFields || config.lockDependencyFields || ['dependencies', 'devDependencies'];
-  const versionPrefix = modeConfig.lockDependencyPrefix ?? config.lockDependencyPrefix ?? '';
+  const versionPrefix = modeConfig.lockDependencyPrefix ?? config.lockDependencyPrefix ?? '^';
   const packageJson = readJson(pkgPath);
   let changed = false;
 
