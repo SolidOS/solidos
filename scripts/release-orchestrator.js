@@ -955,9 +955,6 @@ function bumpStableVersion(repoDir, modeConfig, dryRun) {
   });
 
   const bump = modeConfig.versionBump || 'patch';
-  const pkg = getPackageJson(repoDir);
-  const packageName = pkg ? pkg.name : null;
-
   const doVersionBump = () => {
     if (modeConfig.gitTag === false) {
       run(`npm version ${bump} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
@@ -971,16 +968,6 @@ function bumpStableVersion(repoDir, modeConfig, dryRun) {
   };
 
   doVersionBump();
-
-  // If a previous partial run already published this version to npm, bump once more to get a clean version.
-  if (!dryRun && packageName) {
-    const bumpedVersion = getPackageVersion(repoDir);
-    if (packageVersionExists(packageName, bumpedVersion, repoDir)) {
-      console.log(`Version ${packageName}@${bumpedVersion} already exists on npm (previous partial run). Bumping again...`);
-      doVersionBump();
-      console.log(`New version: ${getPackageVersion(repoDir)}`);
-    }
-  }
 
   const updatedPkg = getPackageJson(repoDir);
   return {
@@ -1482,11 +1469,15 @@ function main() {
 
       ensureBranch(repoDir, branch, dryRun);
 
-      console.log('Step 3/3: Publishing packages from merged branch...');
-      const result = publishPreparedStable(repoDir, effectiveModeConfig, dryRun, effectiveBuildCmd);
+      console.log('Step 3/3: Publish delegated to repository CI on main.');
+      const result = {
+        packageName: pkg ? pkg.name : null,
+        version: getPackageVersion(repoDir),
+        tag: effectiveModeConfig.npmTag || 'latest'
+      };
       summary.push({
         name: repo.name,
-        status: dryRun ? 'dry-run' : 'published',
+        status: dryRun ? 'dry-run' : 'published-by-repo-ci',
         packageName: result.packageName || null,
         version: result.version,
         tag: result.tag,
