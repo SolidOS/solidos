@@ -469,6 +469,20 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
     const pollInterval = 15 * 1000;
     const startTime = Date.now();
     let finalMergedAt = '';
+    let sawAnyChecks = false;
+
+    const isTransientRuleViolation = (err) => {
+      const text = [
+        String(err && err.message ? err.message : ''),
+        String(err && err.stderr ? err.stderr : ''),
+        String(err && err.stdout ? err.stdout : '')
+      ].join('\n');
+      return (
+        /Repository rule violations found/i.test(text) ||
+        /required status checks are expected/i.test(text) ||
+        /required status check/i.test(text)
+      );
+    };
 
     while ((Date.now() - startTime) < maxWaitTime) {
       let payload;
@@ -486,6 +500,9 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
       const mergeStateStatus = payload.mergeStateStatus || 'UNKNOWN';
       const reviewDecision = payload.reviewDecision || 'UNKNOWN';
       const checks = Array.isArray(payload.statusCheckRollup) ? payload.statusCheckRollup : [];
+      if (checks.length > 0) {
+        sawAnyChecks = true;
+      }
 
       const pendingChecks = checks.filter((c) => {
         const s = String((c && c.status) || '').toUpperCase();
@@ -515,25 +532,26 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
       }
 
       // Retry requesting auto-merge once checks have started appearing.
-      if (!autoMergeRequested && pendingChecks > 0) {
+      if (!autoMergeRequested && (pendingChecks > 0 || sawAnyChecks)) {
         try {
           run(`gh pr merge ${prNumber} --repo ${slug} --merge --auto --delete-branch`.trim(), repoDir, dryRun);
           autoMergeRequested = true;
           console.log(`  Auto-merge request accepted for PR #${prNumber}.`);
         } catch (err) {
-          console.log(`  Auto-merge still blocked: ${String(err.message || err).split('\n')[0]}`);
+          console.log(`  Auto-merge still blocked: ${String((err && err.message) || err).split('\n')[0]}`);
         }
       }
 
-      // If everything is green but merge still blocked (e.g. review requirement), try admin merge.
-      if (pendingChecks === 0 && mergeStateStatus === 'BLOCKED') {
+      // If checks have materialized and everything is green but merge is still blocked
+      // (e.g. review requirement), try admin merge. Do not do this before checks exist.
+      if (sawAnyChecks && checks.length > 0 && pendingChecks === 0 && mergeStateStatus === 'BLOCKED') {
         try {
           run(`gh pr merge ${prNumber} --repo ${slug} --merge --admin --delete-branch`.trim(), repoDir, dryRun);
         } catch (err) {
-          const message = String(err.message || err);
-          if (!/required status checks are expected/i.test(message) && !/Repository rule violations found/i.test(message)) {
+          if (!isTransientRuleViolation(err)) {
             throw err;
           }
+          console.log('  Admin merge blocked while checks/rules are still settling; will retry.');
         }
       }
 
