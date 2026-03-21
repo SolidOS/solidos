@@ -1293,6 +1293,26 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
   return { packageName: name, version, tag };
 }
 
+function emitReleaseSummary(mode, dryRun, summary, summaryPath) {
+  console.log('\nRelease summary:');
+  for (const item of summary) {
+    if (item.status === 'published' || item.status === 'published-by-repo-ci' || item.status === 'dry-run') {
+      console.log(`- ${item.name}: ${item.status} ${item.version || ''} (${item.tag || 'latest'})`.trim());
+    } else {
+      console.log(`- ${item.name}: ${item.status} (${item.reason})`);
+    }
+  }
+
+  const summaryPayload = {
+    mode,
+    dryRun,
+    generatedAt: new Date().toISOString(),
+    items: summary
+  };
+  fs.writeFileSync(summaryPath, JSON.stringify(summaryPayload, null, 2));
+  console.log(`Summary written to ${summaryPath}`);
+}
+
 function main() {
   preferGhToken();
   const args = parseArgs(process.argv.slice(2));
@@ -1331,8 +1351,11 @@ function main() {
   }
 
   const summary = [];
+  let fatalError = null;
 
+  try {
   for (const repo of config.repos) {
+    try {
     const repoDir = path.resolve(configDir, repo.path);
     const branch = branchOverride || repo.branch || modeConfig.branch || config.defaultBranch || 'main';
     const effectiveModeConfig = { ...modeConfig, branch };
@@ -1583,25 +1606,24 @@ function main() {
     }
 
     runSteps(repo.afterPublish, repoDir, dryRun);
-  }
-
-  console.log('\nRelease summary:');
-  for (const item of summary) {
-    if (item.status === 'published' || item.status === 'dry-run') {
-      console.log(`- ${item.name}: ${item.status} ${item.version || ''} (${item.tag || 'latest'})`.trim());
-    } else {
-      console.log(`- ${item.name}: ${item.status} (${item.reason})`);
+    } catch (err) {
+      summary.push({
+        name: repo.name,
+        status: 'failed',
+        reason: err.message || String(err)
+      });
+      throw err;
     }
   }
+  } catch (err) {
+    fatalError = err;
+  } finally {
+    emitReleaseSummary(mode, dryRun, summary, summaryPath);
+  }
 
-  const summaryPayload = {
-    mode,
-    dryRun,
-    generatedAt: new Date().toISOString(),
-    items: summary
-  };
-  fs.writeFileSync(summaryPath, JSON.stringify(summaryPayload, null, 2));
-  console.log(`Summary written to ${summaryPath}`);
+  if (fatalError) {
+    throw fatalError;
+  }
 }
 
 try {
