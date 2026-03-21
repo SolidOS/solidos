@@ -1,7 +1,28 @@
 # Release Orchestrator - Current Status
 
 **Date:** March 20, 2026  
-**Status:** ✅ `stable-publish` PR merge flow working (CI trigger via empty commit)
+**Status:** ✅ Single source of truth adopted for `latest` publish: repository `ci.yml` on `main`
+
+---
+
+## Checkpoint (March 20, 2026 - latest)
+
+Final decision for stable releases:
+- `stable-publish` in orchestrator now stops after PR merge.
+- `latest` publication is delegated to each target repository's `ci.yml` on `main`.
+- This removes duplicate publish attempts (orchestrator + repo CI) and keeps one publisher for `latest`.
+
+Implemented commit in `solidos`:
+- `8b1a5ef` — `refactor(release): delegate stable-publish latest publish to repo CI`
+
+Versioning policy clarification:
+- Source of truth for release version is `main`, not npm latest lookup.
+- `stable-publish` should bump from `main` state and merge that bump via PR.
+
+Next run planned:
+1. Execute `release.yml` on branch `release` for `pane-registry` in `stable-publish` mode.
+2. Expect orchestrator summary status `published-by-repo-ci` (no direct npm publish in step 3).
+3. Confirm `pane-registry` `ci.yml` on `main` performs the single `latest` publish.
 
 ---
 
