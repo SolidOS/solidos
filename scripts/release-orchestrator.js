@@ -659,6 +659,70 @@ function ensureCiPushAccess(repoDir, branch, dryRun, modeConfig = {}) {
   }
 }
 
+function waitForWorkflowSuccess(repoDir, repo, workflowRef, branch, headSha, dryRun, options = {}) {
+  if (dryRun) {
+    console.log(`[dry-run] Would wait for workflow ${workflowRef} on ${branch} at ${headSha}.`);
+    return { status: 'dry-run' };
+  }
+
+  const slug = parseGitHubRepoSlug(repo.repo || runQuiet('git remote get-url origin', repoDir));
+  if (!slug) {
+    throw new Error(`Could not determine GitHub repo slug. Cannot wait for workflow ${workflowRef}.`);
+  }
+
+  try {
+    runQuiet('gh --version', repoDir);
+  } catch (err) {
+    throw new Error(`gh CLI not available in runner. Cannot wait for workflow ${workflowRef}.`);
+  }
+
+  const maxWaitTime = options.timeoutMs || 20 * 60 * 1000;
+  const pollInterval = options.pollIntervalMs || 15 * 1000;
+  const startTime = Date.now();
+
+  while ((Date.now() - startTime) < maxWaitTime) {
+    let runs = [];
+    try {
+      const query = `gh run list --repo ${slug} --workflow ${workflowRef} --branch ${branch} --event push --limit 20 --json databaseId,headSha,status,conclusion,url,displayTitle`;
+      runs = JSON.parse(runQuiet(query, repoDir) || '[]');
+    } catch (err) {
+      console.log(`  Warning reading workflow state for ${workflowRef}: ${err.message}`);
+      sleepMs(pollInterval);
+      continue;
+    }
+
+    const matchingRun = Array.isArray(runs)
+      ? runs.find((runInfo) => String(runInfo.headSha || '').trim() === String(headSha || '').trim())
+      : null;
+
+    if (!matchingRun) {
+      console.log(`  Waiting for workflow ${workflowRef} on ${branch} for commit ${headSha} to start...`);
+      sleepMs(pollInterval);
+      continue;
+    }
+
+    const status = String(matchingRun.status || 'unknown');
+    const conclusion = String(matchingRun.conclusion || '');
+    console.log(`  Workflow ${workflowRef}: status=${status}, conclusion=${conclusion || 'pending'}`);
+
+    if (status !== 'completed') {
+      sleepMs(pollInterval);
+      continue;
+    }
+
+    if (conclusion === 'success') {
+      return { status: 'success', runId: matchingRun.databaseId || null, url: matchingRun.url || null };
+    }
+
+    throw new Error(
+      `Workflow ${workflowRef} failed for ${slug}@${headSha} with conclusion=${conclusion || 'unknown'}.` +
+      `${matchingRun.url ? ` See ${matchingRun.url}` : ''}`
+    );
+  }
+
+  throw new Error(`Timed out waiting for workflow ${workflowRef} on ${branch} for commit ${headSha}.`);
+}
+
 function getAheadBehind(repoDir, branch) {
   const raw = runQuiet(`git rev-list --left-right --count origin/${branch}...HEAD`, repoDir);
   const [behind, ahead] = raw.split('\t').map(Number);
@@ -1469,12 +1533,33 @@ function main() {
 
       ensureBranch(repoDir, branch, dryRun);
 
-      console.log('Step 3/3: Publish delegated to repository CI on main.');
+      console.log('Step 3/3: Waiting for repository CI publish on main...');
       const result = {
         packageName: pkg ? pkg.name : null,
         version: getPackageVersion(repoDir),
         tag: effectiveModeConfig.npmTag || 'latest'
       };
+
+      if (!dryRun && result.packageName && result.version) {
+        const workflowRef = effectiveModeConfig.repoCiWorkflow || effectiveModeConfig.requiredChecksWorkflow || 'ci.yml';
+        const headSha = runQuiet('git rev-parse HEAD', repoDir).trim();
+        console.log(`Waiting for workflow ${workflowRef} on ${branch} to succeed for commit ${headSha}...`);
+        waitForWorkflowSuccess(repoDir, repo, workflowRef, branch, headSha, dryRun, {
+          timeoutMs: effectiveModeConfig.repoCiWorkflowTimeoutMs || 20 * 60 * 1000,
+          pollIntervalMs: effectiveModeConfig.repoCiWorkflowPollIntervalMs || 15000
+        });
+
+        const timeoutMs = effectiveModeConfig.repoCiPublishTimeoutMs || 10 * 60 * 1000;
+        const pollIntervalMs = effectiveModeConfig.repoCiPublishPollIntervalMs || 5000;
+        console.log(`Waiting for ${result.packageName}@${result.version} to be available on npm...`);
+        const registryReady = waitForNpmVersion(result.packageName, result.version, repoDir, timeoutMs, pollIntervalMs);
+        if (!registryReady) {
+          throw new Error(
+            `Timed out waiting for repository CI to publish ${result.packageName}@${result.version} to npm.`
+          );
+        }
+      }
+
       summary.push({
         name: repo.name,
         status: dryRun ? 'dry-run' : 'published-by-repo-ci',
