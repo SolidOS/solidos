@@ -1,0 +1,34 @@
+{
+  "defaultBranch": "main",
+  "skipIfNoDiff": true,
+  "defaultInstall": "npm install",
+  "defaultTest": "npm test",
+  "defaultBuild": "npm run build",
+  "modes": {
+    "stable": {
+      "branch": "main",
+      "versionBump": "patch",
+      "npmTag": "latest",
+      "gitTag": true,
+      "gitPush": true
+    },
+    "test": {
+      "branch": "dev",
+      "versionBump": "prerelease",
+      "preid": "test",
+      "npmTag": "test",
+      "gitTag": false,
+      "gitPush": false
+    }
+  },
+  "repos": [
+    {
+      "name": "pane-registry",
+      "path": "workspaces/pane-registry",
+      "repo": "https://github.com/SolidOS/pane-registry.git",
+      "afterInstall": [
+        "npm install solid-logic@latest rdflib@latest"
+      ]
+    }
+  ]
+}
