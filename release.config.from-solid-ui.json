@@ -98,7 +98,6 @@
       "name": "solid-panes",
       "path": "workspaces/solid-panes",
       "repo": "https://github.com/SolidOS/solid-panes.git",
-      "build": "npm run clean && npm run build-version && npm run typecheck && babel src --out-dir dist --extensions '.ts,.js' --source-maps && tsc --emitDeclarationOnly && npm run postbuild-js",
       "afterInstall": [
           "npm install activitystreams-pane chat-pane contacts-pane folder-pane issue-pane meeting-pane pane-registry profile-pane source-pane solid-ui solid-logic solid-namespace@latest rdflib@latest"
       ]
