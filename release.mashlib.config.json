@@ -27,7 +27,7 @@
       "path": "workspaces/mashlib",
       "repo": "https://github.com/SolidOS/mashlib.git",
       "afterInstall": [
-        "npm install solid-panes solid-ui solid-logic rdflib@latest"
+        "npm install solid-panes pane-registry solid-ui solid-logic rdflib@latest"
       ]
     }
   ]
