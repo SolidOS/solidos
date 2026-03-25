@@ -150,6 +150,42 @@ function getPackageVersion(repoDir) {
   return pkg ? pkg.version : null;
 }
 
+function parseBaseSemver(version) {
+  const match = String(version || '').trim().match(/^(\d+)\.(\d+)\.(\d+)$/);
+  if (!match) return null;
+  return [
+    parseInt(match[1], 10),
+    parseInt(match[2], 10),
+    parseInt(match[3], 10)
+  ];
+}
+
+function compareBaseSemver(a, b) {
+  const parsedA = parseBaseSemver(a);
+  const parsedB = parseBaseSemver(b);
+  if (!parsedA || !parsedB) return null;
+
+  for (let i = 0; i < 3; i += 1) {
+    if (parsedA[i] > parsedB[i]) return 1;
+    if (parsedA[i] < parsedB[i]) return -1;
+  }
+  return 0;
+}
+
+function pickHighestBaseSemver(baseVersion, stableVersion) {
+  if (!stableVersion) return baseVersion;
+  const comparison = compareBaseSemver(baseVersion, stableVersion);
+  if (comparison === null) return baseVersion;
+  return comparison >= 0 ? baseVersion : stableVersion;
+}
+
+function incrementPatchSemver(version) {
+  const parsed = parseBaseSemver(version);
+  if (!parsed) return null;
+  parsed[2] += 1;
+  return `${parsed[0]}.${parsed[1]}.${parsed[2]}`;
+}
+
 function getModeConfig(config, modeName) {
   if (!config || !config.modes) return {};
   if (Array.isArray(config.modes)) {
@@ -1157,10 +1193,25 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
           fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
         }
       } else {
-        // Base version doesn't match stable, increment the test counter
-        const nextCounter = parseInt(counterMatch[2], 10) + 1;
-        version = `${publishedBaseVersion}-${preid}.${nextCounter}`;
-        console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
+        // Base version doesn't match stable.
+        // If @test is behind @latest, reset to stable as the base.
+        const stableComparison = latestStableVersion
+          ? compareBaseSemver(publishedBaseVersion, latestStableVersion)
+          : null;
+
+        if (latestStableVersion && stableComparison === -1) {
+          const bumpedStableBase = incrementPatchSemver(latestStableVersion);
+          version = bumpedStableBase
+            ? `${bumpedStableBase}-${preid}.0`
+            : `${latestStableVersion}-${preid}.0`;
+          console.log(
+            `Published @${preid} base ${publishedBaseVersion} is behind stable ${latestStableVersion}. Resetting to ${version}...`
+          );
+        } else {
+          const nextCounter = publishedCounter + 1;
+          version = `${publishedBaseVersion}-${preid}.${nextCounter}`;
+          console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
+        }
 
         // Update package.json manually with this version
         const pkgPath = path.join(repoDir, 'package.json');
@@ -1199,9 +1250,20 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
             fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
           }
         } else {
-          // Base version doesn't match stable, use this version as starting point for -test
-          version = `${publishedBaseVersion}-${preid}.0`;
-          console.log(`Base version ${publishedBaseVersion} differs from stable. Starting test version at ${version}...`);
+          // Base version doesn't match stable; start from the higher of published base and stable.
+          const selectedBaseVersion = pickHighestBaseSemver(publishedBaseVersion, latestStableVersion);
+          const bumpFromStable = latestStableVersion && selectedBaseVersion === latestStableVersion;
+          const outputBaseVersion = bumpFromStable
+            ? (incrementPatchSemver(selectedBaseVersion) || selectedBaseVersion)
+            : selectedBaseVersion;
+          version = `${outputBaseVersion}-${preid}.0`;
+          if (latestStableVersion && selectedBaseVersion !== publishedBaseVersion) {
+            console.log(
+              `Base version ${publishedBaseVersion} is behind stable ${latestStableVersion}. Starting test version at ${version}...`
+            );
+          } else {
+            console.log(`Base version ${publishedBaseVersion} differs from stable. Starting test version at ${version}...`);
+          }
           
           // Update package.json manually with this version
           if (!dryRun) {
