@@ -765,14 +765,108 @@ function getAheadBehind(repoDir, branch) {
   return { behind, ahead };
 }
 
+function resolvePackageInstallSpec(packageName, tag, repoDir, dryRun) {
+  if (dryRun) {
+    // Cannot query npm in dry-run; use tag as best-effort
+    return `${packageName}@${tag}`;
+  }
+
+  let tagVersion = null;
+  try {
+    const r = runQuiet(`npm view ${packageName}@${tag} version`, repoDir);
+    if (r && r.trim()) tagVersion = r.trim();
+  } catch (err) {
+    // @tag doesn't exist
+  }
+
+  let latestVersion = null;
+  try {
+    const r = runQuiet(`npm view ${packageName}@latest version`, repoDir);
+    if (r && r.trim()) latestVersion = r.trim();
+  } catch (err) {
+    // no @latest
+  }
+
+  if (!tagVersion) {
+    console.log(`  ${packageName}: no @${tag} found → using @latest`);
+    return `${packageName}@latest`;
+  }
+
+  if (!latestVersion) {
+    console.log(`  ${packageName}: @${tag}=${tagVersion}, no @latest → using @${tag}`);
+    return `${packageName}@${tagVersion}`;
+  }
+
+  // Extract base X.Y.Z from the test version (strip prerelease suffix)
+  const tagBaseMatch = tagVersion.match(/^(\d+\.\d+\.\d+)/);
+  const tagBase = tagBaseMatch ? tagBaseMatch[1] : null;
+  const cmp = tagBase ? compareBaseSemver(tagBase, latestVersion) : null;
+
+  if (cmp !== null && cmp > 0) {
+    // @test base is strictly newer than @latest → prefer @test
+    console.log(`  ${packageName}: @${tag}=${tagVersion} > @latest=${latestVersion} → using @${tag}`);
+    return `${packageName}@${tagVersion}`;
+  }
+
+  // @test base is equal to or behind @latest → use @latest
+  console.log(`  ${packageName}: @${tag}=${tagVersion} <= @latest=${latestVersion} → using @latest`);
+  return `${packageName}@latest`;
+}
+
+function runAfterInstallStep(rawCmd, tag, repoDir, dryRun) {
+  const parts = rawCmd.trim().split(/\s+/);
+  if (parts[0] !== 'npm' || parts[1] !== 'install') {
+    run(rawCmd, repoDir, dryRun);
+    return;
+  }
+
+  const flags = [];
+  const untaggedPkgs = [];
+  const taggedItems = [];
+
+  for (let i = 2; i < parts.length; i++) {
+    const part = parts[i];
+    if (!part) continue;
+    if (part.startsWith('-')) { flags.push(part); continue; }
+
+    const isScoped = part.startsWith('@');
+    const hasExplicitTag = isScoped
+      ? part.lastIndexOf('@') > part.indexOf('/')
+      : part.includes('@');
+
+    if (hasExplicitTag) {
+      taggedItems.push(part);
+    } else {
+      untaggedPkgs.push(part);
+    }
+  }
+
+  const flagStr = flags.length > 0 ? `${flags.join(' ')} ` : '';
+
+  // Resolve each untagged package individually via npm registry
+  const resolvedSpecs = [];
+  if (untaggedPkgs.length > 0) {
+    console.log(`Resolving afterInstall versions (tag=@${tag}):`);
+    for (const pkg of untaggedPkgs) {
+      resolvedSpecs.push(resolvePackageInstallSpec(pkg, tag, repoDir, dryRun));
+    }
+  }
+
+  // Build one combined install command with precise version specs
+  const allSpecs = [...resolvedSpecs, ...taggedItems];
+  if (allSpecs.length > 0) {
+    run(`npm install ${flagStr}${allSpecs.join(' ')}`.trim(), repoDir, dryRun);
+  }
+}
+
 function runSteps(steps, repoDir, dryRun, tag = null) {
   if (!steps || !Array.isArray(steps)) return;
-  for (let cmd of steps) {
-    // Inject npm tag into npm install commands if tag is provided
-    if (tag && cmd.startsWith('npm install')) {
-      cmd = parseNpmInstallCmd(cmd, tag);
+  for (const rawCmd of steps) {
+    if (tag && rawCmd.trim().startsWith('npm install')) {
+      runAfterInstallStep(rawCmd, tag, repoDir, dryRun);
+    } else {
+      run(rawCmd, repoDir, dryRun);
     }
-    run(cmd, repoDir, dryRun);
   }
 }
 
@@ -862,14 +956,13 @@ function buildLockedVersion(installedVersion, prefix) {
   return `${normalizedPrefix}${installedVersion}`;
 }
 
-function collectAfterInstallPackageNames(repo, npmTag) {
+function collectAfterInstallPackageNames(repo) {
   const commands = Array.isArray(repo.afterInstall) ? repo.afterInstall : [];
   const packageNames = new Set();
 
   for (const rawCmd of commands) {
-    const installCmd = parseNpmInstallCmd(rawCmd, npmTag);
-    const firstSegment = installCmd.split('||')[0].trim();
-    const parsedPackages = extractNpmInstallPackages(firstSegment);
+    // Parse package names from the raw command — no tag injection needed for name extraction
+    const parsedPackages = extractNpmInstallPackages(rawCmd);
     for (const pkgName of parsedPackages) {
       packageNames.add(pkgName);
     }
@@ -892,8 +985,7 @@ function getDeclaredPackageSpecs(packageJson, packageName) {
 }
 
 function logBuildDependencyVersions(repoDir, repo, modeConfig) {
-  const npmTag = modeConfig.npmTag || 'latest';
-  const packageNames = collectAfterInstallPackageNames(repo, npmTag);
+  const packageNames = collectAfterInstallPackageNames(repo);
   if (packageNames.length === 0) return;
 
   const pkg = getPackageJson(repoDir);
@@ -910,8 +1002,7 @@ function logBuildDependencyVersions(repoDir, repo, modeConfig) {
 }
 
 function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun) {
-  const npmTag = modeConfig.npmTag || 'latest';
-  const packageNames = collectAfterInstallPackageNames(repo, npmTag);
+  const packageNames = collectAfterInstallPackageNames(repo);
 
   if (packageNames.length === 0) {
     return;
@@ -980,40 +1071,28 @@ function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun)
 }
 
 function parseNpmInstallCmd(cmd, tag) {
+  // Simple tag injection — used for package-name extraction in lock/log helpers.
+  // Actual execution goes through runAfterInstallStep → resolvePackageInstallSpec.
   const parts = cmd.split(/\s+/);
   if (parts[0] !== 'npm' || parts[1] !== 'install') {
-    return cmd; // Not an npm install command
+    return cmd;
   }
 
   const result = ['npm', 'install'];
-  const fallback = ['npm', 'install'];
-  
   for (let i = 2; i < parts.length; i++) {
     const part = parts[i];
-    
-    // Keep flags, option values, and packages with existing tags as-is
-    if (part.startsWith('-') || part.startsWith('@') || part.includes('@')) {
-      result.push(part);
-      fallback.push(part);
-    } else if (part === '') {
-      // Skip empty strings
-      continue;
-    } else {
-      // This is a package name, add tag
-      result.push(`${part}@${tag}`);
-      fallback.push(`${part}@latest`);
-    }
+    if (!part) continue;
+    if (part.startsWith('-')) { result.push(part); continue; }
+
+    const isScoped = part.startsWith('@');
+    const hasExplicitTag = isScoped
+      ? part.lastIndexOf('@') > part.indexOf('/')
+      : part.includes('@');
+
+    result.push(hasExplicitTag ? part : `${part}@${tag}`);
   }
-  
-  const mainCmd = result.join(' ');
-  
-  // For test mode, add fallback to @latest if @test doesn't exist
-  if (tag === 'test') {
-    const fallbackCmd = fallback.join(' ');
-    return `${mainCmd} || ${fallbackCmd}`;
-  }
-  
-  return mainCmd;
+
+  return result.join(' ');
 }
 
 function packageVersionExists(name, version, repoDir) {
