@@ -862,8 +862,7 @@ function buildLockedVersion(installedVersion, prefix) {
   return `${normalizedPrefix}${installedVersion}`;
 }
 
-function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun) {
-  const npmTag = modeConfig.npmTag || 'latest';
+function collectAfterInstallPackageNames(repo, npmTag) {
   const commands = Array.isArray(repo.afterInstall) ? repo.afterInstall : [];
   const packageNames = new Set();
 
@@ -876,7 +875,45 @@ function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun)
     }
   }
 
-  if (packageNames.size === 0) {
+  return [...packageNames];
+}
+
+function getDeclaredPackageSpecs(packageJson, packageName) {
+  const fields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies', 'overrides'];
+  const specs = [];
+
+  for (const field of fields) {
+    if (!packageJson[field] || typeof packageJson[field] !== 'object') continue;
+    if (!Object.prototype.hasOwnProperty.call(packageJson[field], packageName)) continue;
+    specs.push(`${field}=${packageJson[field][packageName]}`);
+  }
+
+  return specs;
+}
+
+function logBuildDependencyVersions(repoDir, repo, modeConfig) {
+  const npmTag = modeConfig.npmTag || 'latest';
+  const packageNames = collectAfterInstallPackageNames(repo, npmTag);
+  if (packageNames.length === 0) return;
+
+  const pkg = getPackageJson(repoDir);
+  if (!pkg) return;
+
+  console.log('Build dependency versions:');
+  for (const packageName of packageNames) {
+    const declaredSpecs = getDeclaredPackageSpecs(pkg, packageName);
+    const installedVersion = getInstalledPackageVersion(repoDir, packageName);
+    const declaredLabel = declaredSpecs.length > 0 ? declaredSpecs.join(', ') : 'declared=not-found';
+    const installedLabel = installedVersion ? `installed=${installedVersion}` : 'installed=not-found';
+    console.log(`- ${packageName}: ${declaredLabel}; ${installedLabel}`);
+  }
+}
+
+function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun) {
+  const npmTag = modeConfig.npmTag || 'latest';
+  const packageNames = collectAfterInstallPackageNames(repo, npmTag);
+
+  if (packageNames.length === 0) {
     return;
   }
 
@@ -1584,6 +1621,7 @@ function main() {
     if (repo.build !== false) {
       runSteps(repo.beforeBuild, repoDir, dryRun);
       if (hasScript(pkg, 'build') || repo.build) {
+        logBuildDependencyVersions(repoDir, repo, effectiveModeConfig);
         run(effectiveBuildCmd, repoDir, dryRun);
       } else {
         console.log('No build script found. Skipping build.');
