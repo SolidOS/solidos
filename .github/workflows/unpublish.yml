@@ -11,6 +11,20 @@ on:
         description: Exact version to unpublish (e.g. 4.0.5)
         required: true
         type: string
+      action:
+        description: Choose operation (unpublish, deprecate, or auto fallback)
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - unpublish
+          - deprecate
+      deprecate_message:
+        description: Message used when deprecating (required for deprecate/auto fallback)
+        required: true
+        default: "Deprecated due to release rollback. Please use the latest stable version."
+        type: string
       dry_run:
         description: Dry run only (do not execute unpublish)
         required: true
@@ -52,29 +66,88 @@ jobs:
       - name: Show target
         run: |
           echo "Target: ${{ inputs.package_name }}@${{ inputs.version }}"
+          echo "Action: ${{ inputs.action }}"
           echo "Dry run: ${{ inputs.dry_run }}"
 
       - name: Dry run check
         if: ${{ inputs.dry_run }}
         run: |
           echo "Dry run enabled. No unpublish command executed."
-          echo "Would run: npm unpublish ${{ inputs.package_name }}@${{ inputs.version }} --force"
+          if [ "${{ inputs.action }}" = "deprecate" ]; then
+            echo "Would run: npm deprecate -f '${{ inputs.package_name }}@${{ inputs.version }}' '${{ inputs.deprecate_message }}'"
+          elif [ "${{ inputs.action }}" = "unpublish" ]; then
+            echo "Would run: npm unpublish ${{ inputs.package_name }}@${{ inputs.version }} --force"
+          else
+            echo "Would run: npm unpublish ${{ inputs.package_name }}@${{ inputs.version }} --force"
+            echo "If blocked by npm policy, would run: npm deprecate -f '${{ inputs.package_name }}@${{ inputs.version }}' '${{ inputs.deprecate_message }}'"
+          fi
 
-      - name: Unpublish exact version
+      - name: Execute package retirement action
         if: ${{ !inputs.dry_run }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm unpublish ${{ inputs.package_name }}@${{ inputs.version }} --force
+          set -euo pipefail
+          target="${{ inputs.package_name }}@${{ inputs.version }}"
+          message="${{ inputs.deprecate_message }}"
 
-      - name: Verify version is no longer available
+          if [ "${{ inputs.action }}" = "deprecate" ]; then
+            npm deprecate -f "$target" "$message"
+            exit 0
+          fi
+
+          if [ "${{ inputs.action }}" = "unpublish" ]; then
+            npm unpublish "$target" --force
+            exit 0
+          fi
+
+          set +e
+          output=$(npm unpublish "$target" --force 2>&1)
+          status=$?
+          set -e
+
+          echo "$output"
+          if [ $status -eq 0 ]; then
+            echo "Unpublish succeeded."
+            exit 0
+          fi
+
+          if echo "$output" | grep -qi "You can no longer unpublish this package\|Failed criteria\|E405"; then
+            echo "Unpublish blocked by npm policy; falling back to deprecate..."
+            npm deprecate -f "$target" "$message"
+            exit 0
+          fi
+
+          echo "Unpublish failed for a reason other than npm policy; not falling back."
+          exit $status
+
+      - name: Verify outcome
         if: ${{ !inputs.dry_run }}
         run: |
+          if [ "${{ inputs.action }}" = "deprecate" ]; then
+            npm view ${{ inputs.package_name }}@${{ inputs.version }} deprecated
+            exit 0
+          fi
+
+          if [ "${{ inputs.action }}" = "auto" ]; then
+            # In auto mode, either unpublish (version no longer resolves) or deprecate (deprecated message exists) is acceptable.
+            set +e
+            npm view ${{ inputs.package_name }}@${{ inputs.version }} version >/dev/null 2>&1
+            exists_status=$?
+            set -e
+            if [ $exists_status -ne 0 ]; then
+              echo "Version no longer resolvable (unpublished)."
+              exit 0
+            fi
+            npm view ${{ inputs.package_name }}@${{ inputs.version }} deprecated
+            exit 0
+          fi
+
           set +e
           npm view ${{ inputs.package_name }}@${{ inputs.version }} version
           status=$?
           if [ $status -eq 0 ]; then
-            echo "Version still resolvable from npm registry."
+            echo "Version still resolvable from npm registry (unpublish did not occur)."
             exit 1
           fi
           echo "Unpublish appears successful (version not resolvable)."

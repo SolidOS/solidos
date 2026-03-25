@@ -23,6 +23,18 @@ function parseArgs(argv) {
   return args;
 }
 
+function sleepMs(ms) {
+  const duration = Math.max(0, Number(ms) || 0);
+  if (duration === 0) return;
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, duration);
+}
+
+function preferGhToken() {
+  if (process.env.GIT_PUSH_TOKEN && !process.env.GH_TOKEN) {
+    process.env.GH_TOKEN = process.env.GIT_PUSH_TOKEN;
+  }
+}
+
 function toBool(value, defaultValue = false) {
   if (value === undefined) return defaultValue;
   if (typeof value === 'boolean') return value;
@@ -138,6 +150,42 @@ function getPackageVersion(repoDir) {
   return pkg ? pkg.version : null;
 }
 
+function parseBaseSemver(version) {
+  const match = String(version || '').trim().match(/^(\d+)\.(\d+)\.(\d+)$/);
+  if (!match) return null;
+  return [
+    parseInt(match[1], 10),
+    parseInt(match[2], 10),
+    parseInt(match[3], 10)
+  ];
+}
+
+function compareBaseSemver(a, b) {
+  const parsedA = parseBaseSemver(a);
+  const parsedB = parseBaseSemver(b);
+  if (!parsedA || !parsedB) return null;
+
+  for (let i = 0; i < 3; i += 1) {
+    if (parsedA[i] > parsedB[i]) return 1;
+    if (parsedA[i] < parsedB[i]) return -1;
+  }
+  return 0;
+}
+
+function pickHighestBaseSemver(baseVersion, stableVersion) {
+  if (!stableVersion) return baseVersion;
+  const comparison = compareBaseSemver(baseVersion, stableVersion);
+  if (comparison === null) return baseVersion;
+  return comparison >= 0 ? baseVersion : stableVersion;
+}
+
+function incrementPatchSemver(version) {
+  const parsed = parseBaseSemver(version);
+  if (!parsed) return null;
+  parsed[2] += 1;
+  return `${parsed[0]}.${parsed[1]}.${parsed[2]}`;
+}
+
 function getModeConfig(config, modeName) {
   if (!config || !config.modes) return {};
   if (Array.isArray(config.modes)) {
@@ -150,6 +198,42 @@ function getModeBranch(config, modeName, fallback = null) {
   const modeConfig = getModeConfig(config, modeName);
   if (modeConfig && modeConfig.branch) return modeConfig.branch;
   return fallback;
+}
+
+function remoteBranchExists(repoDir, branch) {
+  if (!branch) return false;
+  try {
+    const result = runQuiet(`git ls-remote --heads origin ${branch}`, repoDir);
+    return Boolean(result);
+  } catch (err) {
+    return false;
+  }
+}
+
+function getReleaseSourceBranch(repoDir, repo, config, targetBranch, dryRun) {
+  const stablePublishConfig = getModeConfig(config, 'stable-publish');
+  const stableConfig = getModeConfig(config, 'stable');
+  const configuredSourceBranch =
+    repo.releaseSourceBranch ||
+    repo.sourceBranch ||
+    stablePublishConfig.sourceBranch ||
+    stableConfig.sourceBranch ||
+    config.releaseSourceBranch ||
+    getModeBranch(config, 'test', null);
+
+  if (dryRun) {
+    return configuredSourceBranch || targetBranch;
+  }
+
+  if (configuredSourceBranch && remoteBranchExists(repoDir, configuredSourceBranch)) {
+    return configuredSourceBranch;
+  }
+
+  if (configuredSourceBranch && configuredSourceBranch !== targetBranch) {
+    console.log(`Warning: Release source branch '${configuredSourceBranch}' not found on origin. Falling back to '${targetBranch}'.`);
+  }
+
+  return targetBranch;
 }
 
 function hasScript(pkg, scriptName) {
@@ -228,6 +312,451 @@ function withCiGitAuth(url) {
   if (raw.includes('x-access-token:')) return raw;
 
   return `https://x-access-token:${token}@github.com/${match[1]}`;
+}
+
+function parseGitHubRepoSlug(url) {
+  const raw = String(url || '').trim();
+  if (!raw) return null;
+  const withoutSuffix = raw.replace(/\.git$/i, '');
+  const match = withoutSuffix.match(/github\.com[:/]([^/]+\/[^/]+)$/i);
+  return match && match[1] ? match[1] : null;
+}
+
+function buildReleaseBranchName(repoName) {
+  const stamp = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 12);
+  const sanitized = String(repoName || 'repo').toLowerCase().replace(/[^a-z0-9._-]+/g, '-');
+  return `release/${sanitized}-${stamp}`;
+}
+
+function maybeCreatePullRequest(repoDir, repo, baseBranch, headBranch, dryRun, options = {}) {
+  const slug = parseGitHubRepoSlug(repo.repo || runQuiet('git remote get-url origin', repoDir));
+  const title = `Release: merge ${headBranch} into ${baseBranch}`;
+  const body = 'Automated stable release preparation.';
+  const required = toBool(options.required, false);
+
+  if (dryRun) {
+    console.log(`[dry-run] Would create PR for ${slug || repo.name}: ${headBranch} -> ${baseBranch}`);
+    return { status: 'dry-run' };
+  }
+
+  try {
+    runQuiet('gh --version', repoDir);
+  } catch (err) {
+    if (required) {
+      throw new Error('gh CLI not available in runner. Cannot create required release PR.');
+    }
+    console.log('gh CLI not available in runner. Skipping automatic PR creation.');
+    return { status: 'skipped', reason: 'no-gh-cli' };
+  }
+
+  try {
+    const repoArg = slug ? `--repo ${slug}` : '';
+    run(`gh pr create ${repoArg} --base ${baseBranch} --head ${headBranch} --title "${title}" --body "${body}"`.trim(), repoDir, dryRun);
+    return { status: 'created' };
+  } catch (err) {
+    if (required) {
+      throw new Error(
+        `PR create failed for ${repo.name}: ${err.message}. ` +
+        'Ensure GH_TOKEN/GIT_PUSH_TOKEN has access to target repo and Pull requests: Read and write permission.'
+      );
+    }
+    console.log(`PR create skipped for ${repo.name}: ${err.message}`);
+    return { status: 'skipped', reason: 'create-failed' };
+  }
+}
+
+function createReleaseBranch(repoDir, repo, baseBranch, dryRun) {
+  const releaseBranch = buildReleaseBranchName(repo.name);
+  ensureCiPushAccess(repoDir, releaseBranch, dryRun, { gitPush: true });
+  run(`git switch -c ${releaseBranch}`, repoDir, dryRun);
+  return releaseBranch;
+}
+
+function prepareStablePullRequest(repoDir, repo, config, branch, dryRun, branchOverride) {
+  const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
+  const shouldCheckDiff = !dryRun && skipIfNoDiff && !branchOverride;
+  const sourceBranch = getReleaseSourceBranch(repoDir, repo, config, branch, dryRun);
+
+  if (sourceBranch === branch) {
+    return {
+      status: dryRun ? 'dry-run' : 'skipped',
+      reason: dryRun ? null : 'source-equals-target',
+      releaseBranch: null,
+      sourceBranch,
+      targetBranch: branch
+    };
+  }
+
+  try {
+    runQuiet(`git fetch origin ${sourceBranch}:refs/remotes/origin/${sourceBranch}`, repoDir);
+  } catch (err) {
+    console.log(`Warning: Could not fetch ${sourceBranch}: ${err.message}`);
+  }
+
+  const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${sourceBranch}`, repoDir)) || 0;
+  if (shouldCheckDiff && commitsAhead === 0) {
+    return { status: 'skipped', reason: 'no-diff' };
+  }
+
+  const releaseBranch = buildReleaseBranchName(repo.name);
+  ensureCiPushAccess(repoDir, releaseBranch, dryRun, { gitPush: true });
+  run(`git switch -c ${releaseBranch}`, repoDir, dryRun);
+  run(`git merge origin/${sourceBranch} -m "Merge ${sourceBranch} into ${branch} for release [skip ci]"`, repoDir, dryRun);
+  run(`git push -u origin ${releaseBranch}`, repoDir, dryRun);
+  maybeCreatePullRequest(repoDir, repo, branch, releaseBranch, dryRun);
+
+  return {
+    status: dryRun ? 'dry-run' : 'prepared-pr',
+    releaseBranch,
+    sourceBranch,
+    targetBranch: branch
+  };
+}
+
+function ensureMainContainsStableChanges(repoDir, config, branch, dryRun) {
+  if (dryRun) return;
+  const sourceBranch = getReleaseSourceBranch(repoDir, {}, config, branch, dryRun);
+  if (sourceBranch === branch) return;
+  try {
+    runQuiet(`git fetch origin ${sourceBranch}:refs/remotes/origin/${sourceBranch}`, repoDir);
+    const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${sourceBranch}`, repoDir)) || 0;
+    if (commitsAhead > 0) {
+      throw new Error(
+        `${commitsAhead} commit(s) still in ${sourceBranch} but not in ${branch}. ` +
+        'Merge the release PR into main before running mode=stable-publish.'
+      );
+    }
+  } catch (err) {
+    if (err.message.includes('Merge the release PR')) {
+      throw err;
+    }
+    console.log(`Warning: Could not validate ${sourceBranch} vs ${branch}: ${err.message}`);
+  }
+}
+
+function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options = {}) {
+  const required = toBool(options.required, false);
+  if (dryRun) {
+    console.log(`[dry-run] Would wait for and merge PR: ${headBranch} -> ${baseBranch}`);
+    return { status: 'dry-run', prNumber: null };
+  }
+
+  const slug = parseGitHubRepoSlug(repo.repo || runQuiet('git remote get-url origin', repoDir));
+  if (!slug) {
+    if (required) {
+      throw new Error('Could not determine GitHub repo slug. Cannot merge required release PR.');
+    }
+    console.log('Warning: Could not determine GitHub repo slug. Skipping PR merge.');
+    return { status: 'skip', reason: 'no-slug' };
+  }
+
+  try {
+    runQuiet('gh --version', repoDir);
+  } catch (err) {
+    if (required) {
+      throw new Error('gh CLI not available in runner. Cannot merge required release PR.');
+    }
+    console.log('gh CLI not available in runner. Skipping automatic PR merge.');
+    return { status: 'skip', reason: 'no-gh-cli' };
+  }
+
+  try {
+    // Find the PR number for this head branch
+    const prQuery = `gh pr list --repo ${slug} --head ${headBranch} --base ${baseBranch} --state open --json number --jq '.[0].number'`;
+    let prNumber;
+    try {
+      prNumber = parseInt(runQuiet(prQuery, repoDir), 10);
+    } catch (err) {
+      if (required) {
+        throw new Error(`No open PR found for ${headBranch} -> ${baseBranch}`);
+      }
+      console.log(`No open PR found for ${headBranch} -> ${baseBranch}`);
+      return { status: 'skip', reason: 'no-pr' };
+    }
+
+    if (!prNumber) {
+      if (required) {
+        throw new Error(`No open PR found for ${headBranch} -> ${baseBranch}`);
+      }
+      console.log(`No open PR found for ${headBranch} -> ${baseBranch}`);
+      return { status: 'skip', reason: 'no-pr' };
+    }
+
+    let requiredCheckContexts = [];
+    try {
+      const rawContexts = runQuiet(
+        `gh api repos/${slug}/branches/${baseBranch}/protection --jq '.required_status_checks.checks[].context'`,
+        repoDir
+      );
+      requiredCheckContexts = String(rawContexts || '')
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (requiredCheckContexts.length > 0) {
+        console.log(`Required status checks on ${baseBranch}: ${requiredCheckContexts.join(', ')}`);
+      }
+    } catch (err) {
+      // Rulesets API visibility varies by token/repo configuration; keep merge flow working even if introspection fails.
+      console.log(`Warning: Could not read required status checks for ${baseBranch}: ${err.message}`);
+    }
+
+    console.log(`Found PR #${prNumber}. Requesting auto-merge...`);
+    let autoMergeRequested = false;
+    try {
+      run(`gh pr merge ${prNumber} --repo ${slug} --merge --auto --delete-branch`.trim(), repoDir, dryRun);
+      autoMergeRequested = true;
+    } catch (err) {
+      const message = String(err.message || err);
+      // Some repos reject auto-merge requests while checks are still being initialized.
+      if (
+        /Repository rule violations found/i.test(message) ||
+        /required status checks are expected/i.test(message) ||
+        /required status check/i.test(message)
+      ) {
+        console.log(`  Auto-merge not accepted yet: ${message.split('\n')[0]}`);
+      } else {
+        throw err;
+      }
+    }
+
+    const maxWaitTime = 20 * 60 * 1000;
+    const pollInterval = 15 * 1000;
+    const startTime = Date.now();
+    let finalMergedAt = '';
+    let sawAnyChecks = false;
+    let blockedNoChecksCycles = 0;
+    const blockedNoChecksLimit = 8; // ~2 minutes at 15s polling
+    let ciKickoffAttempted = false;
+    const requiredChecksWorkflow = options.requiredChecksWorkflow || 'ci.yml';
+
+    const isTransientRuleViolation = (err) => {
+      const text = [
+        String(err && err.message ? err.message : ''),
+        String(err && err.stderr ? err.stderr : ''),
+        String(err && err.stdout ? err.stdout : '')
+      ].join('\n');
+      return (
+        /Repository rule violations found/i.test(text) ||
+        /required status checks are expected/i.test(text) ||
+        /required status check/i.test(text)
+      );
+    };
+
+    while ((Date.now() - startTime) < maxWaitTime) {
+      let payload;
+      try {
+        const query = `gh pr view ${prNumber} --repo ${slug} --json state,mergedAt,mergeStateStatus,reviewDecision,statusCheckRollup`;
+        payload = JSON.parse(runQuiet(query, repoDir) || '{}');
+      } catch (err) {
+        console.log(`  Warning reading PR state: ${err.message}`);
+        sleepMs(pollInterval);
+        continue;
+      }
+
+      const state = payload.state || 'UNKNOWN';
+      const mergedAt = payload.mergedAt || '';
+      const mergeStateStatus = payload.mergeStateStatus || 'UNKNOWN';
+      const reviewDecision = payload.reviewDecision || 'UNKNOWN';
+      const checks = Array.isArray(payload.statusCheckRollup) ? payload.statusCheckRollup : [];
+      if (checks.length > 0) {
+        sawAnyChecks = true;
+      }
+
+      const pendingChecks = checks.filter((c) => {
+        const s = String((c && c.status) || '').toUpperCase();
+        return s === 'PENDING' || s === 'IN_PROGRESS' || s === 'QUEUED' || s === 'EXPECTED';
+      }).length;
+
+      const failingChecks = checks.filter((c) => {
+        const conclusion = String((c && c.conclusion) || '').toUpperCase();
+        return conclusion === 'FAILURE' || conclusion === 'TIMED_OUT' || conclusion === 'CANCELLED' || conclusion === 'ACTION_REQUIRED';
+      }).length;
+
+      console.log(
+        `  PR #${prNumber}: state=${state}, mergeState=${mergeStateStatus}, review=${reviewDecision}, pendingChecks=${pendingChecks}, failingChecks=${failingChecks}`
+      );
+
+      if (mergeStateStatus === 'BLOCKED' && checks.length === 0 && pendingChecks === 0) {
+        blockedNoChecksCycles += 1;
+      } else {
+        blockedNoChecksCycles = 0;
+      }
+
+      // If the PR is blocked and no checks have appeared, force-push an empty commit to trigger PR CI.
+      // This re-triggers the pull_request event and materializes required checks on the PR.
+      if (!ciKickoffAttempted && blockedNoChecksCycles >= 2) {
+        try {
+          run(`git commit --allow-empty -m "Trigger CI checks"`, repoDir, dryRun);
+          run(`git push -f origin ${headBranch}`, repoDir, dryRun);
+          ciKickoffAttempted = true;
+          console.log(`  Pushed empty commit to ${headBranch} to trigger PR CI checks.`);
+        } catch (err) {
+          ciKickoffAttempted = true;
+          console.log(`  Warning: Could not push to ${headBranch}: ${err.message}`);
+        }
+      }
+
+      if (mergedAt) {
+        finalMergedAt = mergedAt;
+        break;
+      }
+
+      if (state === 'CLOSED') {
+        throw new Error(`PR #${prNumber} was closed without merge.`);
+      }
+
+      if (failingChecks > 0) {
+        throw new Error(`PR #${prNumber} has failing required checks.`);
+      }
+
+      if (blockedNoChecksCycles >= blockedNoChecksLimit) {
+        const requiredLabel = requiredCheckContexts.length > 0
+          ? ` Required checks configured: ${requiredCheckContexts.join(', ')}.`
+          : '';
+        throw new Error(
+          `PR #${prNumber} stayed BLOCKED with no status checks for ${(blockedNoChecksCycles * pollInterval) / 1000}s. ` +
+          `This usually means required checks are configured but not running for this PR (workflow trigger/path filter/permissions mismatch).` +
+          requiredLabel
+        );
+      }
+
+      // Retry requesting auto-merge once checks have started appearing.
+      if (!autoMergeRequested && (pendingChecks > 0 || sawAnyChecks)) {
+        try {
+          run(`gh pr merge ${prNumber} --repo ${slug} --merge --auto --delete-branch`.trim(), repoDir, dryRun);
+          autoMergeRequested = true;
+          console.log(`  Auto-merge request accepted for PR #${prNumber}.`);
+        } catch (err) {
+          console.log(`  Auto-merge still blocked: ${String((err && err.message) || err).split('\n')[0]}`);
+        }
+      }
+
+      // If checks have materialized and everything is green but merge is still blocked
+      // (e.g. review requirement), try admin merge. Do not do this before checks exist.
+      if (sawAnyChecks && checks.length > 0 && pendingChecks === 0 && mergeStateStatus === 'BLOCKED') {
+        try {
+          run(`gh pr merge ${prNumber} --repo ${slug} --merge --admin --delete-branch`.trim(), repoDir, dryRun);
+        } catch (err) {
+          if (!isTransientRuleViolation(err)) {
+            throw err;
+          }
+          console.log('  Admin merge blocked while checks/rules are still settling; will retry.');
+        }
+      }
+
+      sleepMs(pollInterval);
+    }
+
+    if (!finalMergedAt) {
+      finalMergedAt = runQuiet(`gh pr view ${prNumber} --repo ${slug} --json mergedAt --jq '.mergedAt // ""'`, repoDir).trim();
+    }
+
+    if (!finalMergedAt) {
+      throw new Error(`Timed out waiting for PR #${prNumber} to merge.`);
+    }
+
+    console.log(`PR #${prNumber} merged at ${finalMergedAt}.`);
+
+    // Clean working tree before switching branches (force-push of empty commit may leave local changes)
+    run(`git reset --hard`, repoDir, dryRun);
+    run(`git clean -fd`, repoDir, dryRun);
+
+    // Fetch the updated main branch
+    run(`git fetch origin ${baseBranch}`, repoDir, dryRun);
+    run(`git checkout ${baseBranch}`, repoDir, dryRun);
+    run(`git pull origin ${baseBranch}`, repoDir, dryRun);
+
+    return { status: 'merged', prNumber };
+  } catch (err) {
+    console.error(`Error during PR merge: ${err.message}`);
+    throw err;
+  }
+}
+
+function ensureCiPushAccess(repoDir, branch, dryRun, modeConfig = {}) {
+  if (process.env.GITHUB_ACTIONS !== 'true') return;
+  if (dryRun) return;
+  if (modeConfig.gitPush === false) return;
+
+  const tokenSource = process.env.GIT_PUSH_TOKEN ? 'GIT_PUSH_TOKEN' : (process.env.GITHUB_TOKEN ? 'GITHUB_TOKEN' : null);
+  if (!tokenSource) {
+    throw new Error(`No git push token available for ${repoDir}. Configure GIT_PUSH_TOKEN or GITHUB_TOKEN in CI.`);
+  }
+
+  try {
+    runQuiet(`git push --dry-run origin HEAD:${branch}`, repoDir);
+  } catch (err) {
+    throw new Error(
+      `Push access check failed for branch '${branch}'. ` +
+      `The CI job is authenticated with ${tokenSource}, but that token cannot push to this repository/branch. ` +
+      `Use a fine-grained PAT in GIT_PUSH_TOKEN with Contents: Read and write on the target SolidOS repos, ` +
+      `and ensure branch protection allows that token/account to push.`
+    );
+  }
+}
+
+function waitForWorkflowSuccess(repoDir, repo, workflowRef, branch, headSha, dryRun, options = {}) {
+  if (dryRun) {
+    console.log(`[dry-run] Would wait for workflow ${workflowRef} on ${branch} at ${headSha}.`);
+    return { status: 'dry-run' };
+  }
+
+  const slug = parseGitHubRepoSlug(repo.repo || runQuiet('git remote get-url origin', repoDir));
+  if (!slug) {
+    throw new Error(`Could not determine GitHub repo slug. Cannot wait for workflow ${workflowRef}.`);
+  }
+
+  try {
+    runQuiet('gh --version', repoDir);
+  } catch (err) {
+    throw new Error(`gh CLI not available in runner. Cannot wait for workflow ${workflowRef}.`);
+  }
+
+  const maxWaitTime = options.timeoutMs || 20 * 60 * 1000;
+  const pollInterval = options.pollIntervalMs || 15 * 1000;
+  const startTime = Date.now();
+
+  while ((Date.now() - startTime) < maxWaitTime) {
+    let runs = [];
+    try {
+      const query = `gh run list --repo ${slug} --workflow ${workflowRef} --branch ${branch} --event push --limit 20 --json databaseId,headSha,status,conclusion,url,displayTitle`;
+      runs = JSON.parse(runQuiet(query, repoDir) || '[]');
+    } catch (err) {
+      console.log(`  Warning reading workflow state for ${workflowRef}: ${err.message}`);
+      sleepMs(pollInterval);
+      continue;
+    }
+
+    const matchingRun = Array.isArray(runs)
+      ? runs.find((runInfo) => String(runInfo.headSha || '').trim() === String(headSha || '').trim())
+      : null;
+
+    if (!matchingRun) {
+      console.log(`  Waiting for workflow ${workflowRef} on ${branch} for commit ${headSha} to start...`);
+      sleepMs(pollInterval);
+      continue;
+    }
+
+    const status = String(matchingRun.status || 'unknown');
+    const conclusion = String(matchingRun.conclusion || '');
+    console.log(`  Workflow ${workflowRef}: status=${status}, conclusion=${conclusion || 'pending'}`);
+
+    if (status !== 'completed') {
+      sleepMs(pollInterval);
+      continue;
+    }
+
+    if (conclusion === 'success') {
+      return { status: 'success', runId: matchingRun.databaseId || null, url: matchingRun.url || null };
+    }
+
+    throw new Error(
+      `Workflow ${workflowRef} failed for ${slug}@${headSha} with conclusion=${conclusion || 'unknown'}.` +
+      `${matchingRun.url ? ` See ${matchingRun.url}` : ''}`
+    );
+  }
+
+  throw new Error(`Timed out waiting for workflow ${workflowRef} on ${branch} for commit ${headSha}.`);
 }
 
 function getAheadBehind(repoDir, branch) {
@@ -357,7 +886,7 @@ function lockStableDependencyVersions(repoDir, repo, config, modeConfig, dryRun)
   }
 
   const lockFields = modeConfig.lockDependencyFields || config.lockDependencyFields || ['dependencies', 'devDependencies'];
-  const versionPrefix = modeConfig.lockDependencyPrefix ?? config.lockDependencyPrefix ?? '';
+  const versionPrefix = modeConfig.lockDependencyPrefix ?? config.lockDependencyPrefix ?? '^';
   const packageJson = readJson(pkgPath);
   let changed = false;
 
@@ -519,19 +1048,36 @@ function ensureCleanBeforeVersion(repoDir, dryRun, options = {}) {
   run(`git commit -m "${commitMessage}"`, repoDir, dryRun);
 }
 
-function publishStable(repoDir, modeConfig, dryRun, buildCmd) {
+function bumpStableVersion(repoDir, modeConfig, dryRun) {
   ensureCleanBeforeVersion(repoDir, dryRun, {
     autoCommit: modeConfig.autoCommitBeforeVersion ?? (process.env.GITHUB_ACTIONS === 'true'),
     commitMessage: modeConfig.preVersionCommitMessage || 'chore(release): sync release prep changes [skip ci]'
   });
 
   const bump = modeConfig.versionBump || 'patch';
-  if (modeConfig.gitTag === false) {
-    run(`npm version ${bump} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
-  } else {
-    run(`npm version ${bump} -m "Release %s" --ignore-scripts`, repoDir, dryRun);
-  }
+  const doVersionBump = () => {
+    if (modeConfig.gitTag === false) {
+      run(`npm version ${bump} --no-git-tag-version --ignore-scripts`, repoDir, dryRun);
+      // --no-git-tag-version only edits package.json; commit the change explicitly.
+      run(`git add package.json package-lock.json`, repoDir, dryRun);
+      const bumpedVer = getPackageVersion(repoDir);
+      run(`git commit -m "Release ${bumpedVer} [skip ci]" --allow-empty`, repoDir, dryRun);
+    } else {
+      run(`npm version ${bump} -m "Release %s" --ignore-scripts`, repoDir, dryRun);
+    }
+  };
 
+  doVersionBump();
+
+  const updatedPkg = getPackageJson(repoDir);
+  return {
+    packageName: updatedPkg ? updatedPkg.name : null,
+    version: getPackageVersion(repoDir),
+    tag: modeConfig.npmTag || 'latest'
+  };
+}
+
+function publishPreparedStable(repoDir, modeConfig, dryRun, buildCmd) {
   const pkg = getPackageJson(repoDir);
   const packageName = pkg ? pkg.name : null;
   const version = getPackageVersion(repoDir);
@@ -540,11 +1086,9 @@ function publishStable(repoDir, modeConfig, dryRun, buildCmd) {
     ? `--tag ${modeConfig.npmTag}`
     : '';
   ensurePublishableArtifacts(repoDir, dryRun, buildCmd);
-  // Ignore lifecycle scripts to avoid postpublish git pushes in CI.
   console.log(`Publishing ${packageName || 'package'}@${version} with tag ${modeConfig.npmTag || 'latest'}...`);
   run(`npm publish ${tag} --ignore-scripts --no-provenance`.trim(), repoDir, dryRun);
 
-  // Wait for the version to be available on npm registry
   if (!dryRun && packageName && version) {
     console.log(`Waiting for ${packageName}@${version} to be available on npm...`);
     const registryReady = waitForNpmVersion(packageName, version, repoDir, 120000, 3000);
@@ -559,6 +1103,11 @@ function publishStable(repoDir, modeConfig, dryRun, buildCmd) {
   }
 
   return { packageName, version, tag: modeConfig.npmTag || 'latest' };
+}
+
+function publishStable(repoDir, modeConfig, dryRun, buildCmd) {
+  bumpStableVersion(repoDir, modeConfig, dryRun);
+  return publishPreparedStable(repoDir, modeConfig, dryRun, buildCmd);
 }
 
 function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
@@ -644,10 +1193,25 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
           fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
         }
       } else {
-        // Base version doesn't match stable, increment the test counter
-        const nextCounter = parseInt(counterMatch[2], 10) + 1;
-        version = `${publishedBaseVersion}-${preid}.${nextCounter}`;
-        console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
+        // Base version doesn't match stable.
+        // If @test is behind @latest, reset to stable as the base.
+        const stableComparison = latestStableVersion
+          ? compareBaseSemver(publishedBaseVersion, latestStableVersion)
+          : null;
+
+        if (latestStableVersion && stableComparison === -1) {
+          const bumpedStableBase = incrementPatchSemver(latestStableVersion);
+          version = bumpedStableBase
+            ? `${bumpedStableBase}-${preid}.0`
+            : `${latestStableVersion}-${preid}.0`;
+          console.log(
+            `Published @${preid} base ${publishedBaseVersion} is behind stable ${latestStableVersion}. Resetting to ${version}...`
+          );
+        } else {
+          const nextCounter = publishedCounter + 1;
+          version = `${publishedBaseVersion}-${preid}.${nextCounter}`;
+          console.log(`Latest @${preid} is ${latestTestVersion}. Incrementing to ${version}...`);
+        }
 
         // Update package.json manually with this version
         const pkgPath = path.join(repoDir, 'package.json');
@@ -686,9 +1250,20 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
             fs.writeFileSync(pkgPath, JSON.stringify(pkgData, null, 2) + '\n');
           }
         } else {
-          // Base version doesn't match stable, use this version as starting point for -test
-          version = `${publishedBaseVersion}-${preid}.0`;
-          console.log(`Base version ${publishedBaseVersion} differs from stable. Starting test version at ${version}...`);
+          // Base version doesn't match stable; start from the higher of published base and stable.
+          const selectedBaseVersion = pickHighestBaseSemver(publishedBaseVersion, latestStableVersion);
+          const bumpFromStable = latestStableVersion && selectedBaseVersion === latestStableVersion;
+          const outputBaseVersion = bumpFromStable
+            ? (incrementPatchSemver(selectedBaseVersion) || selectedBaseVersion)
+            : selectedBaseVersion;
+          version = `${outputBaseVersion}-${preid}.0`;
+          if (latestStableVersion && selectedBaseVersion !== publishedBaseVersion) {
+            console.log(
+              `Base version ${publishedBaseVersion} is behind stable ${latestStableVersion}. Starting test version at ${version}...`
+            );
+          } else {
+            console.log(`Base version ${publishedBaseVersion} differs from stable. Starting test version at ${version}...`);
+          }
           
           // Update package.json manually with this version
           if (!dryRun) {
@@ -780,7 +1355,28 @@ function publishTest(repoDir, modeConfig, dryRun, buildCmd) {
   return { packageName: name, version, tag };
 }
 
+function emitReleaseSummary(mode, dryRun, summary, summaryPath) {
+  console.log('\nRelease summary:');
+  for (const item of summary) {
+    if (item.status === 'published' || item.status === 'published-by-repo-ci' || item.status === 'dry-run') {
+      console.log(`- ${item.name}: ${item.status} ${item.version || ''} (${item.tag || 'latest'})`.trim());
+    } else {
+      console.log(`- ${item.name}: ${item.status} (${item.reason})`);
+    }
+  }
+
+  const summaryPayload = {
+    mode,
+    dryRun,
+    generatedAt: new Date().toISOString(),
+    items: summary
+  };
+  fs.writeFileSync(summaryPath, JSON.stringify(summaryPayload, null, 2));
+  console.log(`Summary written to ${summaryPath}`);
+}
+
 function main() {
+  preferGhToken();
   const args = parseArgs(process.argv.slice(2));
   const mode = args.mode || 'stable';
   const configPath = path.resolve(process.cwd(), args.config || 'release.config.json');
@@ -801,18 +1397,31 @@ function main() {
 
   const config = readJson(configPath);
   const configDir = path.dirname(configPath);
-  const modeConfig = getModeConfig(config, mode);
+  const isStablePrepareMode = mode === 'stable-prepare-pr';
+  const isStablePublishMode = mode === 'stable-publish';
+  const isStableMode = mode === 'stable';
+  const modeConfigBase = getModeConfig(config, mode) || {};
+  const stableBaseConfig = getModeConfig(config, 'stable') || {};
+  const modeConfig = isStablePrepareMode
+    ? { ...stableBaseConfig, ...modeConfigBase, gitPush: false, gitTag: false }
+    : isStablePublishMode
+      ? { ...stableBaseConfig, ...modeConfigBase, gitPush: false, gitTag: false }
+      : modeConfigBase;
 
   if (!config.repos || !Array.isArray(config.repos)) {
     throw new Error('Config must include a repos array.');
   }
 
   const summary = [];
+  let fatalError = null;
 
+  try {
   for (const repo of config.repos) {
+    try {
     const repoDir = path.resolve(configDir, repo.path);
     const branch = branchOverride || repo.branch || modeConfig.branch || config.defaultBranch || 'main';
     const effectiveModeConfig = { ...modeConfig, branch };
+    let stablePublishReleaseBranch = null;
 
     console.log(`\n==> ${repo.name} (${repoDir})`);
 
@@ -843,6 +1452,27 @@ function main() {
     }
 
     ensureCiGitSetup(repoDir, dryRun);
+    if (isStableMode) {
+      ensureCiPushAccess(repoDir, branch, dryRun, effectiveModeConfig);
+    }
+
+    if (isStablePrepareMode) {
+      const prepareResult = prepareStablePullRequest(repoDir, repo, config, branch, dryRun, branchOverride);
+      summary.push({
+        name: repo.name,
+        status: prepareResult.status,
+        reason: prepareResult.reason || null,
+        releaseBranch: prepareResult.releaseBranch || null,
+        sourceBranch: prepareResult.sourceBranch || null,
+        targetBranch: prepareResult.targetBranch || null
+      });
+      continue;
+    }
+
+    if (isStablePublishMode) {
+      console.log(`Preparing protected-branch release from ${branch} for ${repo.name}...`);
+      stablePublishReleaseBranch = createReleaseBranch(repoDir, repo, branch, dryRun);
+    }
 
     // Skip ahead/behind check in dry-run since git commands don't actually execute
     if (!dryRun) {
@@ -868,26 +1498,26 @@ function main() {
     // Stable mode skips if no diff, unless branch was explicitly specified or dry-run
     let shouldMergeDev = false;
     
-    if (mode === 'stable') {
+    if (isStableMode) {
       const skipIfNoDiff = repo.skipIfNoDiff ?? config.skipIfNoDiff ?? true;
       const shouldCheckDiff = !dryRun && skipIfNoDiff && !branchOverride;
+      const sourceBranch = getReleaseSourceBranch(repoDir, repo, config, branch, dryRun);
       
-      if (shouldCheckDiff) {
-        // For stable mode: check if dev branch has changes that main doesn't
-        const devBranch = getModeBranch(config, 'test', 'dev') || 'dev';
+      if (shouldCheckDiff && sourceBranch !== branch) {
+        // For stable mode: check if source branch has changes that target doesn't
         
-        // Ensure we have latest dev refs
+        // Ensure we have latest source refs
         try {
-          runQuiet(`git fetch origin ${devBranch}:refs/remotes/origin/${devBranch}`, repoDir);
+          runQuiet(`git fetch origin ${sourceBranch}:refs/remotes/origin/${sourceBranch}`, repoDir);
         } catch (err) {
-          console.log(`Warning: Could not fetch ${devBranch}: ${err.message}`);
+          console.log(`Warning: Could not fetch ${sourceBranch}: ${err.message}`);
         }
         
-        // Count commits that dev has but main doesn't
-        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${devBranch}`, repoDir)) || 0;
+        // Count commits that source has but target doesn't
+        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${sourceBranch}`, repoDir)) || 0;
         
         if (commitsAhead === 0) {
-          console.log(`No changes in origin/${devBranch} vs ${branch}. Skipping publish.`);
+          console.log(`No changes in origin/${sourceBranch} vs ${branch}. Skipping publish.`);
           summary.push({
             name: repo.name,
             status: 'skipped',
@@ -895,42 +1525,46 @@ function main() {
           });
           continue;
         } else {
-          console.log(`Found ${commitsAhead} commit(s) in ${devBranch} not in ${branch}. Will merge and publish.`);
+          console.log(`Found ${commitsAhead} commit(s) in ${sourceBranch} not in ${branch}. Will merge and publish.`);
           shouldMergeDev = true;
         }
       }
     }
     
     // For stable mode: check if we need to merge dev (even if skipIfNoDiff is disabled)
-    if (mode === 'stable' && !shouldMergeDev) {
-      const devBranch = getModeBranch(config, 'test', 'dev') || 'dev';
+    if (isStableMode && !shouldMergeDev) {
+      const sourceBranch = getReleaseSourceBranch(repoDir, repo, config, branch, dryRun);
+      if (sourceBranch === branch) {
+        shouldMergeDev = false;
+      } else {
       
       try {
-        runQuiet(`git fetch origin ${devBranch}:refs/remotes/origin/${devBranch}`, repoDir);
-        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${devBranch}`, repoDir)) || 0;
+        runQuiet(`git fetch origin ${sourceBranch}:refs/remotes/origin/${sourceBranch}`, repoDir);
+        const commitsAhead = parseInt(runQuiet(`git rev-list --count ${branch}..origin/${sourceBranch}`, repoDir)) || 0;
         
         if (commitsAhead > 0) {
-          console.log(`Found ${commitsAhead} commit(s) in ${devBranch} not in ${branch}. Will merge before publish.`);
+          console.log(`Found ${commitsAhead} commit(s) in ${sourceBranch} not in ${branch}. Will merge before publish.`);
           shouldMergeDev = true;
         }
       } catch (err) {
-        console.log(`Warning: Could not check ${devBranch}: ${err.message}`);
+        console.log(`Warning: Could not check ${sourceBranch}: ${err.message}`);
+      }
       }
     }
     
     // Merge dev into main before publishing (stable mode only)
-    if (mode === 'stable' && shouldMergeDev) {
-      const devBranch = getModeBranch(config, 'test', 'dev') || 'dev';
-      console.log(`Merging origin/${devBranch} into ${branch}...`);
+    if (isStableMode && shouldMergeDev) {
+      const sourceBranch = getReleaseSourceBranch(repoDir, repo, config, branch, dryRun);
+      console.log(`Merging origin/${sourceBranch} into ${branch}...`);
       try {
-        run(`git merge origin/${devBranch} -m "Merge ${devBranch} into ${branch} for release [skip ci]"`, repoDir, dryRun);
+        run(`git merge origin/${sourceBranch} -m "Merge ${sourceBranch} into ${branch} for release [skip ci]"`, repoDir, dryRun);
       } catch (err) {
-        throw new Error(`Failed to merge origin/${devBranch} into ${branch}. Please resolve conflicts manually.`);
+        throw new Error(`Failed to merge origin/${sourceBranch} into ${branch}. Please resolve conflicts manually.`);
       }
     }
 
     // Stable mode: lock dependency versions based on what afterInstall actually installed.
-    if (mode === 'stable') {
+    if (isStableMode || isStablePublishMode) {
       lockStableDependencyVersions(repoDir, repo, config, effectiveModeConfig, dryRun);
     }
 
@@ -969,7 +1603,57 @@ function main() {
         tag: result.tag,
         publishedAs: result.packageName ? `${result.packageName}@${result.version}` : null
       });
-    } else if (mode === 'stable') {
+    } else if (isStablePublishMode) {
+      bumpStableVersion(repoDir, effectiveModeConfig, dryRun);
+
+      console.log(`Step 1/3: Creating release PR from ${stablePublishReleaseBranch} -> ${branch}...`);
+      run(`git push -u origin ${stablePublishReleaseBranch}`, repoDir, dryRun);
+      maybeCreatePullRequest(repoDir, repo, branch, stablePublishReleaseBranch, dryRun, { required: true });
+
+      console.log('Step 2/3: Auto-merging release PR...');
+      waitForPRMerge(repoDir, repo, stablePublishReleaseBranch, branch, dryRun, {
+        required: true,
+        requiredChecksWorkflow: effectiveModeConfig.requiredChecksWorkflow || 'ci.yml'
+      });
+
+      ensureBranch(repoDir, branch, dryRun);
+
+      console.log('Step 3/3: Waiting for repository CI publish on main...');
+      const result = {
+        packageName: pkg ? pkg.name : null,
+        version: getPackageVersion(repoDir),
+        tag: effectiveModeConfig.npmTag || 'latest'
+      };
+
+      if (!dryRun && result.packageName && result.version) {
+        const workflowRef = effectiveModeConfig.repoCiWorkflow || effectiveModeConfig.requiredChecksWorkflow || 'ci.yml';
+        const headSha = runQuiet('git rev-parse HEAD', repoDir).trim();
+        console.log(`Waiting for workflow ${workflowRef} on ${branch} to succeed for commit ${headSha}...`);
+        waitForWorkflowSuccess(repoDir, repo, workflowRef, branch, headSha, dryRun, {
+          timeoutMs: effectiveModeConfig.repoCiWorkflowTimeoutMs || 20 * 60 * 1000,
+          pollIntervalMs: effectiveModeConfig.repoCiWorkflowPollIntervalMs || 15000
+        });
+
+        const timeoutMs = effectiveModeConfig.repoCiPublishTimeoutMs || 10 * 60 * 1000;
+        const pollIntervalMs = effectiveModeConfig.repoCiPublishPollIntervalMs || 5000;
+        console.log(`Waiting for ${result.packageName}@${result.version} to be available on npm...`);
+        const registryReady = waitForNpmVersion(result.packageName, result.version, repoDir, timeoutMs, pollIntervalMs);
+        if (!registryReady) {
+          throw new Error(
+            `Timed out waiting for repository CI to publish ${result.packageName}@${result.version} to npm.`
+          );
+        }
+      }
+
+      summary.push({
+        name: repo.name,
+        status: dryRun ? 'dry-run' : 'published-by-repo-ci',
+        packageName: result.packageName || null,
+        version: result.version,
+        tag: result.tag,
+        publishedAs: result.packageName ? `${result.packageName}@${result.version}` : null
+      });
+    } else if (isStableMode) {
       const result = publishStable(repoDir, effectiveModeConfig, dryRun, effectiveBuildCmd);
       summary.push({
         name: repo.name,
@@ -984,25 +1668,24 @@ function main() {
     }
 
     runSteps(repo.afterPublish, repoDir, dryRun);
-  }
-
-  console.log('\nRelease summary:');
-  for (const item of summary) {
-    if (item.status === 'published' || item.status === 'dry-run') {
-      console.log(`- ${item.name}: ${item.status} ${item.version || ''} (${item.tag || 'latest'})`.trim());
-    } else {
-      console.log(`- ${item.name}: ${item.status} (${item.reason})`);
+    } catch (err) {
+      summary.push({
+        name: repo.name,
+        status: 'failed',
+        reason: err.message || String(err)
+      });
+      throw err;
     }
   }
+  } catch (err) {
+    fatalError = err;
+  } finally {
+    emitReleaseSummary(mode, dryRun, summary, summaryPath);
+  }
 
-  const summaryPayload = {
-    mode,
-    dryRun,
-    generatedAt: new Date().toISOString(),
-    items: summary
-  };
-  fs.writeFileSync(summaryPath, JSON.stringify(summaryPayload, null, 2));
-  console.log(`Summary written to ${summaryPath}`);
+  if (fatalError) {
+    throw fatalError;
+  }
 }
 
 try {

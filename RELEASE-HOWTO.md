@@ -27,10 +27,12 @@ Before the release workflow can publish stable versions from GitHub Actions:
 3. In `solidos/solidos` → Settings → Secrets and variables → Actions, add:
   - `GIT_PUSH_TOKEN`
   - `NPM_TOKEN`
-4. Confirm target repos allow the token/account to push to `main`, or decide to use a PR-based merge flow instead.
-5. Run the `Solidos Release` workflow manually with:
+4. For **protected branches on main**: Use `mode=stable-publish` (no extra config needed—it auto-merges PRs)
+5. For **unprotected main branch**: Use `mode=stable` (requires direct push access)
+6. Run the `Solidos Release` workflow manually with:
   - `mode=test` for prerelease publishing
-  - `mode=stable` for `@latest`
+  - `mode=stable-publish` for `@latest` (protected branch)
+  - `mode=stable` for `@latest` (direct push)
 
 ## How It Works
 
@@ -40,39 +42,30 @@ Before the release workflow can publish stable versions from GitHub Actions:
 |----------|---------|-------|-----------|
 | **Local Testing** | `node scripts/release-orchestrator.js --dry-run=true` | Your computer | ❌ No (prints what would happen) |
 | **Test Release** | Manual trigger: mode=test | GitHub Actions | ✅ Yes (@test tag) |
-| **Stable Release** | Manual trigger: mode=stable | GitHub Actions | ✅ Yes (@latest tag) |
+| **Stable Release (Direct Push)** | Manual trigger: mode=stable | GitHub Actions | ✅ Yes (@latest tag) |
+| **Stable Release (Protected Branch)** | Manual trigger: mode=stable-publish | GitHub Actions | ✅ Yes (@latest tag, auto-merges PR) |
 
-**Workflow:**
+**Workflow (stable-publish mode with protected branches):**
 ```
-You click "Run workflow" button in GitHub Actions (mode=test or mode=stable)
-          ↓
-release.yml starts
-          ↓
-Runs: node scripts/release-orchestrator.js --mode <test|stable> ...
-          ↓
-Script reads release.config.json (list of repos to release)
-          ↓
+You click "Run workflow" → mode=stable-publish
+          ↓ Step 1/3: Create Release PR
+Creates release branch from dev → Merges dev into main → Pushes branch → Opens PR
+          ↓ Step 2/3: Auto-Merge PR
+Waits for CI checks to pass → Auto-merges PR with --squash → Fetches updated main
+          ↓ Step 3/3: Publish
 For each repo listed:
-  - Clone if missing (optional)
-  - Checkout branch (dev for test, main for stable)
   - npm install
-  - afterInstall with @test or @latest tags (with fallback)
-  
-  [Stable mode only: Check skip logic]
-    - Compare origin/dev vs main
-    - If dev has new commits → merge origin/dev into main with [skip ci]
-    - If no changes and --branch not specified → skip this repo
-  
-  [Test mode: always continues]
-  
-  - npm test
-  - npm run build
-  - npm version (bump patch/minor/major/prerelease)
-  - npm publish (to npm registry with @test or @latest tag)
-  - git push + tags (stable only)
-          ↓
-Generates release-summary.json
+  - npm version (bump patch/minor/major)
+  - npm publish (@latest tag)
+  - git push + tags all at once
 ```
+
+**Old two-step flow (still supported for manual workflows):**
+- Step 1: `mode=stable-prepare-pr` - creates PR, human reviews/merges
+- Step 2: `mode=stable-publish` - requires manual merge first
+
+**New unified flow (recommended):**
+- Single `mode=stable-publish` - does all three: create PR, auto-merge, publish
 
 ## Key Points
 
@@ -115,7 +108,21 @@ node scripts/release-orchestrator.js --mode test --dry-run=true
 - **Always publishes** (no skip logic)
 - **Use case:** Pre-release versions for testing from dev branch
 
-**Scenario 3: GitHub Stable Release**
+**Scenario 3: GitHub Stable Release (Protected Branches)**
+- Click Actions → "Solidos Release" → Run workflow
+- Inputs: mode=stable-publish, dry_run=false
+- **Single command that does everything:**
+  1. Creates release branch from dev
+  2. Opens PR to main
+  3. Waits for CI checks to pass
+  4. Auto-merges PR (squash merge)
+  5. Publishes all packages to npm with `@latest` tag
+  6. Pushes git tags to main
+- Eliminates manual PR merge step
+- **Perfect for:** Organizations with branch protection rules on `main`
+- **Use case:** Automated stable releases without human intervention on PR merge
+
+**Scenario 4: GitHub Stable Release (Direct Push)**
 - Click Actions → "Solidos Release" → Run workflow
 - Inputs: mode=stable, dry_run=false
 - Automatically merges origin/dev → main if dev has new commits
@@ -123,7 +130,8 @@ node scripts/release-orchestrator.js --mode test --dry-run=true
 - Creates git tags and pushes to GitHub
 - Results in GitHub Actions logs and artifacts
 - Skips if dev has no new commits (unless --branch=main specified)
-- **Use case:** Production releases to @latest
+- **WARNING:** Requires write access to protected branches, may fail with 403
+- **Use case:** Repositories without branch protection on `main`
 
 Local dry-run
 - Show the exact commands without running them:

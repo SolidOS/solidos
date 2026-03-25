@@ -23,38 +23,6 @@
   },
   "repos": [
     {
-      "name": "solid-logic",
-      "path": "workspaces/solid-logic",
-      "repo": "https://github.com/SolidOS/solid-logic.git",
-      "afterInstall": [
-        "npm install rdflib@latest solid-namespace@latest"
-      ]
-    },
-    {
-      "name": "pane-registry",
-      "path": "workspaces/pane-registry",
-      "repo": "https://github.com/SolidOS/pane-registry.git",
-      "afterInstall": [
-        "npm install solid-logic rdflib@latest"
-      ]
-    },
-    {
-      "name": "solid-ui",
-      "path": "workspaces/solid-ui",
-      "repo": "https://github.com/SolidOS/solid-ui.git",
-      "afterInstall": [
-        "npm install pane-registry solid-logic rdflib@latest solid-namespace@latest"
-      ]
-    },
-    {
-      "name": "activitystreams-pane",
-      "path": "workspaces/activitystreams-pane",
-      "repo": "https://github.com/SolidOS/activitystreams-pane.git",
-      "afterInstall": [
-        "npm install solid-ui pane-registry solid-logic rdflib@latest"
-      ]
-    },
-    {
       "name": "chat-pane",
       "path": "workspaces/chat-pane",
       "repo": "https://github.com/SolidOS/chat-pane.git",

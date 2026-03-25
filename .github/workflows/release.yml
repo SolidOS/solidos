@@ -11,6 +11,8 @@ on:
         options:
           - test
           - stable
+          - stable-prepare-pr
+          - stable-publish
       config:
         description: Config file path
         required: true
@@ -46,11 +48,24 @@ jobs:
       - name: Update npm to latest
         run: npm install -g npm@latest
 
+      - name: Preflight GitHub token permissions
+        env:
+          GH_TOKEN: ${{ secrets.GIT_PUSH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "GIT_PUSH_TOKEN secret is missing" >&2
+            exit 1
+          fi
+          gh --version
+          gh auth status -h github.com
+          gh api repos/SolidOS/solid-logic --jq '.full_name + " permissions=" + (if .permissions.push then "push" else "no-push" end)'
+
       - name: Run release orchestrator
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GIT_PUSH_TOKEN }}
           GIT_PUSH_TOKEN: ${{ secrets.GIT_PUSH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GIT_PUSH_TOKEN }}
         run: |
           BRANCH_ARG=""
           if [ -n "${{ inputs.branch }}" ]; then

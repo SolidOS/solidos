@@ -23,27 +23,11 @@
   },
   "repos": [
     {
-      "name": "solid-logic",
-      "path": "workspaces/solid-logic",
-      "repo": "https://github.com/SolidOS/solid-logic.git",
-      "afterInstall": [
-        "npm install rdflib@latest solid-namespace@latest"
-      ]
-    },
-    {
-      "name": "pane-registry",
-      "path": "workspaces/pane-registry",
-      "repo": "https://github.com/SolidOS/pane-registry.git",
-      "afterInstall": [
-        "npm install solid-logic rdflib@latest"
-      ]
-    },
-    {
       "name": "solid-ui",
       "path": "workspaces/solid-ui",
       "repo": "https://github.com/SolidOS/solid-ui.git",
       "afterInstall": [
-        "npm install pane-registry solid-logic rdflib@latest solid-namespace@latest"
+        "npm install pane-registry@latest solid-logic@latest rdflib@latest solid-namespace@latest"
       ]
     },
     {
