@@ -461,22 +461,34 @@ function waitForPRMerge(repoDir, repo, headBranch, baseBranch, dryRun, options =
   }
 
   try {
-    // Find the PR number for this head branch
+    // Find the PR number for this head branch. Right after gh pr create,
+    // list/search APIs can lag for a few seconds.
     const prQuery = `gh pr list --repo ${slug} --head ${headBranch} --base ${baseBranch} --state open --json number --jq '.[0].number'`;
+    const prDiscoveryTimeoutMs = options.prDiscoveryTimeoutMs || 2 * 60 * 1000;
+    const prDiscoveryPollIntervalMs = options.prDiscoveryPollIntervalMs || 5000;
+    const prDiscoveryStart = Date.now();
     let prNumber;
-    try {
-      prNumber = parseInt(runQuiet(prQuery, repoDir), 10);
-    } catch (err) {
-      if (required) {
-        throw new Error(`No open PR found for ${headBranch} -> ${baseBranch}`);
+
+    while ((Date.now() - prDiscoveryStart) < prDiscoveryTimeoutMs) {
+      try {
+        const rawNumber = String(runQuiet(prQuery, repoDir) || '').trim();
+        prNumber = parseInt(rawNumber, 10);
+      } catch (err) {
+        prNumber = NaN;
       }
-      console.log(`No open PR found for ${headBranch} -> ${baseBranch}`);
-      return { status: 'skip', reason: 'no-pr' };
+
+      if (prNumber) {
+        break;
+      }
+
+      const waitedSeconds = Math.floor((Date.now() - prDiscoveryStart) / 1000);
+      console.log(`  Waiting for PR to appear for ${headBranch} -> ${baseBranch} (${waitedSeconds}s elapsed)...`);
+      sleepMs(prDiscoveryPollIntervalMs);
     }
 
     if (!prNumber) {
       if (required) {
-        throw new Error(`No open PR found for ${headBranch} -> ${baseBranch}`);
+        throw new Error(`No open PR found for ${headBranch} -> ${baseBranch} after waiting ${Math.floor(prDiscoveryTimeoutMs / 1000)}s`);
       }
       console.log(`No open PR found for ${headBranch} -> ${baseBranch}`);
       return { status: 'skip', reason: 'no-pr' };
