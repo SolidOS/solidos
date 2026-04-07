@@ -23,19 +23,11 @@
   },
   "repos": [
     {
-      "name": "contacts-pane",
-      "path": "workspaces/contacts-pane",
-      "repo": "https://github.com/SolidOS/contacts-pane.git",
-      "afterInstall": [
-        "npm install solid-ui@latest solid-logic@latest rdflib@latest"
-      ]
-    },
-    {
       "name": "profile-pane",
       "path": "workspaces/profile-pane",
       "repo": "https://github.com/SolidOS/profile-pane.git",
       "afterInstall": [
-        "npm install chat-pane@latest contacts-pane solid-ui@latest pane-registry@latest solid-logic@latest rdflib@latest"
+        "npm install chat-pane@latest contacts-pane@latest solid-ui@latest pane-registry@latest solid-logic@latest rdflib@latest"
       ]
     },
     {
@@ -43,7 +35,7 @@
       "path": "workspaces/solid-panes",
       "repo": "https://github.com/SolidOS/solid-panes.git",
       "afterInstall": [
-          "npm install activitystreams-pane@latest chat-pane@latest contacts-pane folder-pane@latest issue-pane@latest meeting-pane@latest pane-registry@latest profile-pane source-pane@latest solid-ui solid-logic@latest solid-namespace@latest rdflib@latest"
+          "npm install activitystreams-pane@latest chat-pane@latest contacts-pane@latest folder-pane@latest issue-pane@latest meeting-pane@latest pane-registry@latest profile-pane@latest source-pane@latest solid-ui@latest solid-logic@latest solid-namespace@latest rdflib@latest"
       ]
     },
     {
