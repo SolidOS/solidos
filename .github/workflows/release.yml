@@ -44,9 +44,6 @@ jobs:
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
-      
-      - name: Update npm to latest
-        run: npm install -g npm@latest
 
       - name: Preflight GitHub token permissions
         env:
