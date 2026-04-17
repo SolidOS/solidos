@@ -33,14 +33,6 @@ for package in "${packageNames[@]}"; do
       prestart="npm run build-version && npm run build-js && npm run postbuild-js"
       start="sh -c 'npm run watch:js & npm run watch:dist & wait'"
       ;;
-    "contacts-pane")
-      prestart="npm run build-dist"
-      start="npm run watch-dist"
-      ;;
-    "profile-pane")
-      prestart="npm run build-dist && npm run build-js"
-      start='npx concurrently -k -n babel,webpack "npm:watch-js" "npm:watch-dist"'
-      ;;
     "solid-panes")
       prestart="npm run build-version"
       start='npx concurrently -k -n babel,types,webpack "npm:watch-js" "npm:watch-types" "npm:watch-dist"'
