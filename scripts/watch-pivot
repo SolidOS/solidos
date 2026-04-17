@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+set -euo pipefail
+
 unset PREFIX npm_config_prefix
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -32,14 +34,6 @@ for package in "${packageNames[@]}"; do
     "solid-ui")
       prestart="npm run build-version && npm run build-js && npm run postbuild-js"
       start="sh -c 'npm run watch:js & npm run watch:dist & wait'"
-      ;;
-    "contacts-pane")
-      prestart="npm run build-dist"
-      start="npm run watch-dist"
-      ;;
-    "profile-pane")
-      prestart="npm run build-dist && npm run build-js"
-      start='npx concurrently -k -n babel,webpack "npm:watch-js" "npm:watch-dist"'
       ;;
     "solid-panes")
       prestart="npm run build-version"
