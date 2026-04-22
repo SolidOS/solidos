@@ -12,6 +12,7 @@ npx lerna bootstrap --force-local
 
 declare -a packageNames=(
   "solid-ui"
+  "profile-pane"
   "solid-panes"
   "mashlib"
   "pivot"
@@ -30,6 +31,10 @@ for package in "${packageNames[@]}"; do
     "solid-ui")
       prestart="npm run build-version && npm run build-js && npm run postbuild-js"
       start="sh -c 'npm run watch:js & npm run watch:dist & wait'"
+      ;;
+    "profile-pane")
+      prestart="npm run build-dist && npm run build-js"
+      start="sleep infinity"
       ;;
     "solid-panes")
       prestart="npm run build-version"
