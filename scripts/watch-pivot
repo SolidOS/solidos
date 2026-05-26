@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 unset PREFIX npm_config_prefix
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -9,46 +11,81 @@ nvm use --delete-prefix
 npx lerna bootstrap --force-local
 
 declare -a packageNames=(
-  "solid-logic"
   "solid-ui"
+  "contacts-pane"
+  "profile-pane"
   "solid-panes"
   "mashlib"
   "pivot"
   )
 
-# Via https://zaiste.net/posts/how-to-join-elements-of-array-bash/
-function join { local IFS="$1"; shift; echo "$*"; }
+startedPids=()
+function cleanup {
+  for pid in "${startedPids[@]}"; do
+    kill "$pid" 2>/dev/null || true
+  done
+}
+trap cleanup INT TERM EXIT
 
-# Build the string of package names for use by concurrently
-packageNamesString=$(join ,  ${packageNames[@]})
+for package in "${packageNames[@]}"; do
+  case "$package" in
+    "solid-ui")
+      prestart="npm run build-version && npm run build-js && npm run postbuild-js"
+      start="sh -c 'npm run watch:js & npm run watch:dist & wait'"
+      ;;
+    "contacts-pane")
+      prestart="npm run build-dist"
+      start="npm run watch-dist"
+      ;;
+    "profile-pane")
+      prestart="npm run build-dist && npm run build-js"
+      start='npx concurrently -k -n babel,webpack "npm:watch-js" "npm:watch-dist"'
+      ;;
+    "solid-panes")
+      prestart="npm run build-version"
+      start='npx concurrently -k -n babel,types,webpack "npm:watch-js" "npm:watch-types" "npm:watch-dist"'
+      ;;
+    "mashlib")
+      prestart="npm run build-version"
+      start="npm run watch"
+      ;;
+    "pivot")
+      prestart=""
+      start="npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data -p 3100 -b http://localhost:3100 -m ."
+      ;;
+    *)
+      echo "Unknown package: $package"
+      cleanup
+      exit 1
+      ;;
+  esac
 
-# Concurrently start a `watch` task for solid-ui, solid-panes, and mashlib, and start Node Solid Server.
-# Note that mashlib chokes if the watch task of solid-panes is still starting up while it's running;
-# a hacky workaround to that is to delay it by 20 seconds before starting (`sleep 20`).
-packageCommands=()
-for package in "${packageNames[@]}"
-do
-  command="npm run watch"
-  if [[ "$package" == "mashlib" ]]; then
-      command="sleep 20 && $command"
-  elif [[ "$package" == "pivot" ]]; then
-      command="npx community-solid-server -c ./config/dev-http-suffix.json config/customise-me.json -f ./data -p 3100 -b http://localhost:3100 -m ."
+  echo "Preparing package $package..."
+  (
+    . "$NVM_DIR/nvm.sh"
+    cd "workspaces/$package"
+    nvm use --delete-prefix
+    if [[ -n "$prestart" ]]; then
+      eval "$prestart"
+    fi
+  )
+
+  echo "Starting package $package..."
+  (
+    . "$NVM_DIR/nvm.sh"
+    cd "workspaces/$package"
+    nvm use --delete-prefix
+    eval "$start"
+  ) &
+  pid=$!
+  startedPids+=("$pid")
+
+  sleep 1
+  if ! kill -0 "$pid" 2>/dev/null; then
+    echo "Package $package failed to start. Stopping started watchers."
+    cleanup
+    exit 1
   fi
-  # command="echo '---' && pwd && echo '---'"
-
-  command=". $NVM_DIR/nvm.sh; cd workspaces/$package; nvm use --delete-prefix; $command"
-  packageCommands+=("$command")
 done
 
-# The next line will execute:
-# npx concurrently --names rdflib,solid-logic,pane-registry,solid-ui,solid-panes,mashlib,node-solid-server 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/rdflib; nvm use --delete-prefix; npm run watch 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-logic; nvm use --delete-prefix; npm run watch 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/pane-registry; nvm use --delete-prefix; npm run watch 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-ui; nvm use --delete-prefix; npm run watch 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/solid-panes; nvm use --delete-prefix; npm run watch 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/mashlib; nvm use --delete-prefix; sleep 20 && npm run watch 
-#. /Users/imyshor/.nvm/nvm.sh; cd workspaces/node-solid-server; nvm use --delete-prefix; 
-#./bin/solid-test start --root ./data --port 8443 --ssl-key ../privkey.pem --ssl-cert ../fullchain.pem
-
-npx concurrently --names "$packageNamesString" "${packageCommands[@]}"
+wait "${startedPids[@]}"
