@@ -30,6 +30,9 @@ To check for tasks you might help with immediately, look at the [Newcomer View i
 
 ### Writing code
 
+Probably one of the most important questions of these days is: how to use AI?
+We have written up an [AI guideline](./documentation/guidelines/AI_guidelines.md) for it - make sure to read it first.
+
 We keep track of stuff to do in Git issues of each repo. An [overview](https://github.com/orgs/SolidOS/projects/2/views/2) is available on the project board.
 
 Writing tests as a way to understand the code is always a good idea. Tests, in each repo, should be found in the `test` folder. One can start from there or add new tests.
