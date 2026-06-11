@@ -22,22 +22,22 @@ This space is home to the SolidOS code. Keep reading if you want to know:
 - 👩🏽‍💻 [SolidOS technical intro](#-solidos-technical-intro)
   - [SolidOS deeper technical topics](#solidos-deeper-technical-topics)
 - 👯 [How the SolidOS team works](#-How-the-SolidOS-team-works)
-  - [SolidOS team meetings](#SolidOS-team-meetings)
-  - [SolidOS team instant chat](#SolidOS-team-instant-chat)
-  - [SolidOS team discussions](#SolidOS-team-discussions)
-  - [SolidOS tasks](#SolidOS-tasks)
+  - [Team meetings](#SolidOS-team-meetings)
+  - [Instant chat](#SolidOS-team-instant-chat)
+  - [Discussions](#SolidOS-team-discussions)
+  - [Tasks & project board](#SolidOS-tasks)
 - 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
-  - [For anyone up to writing some code](#For-anyone-up-to-writing-some-code)
-  - [For anyone who likes builds or releases or GitHub CI or deployments](#for-anyone-who-likes-builds-or-github-ci-or-releases-or-deployments)
-  - [For anyone who likes writing text](#For-anyone-who-likes-writing-text)
-  - [For anyone with an eye for design](#For-anyone-with-an-eye-for-design)
+  - [Writing code](./CONTRIBUTING.md#writing-code)
+  - [Builds, CI & releases](./CONTRIBUTING.md#builds-ci--releases)
+  - [Writing documentation](./CONTRIBUTING.md#writing-documentation)
+  - [Design & UX](./CONTRIBUTING.md#design--ux)
 - 🆕 [Getting started with the SolidOS code](#-Getting-started-with-the-SolidOS-code)
-  - [SolidOS first time setup of code](#SolidOS-first-time-setup-of-code)
-  - [How to use SolidOS on localhost](#How-to-use-SolidOS-on-localhost)
-  - [How to make changes in repos](#How-to-make-changes-in-repos)
+  - [First time setup](#SolidOS-first-time-setup-of-code)
+  - [Running SolidOS on localhost](#How-to-use-SolidOS-on-localhost)
+  - [Making changes in repos](#How-to-make-changes-in-repos)
   - [Developing SolidOS code](#Developing-SolidOS-code)
   - [Testing SolidOS code](#Testing-SolidOS-code)
-  - [SolidOS build & release](#SolidOS-build-and-release)
+  - [Build & release](#SolidOS-build-and-release)
 - 📜 [License](#-License)
 - 🎤 [Feedback and questions](#-Feedback-and-questions)
 
@@ -194,97 +194,7 @@ For a longer-term roadmap, we use a [Solid task manager](https://solidos.solidco
 
 ## 🙋🏽‍ How you can contribute and help SolidOS thrive
 
-The SolidOS team is always looking for volunteers to help improve SolidOS. Pull Requests (PRs) and edits are always welcome from code, to text, to style. We are looking for UX designers, technical writers, frontend developers, backend developers, DevOps. Don't let these titles intimidate you; they are just some examples. You can find your own place no matter the level of knowledge you are at.
-
-To check for tasks you might help with immediately, look at the [Newcomer View in the Project Board](https://github.com/orgs/SolidOS/projects/1/views/3). You are welcome to visit us at a [weekly team meeting](https://solidos.solidcommunity.net/Team/2021/schedule/solidos-schedule.html) or on the [ongoing Gitter-based chat](https://gitter.im/solid/solidos) to say 'Hi' or let us know about any blocker you might have encountered.
-
-### For anyone up to writing some code
-
-We keep track of stuff to do in Git issues of each repo. [An overview](https://github.com/orgs/SolidOS/projects/1/views/4) you can find on the project board.
-
-Writing tests as a way to understand the code is always a good idea. Tests, in each repo, should be found in the `test` folder. One can start from there or/and add tests.
-
-_**Note:** Please get familiar with [coding](./documentation/guidelines/coding_guidelines.md) and [testing](./documentation/guidelines/testing_guidelines.md) guidelines._
-
-### For anyone who likes builds or GitHub CI or releases or deployments
-
-There is an existing process and codebase in place to help with SolidOS releases. However, we would like to get better and automate as much as possible. Open issues can be found on the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) under the CI category.
-
-_**Note:** Please get familiar with [release guidelines](./documentation/guidelines/dependencies_and_release_guidelines.md)._
-
-#### Builds
-
-SolidOS contains different repositories (mashlib, solid-logic, solid-ui, solid-panes, ...). Each repository contains a `package.json` with `scripts`. Most repos contain an `npm run build` which is used to build the project.
-
-#### GitHub CI
-
-When you push or PR a change to a repo, a git CI is activated and runs every time. An example is the [solid-panes workflow](https://github.com/solidos/solid-panes/blob/main/.github/workflows/ci.yml). This CI YML can contain instructions to test and build the repo on different Node versions. If upon push or PR, an instruction fails, one should take care to fix it and keep the branches green.
-
-#### Testing & releasing a new SolidOS version
-
-In SolidOS, you will find a `bash scripts` under [scripts](https://github.com/solidos/solidos/tree/main/scripts) which is related to releasing a new SolidOS stack. The [release script](https://github.com/solidos/solidos/blob/main/scripts/release) is also used to update dependencies in each repo.
-
-Following best practices, we deploy the new version on the [testserver](https://solidcommunity.net:8443/) as mentioned [here](https://github.com/solid/solidcommunity.net/wiki#solidcommunitynet8443-test-server-instance).
-
-#### Deployment on solidcommunity.net server
-
-Before you start, make sure you have access to all the GitHub repos and all the `npm` packages. Using Ubuntu or other Unix-like OS, `ssh` into the server as `root`.
-
-```sh
-tmux new
-adduser --shell /bin/bash --home /home/build --ingroup sudo build
-su - build
-whoami
-sudo whoami
-```
-
-Then:
-
-```s
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-nvm install 16
-nvm use 16
-
-ssh-keygen -t ed25519 -C "michiel+build@unhosted.org"
-git config --global user.name "Solid OS Build (Michiel)"
-git config --global user.email "michiel+build@unhosted.org"
-cat .ssh/id_ed25519.pub
-npm login
-```
-
-Log in to npm with your npm account and add the SSH public key to your GitHub account. Then continue:
-
-```sh
-git clone https://github.com/solidos/solidos
-cd solidos
-npm run install-nvm
-npm run release
-```
-
-More information can be also found over at the [server, solidcommunity.net, repo](https://github.com/solid/solidcommunity.net/wiki).
-
-### For anyone who likes writing text
-
-SolidOS has quite some documentation around that needs constant improvement.
-Places to start:
-
-- for how SolidOS works [visit the user guide](https://github.com/solidos/userguide) and [SolidOS project Pod](https://solidos.solidcommunity.net/);
-- [SolidOS FAQs](https://github.com/solidos/solidos/wiki/FAQs);
-- [SolidOS Wiki](https://github.com/solidos/solidos/wiki).
-
-We are open to suggestions to improve these resources from structure, translation, UI to content in general.
-
-### For anyone with an eye for design
-
-[Solid-ui](https://github.com/solidos/solid-ui) does the heavy lifting to all things UI for SolidOS.
-Currently, we use [Storybook](https://storybook.js.org/) to help develop components independent of other panes. Make sure to visit the [solid-ui readme](https://github.com/solidos/solid-ui) for information on how to set it up and get started.
-There is a second option to run solid-ui on its own. Read about it at [Debugging solid-ui using Solid Pane Tester](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#debugging-solid-ui-using-solid-pane-tester).
-
-You can also find the current issues over at the [solid-ui issues](https://github.com/solidos/solid-ui/issues). And some more information over at the [SolidOS Wiki](https://github.com/solidos/solidos/wiki/2.-Solid-UI-know-how).
-
-SolidOS needs a lot of improvements on UI, including UX and style-guides. Maybe you are the one who can help out? Visit the [Project Board](https://github.com/orgs/SolidOS/projects/1/views/4) and look for UX and UI categories.
+For information about contributing, team processes, code and docs workflows, and local development, please see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## 🆕 Getting started with the SolidOS code
 
