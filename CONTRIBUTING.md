@@ -5,6 +5,7 @@ Thank you for your interest in contributing to SolidOS! This guide contains ever
 ## Table of Contents
 
 - [🙋🏽 How you can contribute](#-how-you-can-contribute)
+  - [AI guidelines](./documentation/guidelines/AI_guidelines.md)
   - [Writing code](#writing-code)
   - [Builds, CI & releases](#builds-ci--releases)
   - [Writing documentation](#writing-documentation)
