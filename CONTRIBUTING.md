@@ -117,9 +117,9 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 nvm install 16
 nvm use 16
 
-ssh-keygen -t ed25519 -C "michiel+build@unhosted.org"
-git config --global user.name "Solid OS Build (Michiel)"
-git config --global user.email "michiel+build@unhosted.org"
+ssh-keygen -t ed25519 -C "your-email@example.com"
+git config --global user.name "Your Name"
+git config --global user.email "your-email@example.com"
 cat .ssh/id_ed25519.pub
 npm login
 ```
