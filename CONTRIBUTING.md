@@ -283,23 +283,23 @@ To keep our work organized and transparent, we use a structured ticket workflow.
 
 ![SolidOS ticket lifecycle](https://github.com/user-attachments/assets/d454dd69-e91f-42df-9175-6c30056f6b0c)
 
-| Label | Meaning |
-|---|---|
-| **Backlog** | Item hasn't been started yet |
-| **In progress** | Actively being worked on |
-| **In review** | A PR has been submitted and the item is under review |
-| **Ready** | PR is approved for merge; item is on the test server awaiting QA |
-| **Done** | QA passed; item is completed |
+| State | Description | Transition in | Transition out |
+|---|---|---|---|
+| **Backlog** | Item hasn't been started | New issue created | Picked up |
+| **In progress** | Actively being worked on | Picked up / Changes requested / QA failed | PR submitted |
+| **In review** | Item is under review | PR submitted | PR approved for merge / Changes requested |
+| **Ready** | On test server, awaits QA | PR approved for merge | QA passed / QA failed |
+| **Done** | Completed | QA passed | — |
 
 **Workflow transitions:**
 
 1. A **new issue** is created and lands in **Backlog**.
 2. When someone picks it up, it moves to **In progress**.
 3. Once a PR is submitted, it moves to **In review**.
-4. If changes are requested during review, it goes back to **In progress**.
-5. When the PR is approved for merge, it moves to **Ready** (deployed to test server, awaits QA).
-6. If QA fails, it goes back to **In progress**.
-7. When QA passes, the item is marked **Done**.
+4. If **changes are requested** during review, it goes back to **In progress**.
+5. When the PR is approved for merge, it moves to **Ready** (deployed to the test server, awaits QA).
+6. If **QA fails**, it goes back to **In progress**.
+7. When **QA passes**, the item is marked **Done**.
 
 ---
 
