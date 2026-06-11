@@ -26,7 +26,7 @@ This space is home to the SolidOS code. Keep reading if you want to know:
   - [Instant chat](#SolidOS-team-instant-chat)
   - [Discussions](#SolidOS-team-discussions)
   - [Tasks & project board](#SolidOS-tasks)
-- 🙋🏻 [How you can contribute and help SolidOS thrive](#-How-you-can-contribute-and-help-SolidOS-thrive)
+- 🙋🏻 [How you can contribute and help SolidOS thrive](./CONTRIBUTING.md)
   - [Writing code](./CONTRIBUTING.md#writing-code)
   - [Builds, CI & releases](./CONTRIBUTING.md#builds-ci--releases)
   - [Writing documentation](./CONTRIBUTING.md#writing-documentation)
