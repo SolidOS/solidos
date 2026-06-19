@@ -27,7 +27,7 @@
       "path": "workspaces/pane-registry",
       "repo": "https://github.com/SolidOS/pane-registry.git",
       "afterInstall": [
-        "npm install solid-logic@latest rdflib@latest"
+        "npm install solid-logic rdflib@latest"
       ]
     }
   ]
