@@ -59,6 +59,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v8
+        with:
+          name: build
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node_version }}
