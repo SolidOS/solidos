@@ -69,4 +69,6 @@ jobs:
       - name: Disable pre- and post-publish actions
         run: sed -i -E 's/"((pre|post)publish)/"ignore:\1/' package.json
       - name: Publish to npm
-        run: npm publish --tag dev
+        run: |
+          npm install -g npm@latest
+          npm publish --tag dev
