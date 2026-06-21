@@ -1,0 +1,38 @@
+name: Install SolidOS Dev Dependencies
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: Node.js version
+        type: number
+        required: false
+        default: 22
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+          registry-url: https://registry.npmjs.org
+      - name: Install solidos dependencies (dev if newer, else latest)
+        shell: bash
+        run: |
+          pkgs=$(node -p "(require('./package.json').solidosDependencies || []).join(' ')")
+          if [ -z "$pkgs" ]; then
+            echo "No solidosDependencies found, skipping"
+            exit 0
+          fi
+          for pkg in $pkgs; do
+            latest=$(npm view "$pkg" version)
+            dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
+            if [ -n "$dev" ] && [ "$(printf '%s\n' "$latest" "$dev" | sort -V | tail -1)" = "$dev" ]; then
+              echo "Installing $pkg@dev (newer than latest $latest)"
+              npm install "$pkg@dev" --save-exact
+            else
+              echo "Installing $pkg@$latest"
+              npm install "$pkg@$latest" --save-exact
+            fi
+          done
