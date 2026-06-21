@@ -19,7 +19,8 @@ declare -a packages=(
   "solid-ui"
   "pane-registry"
   "solid-logic"
-  "rdflib")
+  "rdflib"
+  "pivot")
 
 # Clone and npm install dependent packages
 for package in "${packages[@]}"
@@ -37,6 +38,9 @@ do
   pushd workspaces/$package
   nvm use --delete-prefix
   npm run build
+  if [[ "$package" == "rdflib" ]]; then
+    npm run build:types
+  fi
   popd
 done
 
