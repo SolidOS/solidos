@@ -9,6 +9,14 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Skip if not staging/PR
+        run: |
+          if [ "$GITHUB_REF_NAME" = "staging" ] || [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "Running update-solidos-deps"
+          else
+            echo "Skipping update-solidos-deps (not staging or PR)"
+            exit 0
+          fi
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref || github.ref_name }}
