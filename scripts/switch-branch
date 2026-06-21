@@ -12,7 +12,6 @@ FOLDER=$1
 echo ">>>>> SETTING UP PROJECT WITH NEW BRANCH $1"
 mkdir -p workspaces
 
-<<<<<<< HEAD
 # Determine packages from the current workspaces directory contents
 declare -a packages=()
 for dir in workspaces/*; do
@@ -27,17 +26,6 @@ if [ ${#packages[@]} -eq 0 ]; then
 fi
 
 rm -rf workspaces/*
-=======
-declare -a packages=(
-  "solid-logic"
-  "pane-registry"
-  "solid-ui"
-  "profile-pane"
-  "solid-panes"
-  "mashlib"
-  "css-mashlib"
-  "pivot")
->>>>>>> 124d217 (add pivot & make reset and watch match)
 
 # Clone and npm install dependent packages
 for package in "${packages[@]}"
@@ -58,22 +46,6 @@ do
   popd
 done
 
-<<<<<<< HEAD
-=======
-# Build dependent packages, ensuring each is in proper Node environment via nvm
-for package in "${packages[@]}"
-do
-  echo ""
-  echo "# Building $package"
-  pushd workspaces/$package
-  nvm use --delete-prefix
-  npm run build
-  if [[ "$package" == "rdflib" ]]; then
-    npm run build:types
-  fi
-  popd
-done
->>>>>>> 124d217 (add pivot & make reset and watch match)
 
 for x in workspaces/* ; do ( echo "###### " $x; cd $x; git status)  done
 

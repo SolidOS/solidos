@@ -44,7 +44,7 @@ for package in "${packageNames[@]}"; do
       ;;
     "mashlib")
       prestart="npm run build-version"
-      start="npm run watch"
+      start="npm run watch:workspace"
       ;;
     "pivot")
       prestart=""
