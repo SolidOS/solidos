@@ -33,25 +33,34 @@ jobs:
             echo "No solidosDependencies found, skipping"
             exit 0
           fi
+          dev_installed=()
+          latest_installed=()
           for pkg in $pkgs; do
             latest=$(npm view "$pkg" version)
             dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
             if [ -n "$dev" ] && [ "$(printf '%s\n' "$latest" "$dev" | sort -V | tail -1)" = "$dev" ]; then
               echo "Installing $pkg@dev (newer than latest $latest)"
               npm install "$pkg@dev" --save-exact
+              dev_installed+=("$pkg@$dev")
             else
               echo "Installing $pkg@$latest"
               npm install "$pkg@$latest" --save-exact
+              latest_installed+=("$pkg@$latest")
             fi
           done
+          echo "dev_installed=${dev_installed[*]}" >> "$GITHUB_ENV"
+          echo "latest_installed=${latest_installed[*]}" >> "$GITHUB_ENV"
       - name: Commit dependency updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if git diff --quiet; then
             echo "No changes to commit"
-          else
-            git add package.json package-lock.json
-            git commit -m "chore: update solidos dependencies to latest compatible versions"
-            git push
+            exit 0
           fi
+          git add package.json package-lock.json
+          msg="chore: update solidos dependencies"
+          [ -n "$dev_installed" ] && msg="$msg (dev: $dev_installed)"
+          [ -n "$latest_installed" ] && msg="$msg (latest: $latest_installed)"
+          git commit -m "$msg"
+          git push
