@@ -27,6 +27,13 @@ jobs:
       - name: Check prerelease publishability
         id: check
         run: |
+          # Skip publishing when PR originates from staging (will publish after merge)
+          if [ "$GITHUB_HEAD_REF" = "staging" ]; then
+            echo "Skipping: PR is from staging (will publish after merge)"
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           NAME=$(node -p "require('./package.json').name")
           VERSION=$(node -p "require('./package.json').version")
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
