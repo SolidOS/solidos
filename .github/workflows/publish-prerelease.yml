@@ -73,8 +73,8 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
           registry-url: https://registry.npmjs.org
-      - name: Disable pre- and post-publish actions
-        run: sed -i -E 's/"((pre|post)publish)/"ignore:\1/' package.json
+      - name: Disable publish and install actions
+        run: sed -i -E 's/"((pre|post)(publish|install))/"ignore:\1/' package.json
       - name: Publish to npm
         run: |
           npm install -g npm@latest
