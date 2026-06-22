@@ -26,9 +26,11 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: Check prerelease publishability
         id: check
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           # Skip publishing when PR originates from staging (will publish after merge)
-          if [ "$GITHUB_HEAD_REF" = "staging" ]; then
+          if [ "$HEAD_REF" = "staging" ]; then
             echo "Skipping: PR is from staging (will publish after merge)"
             echo "should_publish=false" >> "$GITHUB_OUTPUT"
             exit 0
