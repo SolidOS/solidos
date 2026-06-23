@@ -27,11 +27,11 @@ jobs:
       - name: Check prerelease publishability
         id: check
         env:
-          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          # Skip publishing when PR originates from staging (will publish after merge)
-          if [ "$HEAD_REF" = "staging" ]; then
-            echo "Skipping: PR is from staging (will publish after merge)"
+          # Skip publishing when PR targets staging (publishes on merge push instead)
+          if [ "$BASE_REF" = "staging" ]; then
+            echo "Skipping: PR targets staging (will publish on merge)"
             echo "should_publish=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
