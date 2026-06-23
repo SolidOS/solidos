@@ -33,7 +33,7 @@ jobs:
           # Skip publishing when PR targets staging (publishes on merge push instead)
           echo "base.ref=$BASE_REF"
           echo "head.ref=$HEAD_REF"
-          echo "event=github.event_name"
+          echo "github.event_name=${{ github.event_name }}"
           if [ "$BASE_REF" = "staging" ]; then
             echo "Skipping: PR targets staging (will publish on merge)"
             echo "should_publish=false" >> "$GITHUB_OUTPUT"
