@@ -28,8 +28,11 @@ jobs:
         id: check
         env:
           BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           # Skip publishing when PR targets staging (publishes on merge push instead)
+          echo "base.ref=$BASE_REF"
+          echo "head.ref=$HEAD_REF"
           if [ "$BASE_REF" = "staging" ]; then
             echo "Skipping: PR targets staging (will publish on merge)"
             echo "should_publish=false" >> "$GITHUB_OUTPUT"
