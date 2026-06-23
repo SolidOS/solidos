@@ -11,16 +11,21 @@ FOLDER=$1
 
 echo ">>>>> SETTING UP PROJECT WITH NEW BRANCH $1"
 mkdir -p workspaces
-rm -rf workspaces/*
 
-declare -a packages=(
-  "solid-logic"
-  "pane-registry"
-  "solid-ui"
-  "profile-pane"
-  "solid-panes"
-  "mashlib"
-  "css-mashlib")
+# Determine packages from the current workspaces directory contents
+declare -a packages=()
+for dir in workspaces/*; do
+  if [ -d "$dir" ]; then
+    packages+=("$(basename "$dir")")
+  fi
+done
+
+if [ ${#packages[@]} -eq 0 ]; then
+  echo "No packages found in workspaces to switch branch for."
+  exit 1
+fi
+
+rm -rf workspaces/*
 
 # Clone and npm install dependent packages
 for package in "${packages[@]}"
@@ -38,20 +43,9 @@ do
   pushd workspaces/$package
   git checkout $1 || true
   git pull
-  npm i
   popd
 done
 
-# Build dependent packages, ensuring each is in proper Node environment via nvm
-for package in "${packages[@]}"
-do
-  echo ""
-  echo "# Building $package"
-  pushd workspaces/$package
-  nvm use --delete-prefix
-  npm run build
-  popd
-done
 
 for x in workspaces/* ; do ( echo "###### " $x; cd $x; git status)  done
 

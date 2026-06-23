@@ -32,8 +32,8 @@ trap cleanup INT TERM EXIT
 for package in "${packageNames[@]}"; do
   case "$package" in
     "solid-ui")
-      prestart="npm run build-version && npm run build-js && npm run postbuild-js"
-      start="sh -c 'npm run watch:js & npm run watch:dist & wait'"
+      prestart="npm run build"
+      start='npx concurrently -k -n npm,styles "npm:watch-npm" "npm:watch-styles"'
       ;;
     "contacts-pane")
       prestart="npm run build-dist"
