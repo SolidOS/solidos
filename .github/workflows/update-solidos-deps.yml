@@ -2,6 +2,9 @@ name: Update SolidOS Dev Dependencies
 
 on:
   workflow_call:
+    secrets:
+      GIT_PUSH_TOKEN:
+        required: true
 
 jobs:
   update:
@@ -20,6 +23,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.GIT_PUSH_TOKEN }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
