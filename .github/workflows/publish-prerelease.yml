@@ -26,7 +26,20 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: Check prerelease publishability
         id: check
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
+          # Skip publishing when PR targets staging (publishes on merge push instead)
+          echo "base.ref=$BASE_REF"
+          echo "head.ref=$HEAD_REF"
+          echo "github.event_name=${{ github.event_name }}"
+          if [ "$BASE_REF" = "staging" ]; then
+            echo "Skipping: PR targets staging (will publish on merge)"
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           NAME=$(node -p "require('./package.json').name")
           VERSION=$(node -p "require('./package.json').version")
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
@@ -59,6 +72,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v8
+        with:
+          name: build
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node_version }}
@@ -66,4 +82,12 @@ jobs:
       - name: Disable pre- and post-publish actions
         run: sed -i -E 's/"((pre|post)publish)/"ignore:\1/' package.json
       - name: Publish to npm
-        run: npm publish --tag dev
+        run: |
+          npm install -g npm@latest
+          VERSION=$(node -p "require('./package.json').version")
+          NAME=$(node -p "require('./package.json').name")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION already published, skipping"
+            exit 0
+          fi
+          npm publish --tag dev

@@ -1,0 +1,66 @@
+name: Update SolidOS Dev Dependencies
+
+on:
+  workflow_call:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Skip if not staging/PR
+        run: |
+          if [ "$GITHUB_REF_NAME" = "staging" ] || [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "Running update-solidos-deps"
+          else
+            echo "Skipping update-solidos-deps (not staging or PR)"
+            exit 0
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - name: Install solidos dependencies (dev if newer, else latest)
+        shell: bash
+        run: |
+          pkgs=$(node -p "(require('./package.json').solidosDependencies || []).join(' ')")
+          if [ -z "$pkgs" ]; then
+            echo "No solidosDependencies found, skipping"
+            exit 0
+          fi
+          dev_installed=()
+          latest_installed=()
+          for pkg in $pkgs; do
+            latest=$(npm view "$pkg" version)
+            dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
+            if [ -n "$dev" ] && [ "$(printf '%s\n' "$latest" "$dev" | sort -V | tail -1)" = "$dev" ]; then
+              echo "Installing $pkg@dev (newer than latest $latest)"
+              npm install "$pkg@dev" --save-exact
+              dev_installed+=("$pkg@$dev")
+            else
+              echo "Installing $pkg@$latest"
+              npm install "$pkg@$latest" --save-exact
+              latest_installed+=("$pkg@$latest")
+            fi
+          done
+          echo "dev_installed=${dev_installed[*]}" >> "$GITHUB_ENV"
+          echo "latest_installed=${latest_installed[*]}" >> "$GITHUB_ENV"
+      - name: Commit dependency updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git add package.json package-lock.json
+          msg="chore: update solidos dependencies"
+          [ -n "$dev_installed" ] && msg="$msg (dev: $dev_installed)"
+          [ -n "$latest_installed" ] && msg="$msg (latest: $latest_installed)"
+          git commit -m "$msg"
+          git push
