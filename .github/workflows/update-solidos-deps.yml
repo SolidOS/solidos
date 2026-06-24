@@ -20,8 +20,8 @@ jobs:
             echo "Skipping update-solidos-deps (not staging or PR)"
             exit 0
           fi
-      - name: Skip if PR from fork (cannot push to fork)
-        if: github.event.pull_request.head.repo.fork == true
+      - name: Skip if PR from fork
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
         run: |
           echo "Skipping: PR is from a fork (cannot push)"
           exit 0
