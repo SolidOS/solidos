@@ -18,8 +18,7 @@ declare -a packages=(
   "solid-panes"
   "solid-ui"
   "pane-registry"
-  "solid-logic"
-  "rdflib")
+  "solid-logic")
 
 # Clone and npm install dependent packages
 for package in "${packages[@]}"
