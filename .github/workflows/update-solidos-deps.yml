@@ -2,24 +2,34 @@ name: Update SolidOS Dev Dependencies
 
 on:
   workflow_call:
+    secrets:
+      GIT_PUSH_TOKEN:
+        required: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      should_skip: ${{ steps.skip-check.outputs.should_skip }}
     steps:
-      - name: Skip if not staging/PR
+      - name: Check if fork PR
+        id: skip-check
         run: |
-          if [ "$GITHUB_REF_NAME" = "staging" ] || [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-            echo "Running update-solidos-deps"
-          else
-            echo "Skipping update-solidos-deps (not staging or PR)"
-            exit 0
+          IS_FORK=false
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ] && [ "${{ github.event.pull_request.head.repo.fork }}" = "true" ]; then
+            echo "Detected fork PR: will install deps but skip commit"
+            IS_FORK=true
           fi
+          echo "should_skip=$IS_FORK" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
+        if: steps.skip-check.outputs.should_skip != 'true'
         with:
           ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.GIT_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+        if: steps.skip-check.outputs.should_skip == 'true'
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -51,6 +61,7 @@ jobs:
           echo "dev_installed=${dev_installed[*]}" >> "$GITHUB_ENV"
           echo "latest_installed=${latest_installed[*]}" >> "$GITHUB_ENV"
       - name: Commit dependency updates
+        if: steps.skip-check.outputs.should_skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
