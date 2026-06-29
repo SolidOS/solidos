@@ -2,6 +2,12 @@ name: Update SolidOS Dev Dependencies
 
 on:
   workflow_call:
+    inputs:
+      node_version:
+        description: Node.js version to use
+        type: number
+        required: false
+        default: 22
     secrets:
       GIT_PUSH_TOKEN:
         required: false
