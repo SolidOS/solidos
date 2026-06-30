@@ -29,16 +29,16 @@ jobs:
             IS_FORK=true
           fi
           echo "should_skip=$IS_FORK" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: steps.skip-check.outputs.should_skip != 'true'
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           token: ${{ secrets.GIT_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: steps.skip-check.outputs.should_skip == 'true'
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: ${{ inputs.node_version }}
           registry-url: https://registry.npmjs.org
       - run: npm ci
       - name: Install solidos dependencies (dev if newer, else latest)
