@@ -64,11 +64,13 @@ jobs:
               latest_installed+=("$pkg@$latest")
             fi
           done
-          # A single plain `npm install` (reconciling package.json against the lockfile)
-          # uses npm's standard, well-tested install path. Using `npm install pkg@version`
-          # add-specs instead (even batched into one call) hits a class of Arborist crashes
-          # ("Cannot read properties of null (reading 'edgesOut'/'package')") when combined
-          # with self-referencing overrides (e.g. "pkg": "$pkg").
+          # Force a full, clean re-resolution instead of an incremental one: after
+          # changing several package.json versions at once, `npm install` on top of
+          # existing node_modules/package-lock.json can leave some packages only
+          # partially installed (especially combined with self-referencing overrides
+          # like "pkg": "$pkg"). Removing them first guarantees npm resolves everything
+          # from the updated package.json with no stale state to confuse it.
+          rm -rf node_modules package-lock.json
           npm install
           echo "dev_installed=${dev_installed[*]}" >> "$GITHUB_ENV"
           echo "latest_installed=${latest_installed[*]}" >> "$GITHUB_ENV"
