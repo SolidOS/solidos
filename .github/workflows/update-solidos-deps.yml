@@ -40,6 +40,8 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
           registry-url: https://registry.npmjs.org
+      - name: Upgrade npm
+        run: npm install -g npm@latest
       - run: npm ci
       - name: Install solidos dependencies (dev if newer, else latest)
         shell: bash
