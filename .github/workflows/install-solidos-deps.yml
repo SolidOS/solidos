@@ -27,14 +27,20 @@ jobs:
             echo "No solidosDependencies found, skipping"
             exit 0
           fi
+          to_install=()
           for pkg in $pkgs; do
             latest=$(npm view "$pkg" version)
             dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
             if [ -n "$dev" ] && [ "$(printf '%s\n' "$latest" "$dev" | sort -V | tail -1)" = "$dev" ]; then
-              echo "Installing $pkg@dev (newer than latest $latest)"
-              npm install "$pkg@dev" --save-exact
+              echo "Will install $pkg@dev (newer than latest $latest)"
+              to_install+=("$pkg@$dev")
             else
-              echo "Installing $pkg@$latest"
-              npm install "$pkg@$latest" --save-exact
+              echo "Will install $pkg@$latest"
+              to_install+=("$pkg@$latest")
             fi
           done
+          # Installing all packages in a single npm install call (rather than one
+          # per package) avoids a known npm Arborist crash ("Cannot read properties
+          # of null (reading 'edgesOut')") triggered by repeated tree mutations
+          # against self-referencing overrides (e.g. "pkg": "$pkg").
+          npm install "${to_install[@]}" --save-exact
