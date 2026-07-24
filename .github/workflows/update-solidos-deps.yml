@@ -2,6 +2,12 @@ name: Update SolidOS Dev Dependencies
 
 on:
   workflow_call:
+    inputs:
+      node_version:
+        description: Node.js version to use
+        type: number
+        required: false
+        default: 22
     secrets:
       GIT_PUSH_TOKEN:
         required: false
@@ -23,16 +29,16 @@ jobs:
             IS_FORK=true
           fi
           echo "should_skip=$IS_FORK" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: steps.skip-check.outputs.should_skip != 'true'
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           token: ${{ secrets.GIT_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: steps.skip-check.outputs.should_skip == 'true'
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: ${{ inputs.node_version }}
           registry-url: https://registry.npmjs.org
       - run: npm ci
       - name: Install solidos dependencies (dev if newer, else latest)
@@ -49,15 +55,23 @@ jobs:
             latest=$(npm view "$pkg" version)
             dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
             if [ -n "$dev" ] && [ "$(printf '%s\n' "$latest" "$dev" | sort -V | tail -1)" = "$dev" ]; then
-              echo "Installing $pkg@dev (newer than latest $latest)"
-              npm install "$pkg@dev" --save-exact
+              echo "Pinning $pkg to dev $dev (newer than latest $latest)"
+              npm pkg set "dependencies[$pkg]=$dev"
               dev_installed+=("$pkg@$dev")
             else
-              echo "Installing $pkg@$latest"
-              npm install "$pkg@$latest" --save-exact
+              echo "Pinning $pkg to latest $latest"
+              npm pkg set "dependencies[$pkg]=$latest"
               latest_installed+=("$pkg@$latest")
             fi
           done
+          # Force a full, clean re-resolution instead of an incremental one: after
+          # changing several package.json versions at once, `npm install` on top of
+          # existing node_modules/package-lock.json can leave some packages only
+          # partially installed (especially combined with self-referencing overrides
+          # like "pkg": "$pkg"). Removing them first guarantees npm resolves everything
+          # from the updated package.json with no stale state to confuse it.
+          rm -rf node_modules package-lock.json
+          npm install
           echo "dev_installed=${dev_installed[*]}" >> "$GITHUB_ENV"
           echo "latest_installed=${latest_installed[*]}" >> "$GITHUB_ENV"
       - name: Commit dependency updates

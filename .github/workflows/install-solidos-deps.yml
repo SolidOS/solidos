@@ -29,10 +29,18 @@ jobs:
             latest=$(npm view "$pkg" version)
             dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
             if [ -n "$dev" ] && [ "$(printf '%s\n' "$latest" "$dev" | sort -V | tail -1)" = "$dev" ]; then
-              echo "Installing $pkg@dev (newer than latest $latest)"
-              npm install "$pkg@dev" --save-exact
+              echo "Pinning $pkg to dev $dev (newer than latest $latest)"
+              npm pkg set "dependencies[$pkg]=$dev"
             else
-              echo "Installing $pkg@$latest"
-              npm install "$pkg@$latest" --save-exact
+              echo "Pinning $pkg to latest $latest"
+              npm pkg set "dependencies[$pkg]=$latest"
             fi
           done
+          # Force a full, clean re-resolution instead of an incremental one: after
+          # changing several package.json versions at once, `npm install` on top of
+          # existing node_modules/package-lock.json can leave some packages only
+          # partially installed (especially combined with self-referencing overrides
+          # like "pkg": "$pkg"). Removing them first guarantees npm resolves everything
+          # from the updated package.json with no stale state to confuse it.
+          rm -rf node_modules package-lock.json
+          npm install
