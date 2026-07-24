@@ -13,8 +13,8 @@ nvm use --delete-prefix
 npx lerna bootstrap --force-local
 
 declare -a packageNames=(
+  "solid-logic"
   "solid-ui"
-  "profile-pane"
   "solid-panes"
   "mashlib"
   "pivot"
@@ -30,25 +30,21 @@ trap cleanup INT TERM EXIT
 
 for package in "${packageNames[@]}"; do
   case "$package" in
+     "solid-logic")
+      prestart=""
+      start='npx concurrently --no-clear -k -n npm,styles "npm run watch"'
+      ;;
     "solid-ui")
-      prestart="npm run build"
-      start='npx concurrently -k -n npm,styles "npm:watch-npm" "npm:watch-styles"'
-      ;;
-    "contacts-pane")
-      prestart="npm run build-dist"
-      start="npm run watch-dist"
-      ;;
-    "profile-pane")
-      prestart="npm run build-dist && npm run build-js"
-      start='npx concurrently -k -n babel,webpack "npm:watch-js" "npm:watch-dist"'
+      prestart=""
+      start='npm run watch'
       ;;
     "solid-panes")
-      prestart="npm run build-version"
-      start='npx concurrently -k -n babel,types,webpack "npm:watch-js" "npm:watch-types" "npm:watch-dist"'
+      prestart=""
+      start='npx concurrently --no-clear -k -n babel,types,webpack "npm:watch-js" "npm:watch-types" "npm:watch-dist"'
       ;;
     "mashlib")
-      prestart="npm run build-version"
-      start="npm run watch"
+      prestart=""
+      start='npx concurrently --no-clear -k -n babel,types,webpack "npm run watch"'
       ;;
     "pivot")
       prestart=""
