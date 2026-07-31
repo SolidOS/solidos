@@ -9,14 +9,14 @@ Table of contents:
 
 ## General rules
 
-The SolidOS team uses AI to code. As of June 2026, Copilot in VScode seems to be the prefered way.
+The SolidOS team uses AI to code. As of June 2026, Copilot in VS Code seems to be the preferred way.
 
 We want to kindly ask ALL contributors to adhere to the following:
 
-- if you are using AI to write code that is 100% written with AI you NEED to add this to your commit.
-- you do not need to add such a commit if you are writting: tests, refactoring (unless very heavy), or fixing bugs (unless it adds/changes a lot of the existin code).
+- if you are using AI to write code that is 100% written with AI, you NEED to add this to your commit.
+- you do not need to add such a commit if you are writing: tests, refactoring (unless very heavy), or fixing bugs (unless it adds/changes a lot of the existing code).
 
-### 2 example commits, written with AI:
+### 3 example commits, co-authored with AI:
 
     Author: Harry Hacker hh@example.org
     Date: Sun Jan 18 10:32:15 2026
@@ -30,7 +30,16 @@ We want to kindly ask ALL contributors to adhere to the following:
     Prompt: Generate a dialog modal for user confirmation.
     Output: (this commit) 
 
-In order to write such a commit see the [GitHub guidelines](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors).
+    docs: improve ticket labeling table to match lifecycle diagram
+    Prompt: On the SolidOS repo, we have a big README. I would like to add a
+    contributing.md which contains all the information that newcomers or current
+    devs need to be able to contribute to the SolidOS repositories. Pls suggest
+    a structure for it and copy over the relevant text. In addition, add a section
+    about the ticket labeling and use this photo
+    
+    Co-authored-by: GitHub Copilot (claude-sonnet-4.6) <copilot@github.com>
+
+In order to write such a commit, see the [GitHub guidelines](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors).
 And visit some of our past commits:
 - [solid-ui Update account components in header commit](https://github.com/SolidOS/solid-ui/pull/775/changes/9779714ad33923da82de150517a8e77c662cb52e)
 - [solidOS improve ticket labeling table to match lifecycle diagram commit](https://github.com/SolidOS/solidos/commit/c40118b3c8f32fd7ed69e1e9d40ccfdd454f644d)
