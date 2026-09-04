@@ -40,6 +40,11 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
           registry-url: https://registry.npmjs.org
+      # npm 10's arborist crashes with "Cannot read properties of null
+      # (reading 'edgesOut')" when doing a fresh `npm install` (no lockfile) on
+      # trees with optional peer deps (e.g. vitest). Fixed in npm 11.
+      - name: Use npm 11 (arborist fix for fresh-install crash)
+        run: npm install -g npm@11
       - run: npm ci
       - name: Install solidos dependencies (dev if newer, else latest)
         shell: bash
