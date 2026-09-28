@@ -30,10 +30,45 @@ jobs:
             echo "No solidosDependencies found, skipping"
             exit 0
           fi
+          # Semver precedence for X.Y.Z[-pre]: a release is newer than a prerelease of
+          # the same version, so `sort -V` cannot be used here (it ranks 6.0.0-2 above
+          # 6.0.0 and would pin the older prerelease).
+          is_newer() { # $1 candidate, $2 reference; true when candidate > reference
+            CAND="$1" REF="$2" node -e '
+              const cmp = (a, b) => {
+                const [ ac = "", ap = "" ] = a.split("-", 2);
+                const [ bc = "", bp = "" ] = b.split("-", 2);
+                const an = ac.split(".").map(Number);
+                const bn = bc.split(".").map(Number);
+                for (let i = 0; i < Math.max(an.length, bn.length); i += 1) {
+                  const d = (an[i] || 0) - (bn[i] || 0);
+                  if (d !== 0) return Math.sign(d);
+                }
+                if (ap === bp) return 0;
+                if (!ap) return 1;
+                if (!bp) return -1;
+                const as = ap.split(".");
+                const bs = bp.split(".");
+                for (let i = 0; i < Math.max(as.length, bs.length); i += 1) {
+                  if (as[i] === undefined) return -1;
+                  if (bs[i] === undefined) return 1;
+                  const ax = /^\d+$/u.test(as[i]);
+                  const bx = /^\d+$/u.test(bs[i]);
+                  if (ax && bx) {
+                    const d = Number(as[i]) - Number(bs[i]);
+                    if (d !== 0) return Math.sign(d);
+                  } else if (ax !== bx) return ax ? -1 : 1;
+                  else if (as[i] !== bs[i]) return as[i] > bs[i] ? 1 : -1;
+                }
+                return 0;
+              };
+              process.exit(cmp(process.env.CAND || "", process.env.REF || "") > 0 ? 0 : 1);
+            '
+          }
           for pkg in $pkgs; do
             latest=$(npm view "$pkg" version)
             dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
-            if [ -n "$dev" ] && [ "$(printf '%s\n' "$latest" "$dev" | sort -V | tail -1)" = "$dev" ]; then
+            if [ -n "$dev" ] && is_newer "$dev" "$latest"; then
               echo "Pinning $pkg to dev $dev (newer than latest $latest)"
               npm pkg set "dependencies[$pkg]=$dev"
             else
