@@ -128,4 +128,9 @@ jobs:
           [ -n "$dev_installed" ] && msg="$msg (dev: $dev_installed)"
           [ -n "$latest_installed" ] && msg="$msg (latest: $latest_installed)"
           git commit -m "$msg"
-          git push
+          # Branches protected by rules (PR required / required status checks) reject
+          # direct pushes with GH013. Do not fail the run in that case: the build must
+          # still run, and PR runs already pin the dependencies into the merged branch.
+          if ! git push; then
+            echo "::warning::Dependency update not pushed to $GITHUB_REF_NAME (protected branch?) - continuing without the commit"
+          fi
