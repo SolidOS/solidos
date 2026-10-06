@@ -12,9 +12,10 @@ mkdir -p workspaces
 rm -rf workspaces/*
 
 declare -a packages=(
-  "css-mashlib"
-  "node-solid-server"
+  "pivot"
   "mashlib"
+  "profile-pane"
+  "contacts-pane"
   "solid-panes"
   "solid-ui"
   "pane-registry"
@@ -26,6 +27,18 @@ do
   echo ""
   echo "# Installing $package"
   npm run add $package
+done
+
+# checkout specified branch
+for package in "${packages[@]}"
+do
+  echo ""
+  echo "# Checking out $1 for $package"
+  pushd workspaces/$package
+  git checkout staging || true
+  git pull
+  npm install
+  popd
 done
 
 # Build dependent packages, ensuring each is in proper Node environment via nvm
