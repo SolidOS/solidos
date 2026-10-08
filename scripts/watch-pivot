@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-set -euo pipefail
-
 unset PREFIX npm_config_prefix
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -15,20 +13,85 @@ npx lerna bootstrap --force-local
 declare -a packageNames=(
   "solid-logic"
   "solid-ui"
+  "contacts-pane"
+  "profile-pane"
   "solid-panes"
   "mashlib"
   "pivot"
   )
 
 startedPids=()
+buildLogs=$(mktemp -d)
+buildTimeout=${WATCH_PIVOT_BUILD_TIMEOUT:-300}
+if ! [[ "$buildTimeout" =~ ^[1-9][0-9]*$ ]]; then
+  echo "WATCH_PIVOT_BUILD_TIMEOUT must be a positive number of seconds." >&2
+  rmdir "$buildLogs"
+  exit 1
+fi
+
+function stopProcess {
+  local pid=$1
+  local child
+  for child in $(ps -axo pid=,ppid= | awk -v parent="$pid" '$2 == parent { print $1 }'); do
+    stopProcess "$child"
+  done
+  kill "$pid" 2>/dev/null || true
+}
+
 function cleanup {
   for pid in "${startedPids[@]}"; do
-    kill "$pid" 2>/dev/null || true
+    stopProcess "$pid"
+  done
+  for package in "${packageNames[@]}"; do
+    rm -f "$buildLogs/$package.log"
+  done
+  rmdir "$buildLogs"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+function matchesBuildLog {
+  local log=$1
+  local pattern=$2
+  # Build tools may emit ANSI colors even when FORCE_COLOR is set to zero.
+  sed -E $'s/\033\\[[0-9;]*[[:alpha:]]//g' "$log" | grep -E "$pattern" > /dev/null
+}
+
+function waitForBuild {
+  local package=$1
+  local pid=$2
+  local log=$3
+  local successPattern=$4
+  local entry=$5
+  local deadline=$((SECONDS + buildTimeout))
+
+  echo "Waiting for $package's initial build..."
+  while true; do
+    if matchesBuildLog "$log" 'compiled with .*errors?|error during build|Error:'; then
+      echo "Initial build of $package failed. Stopping started watchers." >&2
+      return 1
+    fi
+    if ! kill -0 "$pid" 2>/dev/null; then
+      echo "Package $package exited before startup completed. Stopping started watchers." >&2
+      return 1
+    fi
+    if matchesBuildLog "$log" "$successPattern" && [[ -s "$entry" ]]; then
+      echo "Initial build of $package completed."
+      return 0
+    fi
+    if (( SECONDS >= deadline )); then
+      echo "Timed out after ${buildTimeout}s waiting for $package's initial build. Stopping started watchers." >&2
+      return 1
+    fi
+    sleep 0.2
   done
 }
-trap cleanup INT TERM EXIT
 
 for package in "${packageNames[@]}"; do
+  # Vite's watch completion differs from the one-shot styles build's "built in" message.
+  successPattern='(^|] )built in [0-9]+ms\.$'
+  entry="workspaces/$package/dist/index.esm.js"
   case "$package" in
      "solid-logic")
       prestart=""
@@ -38,13 +101,23 @@ for package in "${packageNames[@]}"; do
       prestart=""
       start='npm run watch'
       ;;
+    "contacts-pane")
+      prestart=""
+      start='npm run watch'
+     ;;
+    "profile-pane")
+     prestart=""
+     start='npm run watch'
+      ;;
     "solid-panes")
       prestart=""
-      start='npx concurrently --no-clear -k -n babel,types,webpack "npm:watch-js" "npm:watch-types" "npm:watch-dist"'
+      start='npm run watch'
       ;;
     "mashlib")
       prestart=""
       start='npx concurrently --no-clear -k -n babel,types,webpack "npm run watch"'
+      successPattern='webpack .* compiled (successfully|with [0-9]+ warnings?)( |$)'
+      entry="workspaces/$package/dist/mashlib.js"
       ;;
     "pivot")
       prestart=""
@@ -52,7 +125,6 @@ for package in "${packageNames[@]}"; do
       ;;
     *)
       echo "Unknown package: $package"
-      cleanup
       exit 1
       ;;
   esac
@@ -68,20 +140,25 @@ for package in "${packageNames[@]}"; do
   )
 
   echo "Starting package $package..."
+  log="$buildLogs/$package.log"
+  : > "$log"
   (
     . "$NVM_DIR/nvm.sh"
     cd "workspaces/$package"
     nvm use --delete-prefix
-    eval "$start"
+    FORCE_COLOR=0 eval "$start" 2>&1 | tee "$log"
   ) &
   pid=$!
   startedPids+=("$pid")
 
-  sleep 1
-  if ! kill -0 "$pid" 2>/dev/null; then
-    echo "Package $package failed to start. Stopping started watchers."
-    cleanup
-    exit 1
+  if [[ "$package" != "pivot" ]]; then
+    waitForBuild "$package" "$pid" "$log" "$successPattern" "$entry"
+  else
+    sleep 1
+    if ! kill -0 "$pid" 2>/dev/null; then
+      echo "Package $package failed to start. Stopping started watchers." >&2
+      exit 1
+    fi
   fi
 done
 

@@ -182,6 +182,20 @@ pivot --> mashlib --> solid-panes --> [pane project] --> solid-ui --> rdflib
 
 This means that if you do a change in solid-panes and want to see the result on your local pivot, you need to make sure that mashlib compiles the changes as well. Similarly, if you do changes to solid-ui, and some pane relies on those changes, you need to make sure that the pane compiles those changes, that solid-panes compiles the changes from the pane, and finally that mashlib compiles the changes from solid-panes. This quickly becomes hard to track, so we've devised a couple of ways to mitigate this.
 
+`npm run watch-pivot` starts watchers in the order listed in `packageNames` in
+[`scripts/watch-pivot`](./scripts/watch-pivot). Each watcher's first successful
+build must finish and its JavaScript entry file must exist before the next watcher
+starts. Pane watch configurations should emit ESM only and exclude their output
+directory from watched inputs, so output formats do not trigger each other's
+rebuilds or remove files needed by downstream packages. Contacts and profile pane
+watchers also skip declaration generation to avoid rebuild loops; normal builds
+still generate declarations and both ESM and CommonJS outputs. Pivot starts after Mashlib's
+initial build completes. Watchers remain running for subsequent edits; this
+ordering applies to startup, not subsequent rebuilds. Startup stops and cleans up
+the started processes if a watcher exits, reports a build error, or takes longer
+than 300 seconds to complete its initial build. For slower machines, set
+`WATCH_PIVOT_BUILD_TIMEOUT` to a positive number of seconds.
+
 Read in detail how each pane can be debugged at the [SolidOS Wiki](https://github.com/solidos/solidos/wiki/1.-SolidOS-know-how#debugging-panesrepos-standalone-without-running-whole-solidos).
 
 ### Testing SolidOS code
