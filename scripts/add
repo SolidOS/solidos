@@ -146,6 +146,10 @@ case $1 in
     FOLDER='source-pane'
     GIT_URL='https://github.com/solidos/source-pane'
     ;;
+  'toolkit' | 'solidos-toolkit')
+    FOLDER='toolkit'
+    GIT_URL='https://github.com/solidos/toolkit.git'
+    ;;
   'web-access-control-tests')
     GIT_URL='https://github.com/solid/web-access-control-tests.git'
     ;;
