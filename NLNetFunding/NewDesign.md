@@ -1,3 +1,3 @@
 # ODI resourced a designer for SolidOS.
 
-The new design can be viewed here: [https://www.figma.com/proto/88xQawSSXzfQprEZPaKplZ/Solid-OS?node-id=1101-12533&starting-point-node-id=1101%3A12533&show-proto-sidebar=1](https://www.figma.com/proto/88xQawSSXzfQprEZPaKplZ/Solid-OS)
+The new design can be viewed here: [Figma](https://www.figma.com/proto/88xQawSSXzfQprEZPaKplZ/Solid-OS)
