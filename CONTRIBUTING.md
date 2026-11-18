@@ -120,7 +120,7 @@ Run the above lines in a terminal of your choice to set up your SolidOS project 
 You can start your server and test out your code with:
 
 ```sh
-npm start-pivot
+npm run start-pivot
 ```
 
 This will start [pivot](https://github.com/solid-contrib/pivot), a flavour of the COmmunity Solid Server.
