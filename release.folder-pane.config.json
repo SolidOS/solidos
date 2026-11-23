@@ -1,0 +1,6 @@
+{
+  "releaseSourceBranch": "staging",
+"repos": [ { "name": "folder-pane", "path": "workspaces/folder-pane",
+             "repo": "https://github.com/SolidOS/folder-pane.git",
+             "afterInstall": ["npm install solid-ui@latest solid-logic@latest pane-registry@latest rdflib@latest"] } ]
+}
