@@ -98,11 +98,20 @@ jobs:
           # unreleased libraries. That is how folder-pane@4.1.1 went out with
           # solid-ui 5.1.1-0 / solid-logic 6.2.1-0 / pane-registry 5.1.2-0.
           BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
-          PREFER_DEV=true
-          if [ "$BRANCH" = "main" ]; then
-            PREFER_DEV=false
-            echo "On $BRANCH: pinning released versions only, ignoring the dev tag"
-          fi
+          # Released branches carry the released pins: `main` after a merge, and the
+          # `release/*` branches the orchestrator cuts for a release PR. Without the
+          # second case the job pins prereleases on the release branch, that commit
+          # is part of the merge, and the published tarball ends up depending on
+          # unreleased libraries (folder-pane 4.1.1 and 4.1.3 both did).
+          case "$BRANCH" in
+            main|release/*)
+              PREFER_DEV=false
+              echo "On $BRANCH: pinning released versions only, ignoring the dev tag"
+              ;;
+            *)
+              PREFER_DEV=true
+              ;;
+          esac
           for pkg in $pkgs; do
             latest=$(npm view "$pkg" version)
             dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
