@@ -91,10 +91,22 @@ jobs:
           }
           dev_installed=()
           latest_installed=()
+          # `dev` can be newer than `latest` because staging publishes the next
+          # prerelease. Preferring it is what we want on staging and on pull
+          # requests, but never on main: a release pins the released versions,
+          # and re-pinning them here publishes a tarball that depends on
+          # unreleased libraries. That is how folder-pane@4.1.1 went out with
+          # solid-ui 5.1.1-0 / solid-logic 6.2.1-0 / pane-registry 5.1.2-0.
+          BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          PREFER_DEV=true
+          if [ "$BRANCH" = "main" ]; then
+            PREFER_DEV=false
+            echo "On $BRANCH: pinning released versions only, ignoring the dev tag"
+          fi
           for pkg in $pkgs; do
             latest=$(npm view "$pkg" version)
             dev=$(npm view "$pkg@dev" version 2>/dev/null) || true
-            if [ -n "$dev" ] && is_newer "$dev" "$latest"; then
+            if [ "$PREFER_DEV" = "true" ] && [ -n "$dev" ] && is_newer "$dev" "$latest"; then
               echo "Pinning $pkg to dev $dev (newer than latest $latest)"
               npm pkg set "dependencies[$pkg]=$dev"
               dev_installed+=("$pkg@$dev")
