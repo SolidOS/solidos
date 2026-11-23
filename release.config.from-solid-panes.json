@@ -27,7 +27,7 @@
       "path": "workspaces/solid-panes",
       "repo": "https://github.com/SolidOS/solid-panes.git",
       "afterInstall": [
-          "npm install activitystreams-pane chat-pane contacts-pane folder-pane issue-pane meeting-pane pane-registry profile-pane source-pane solid-ui solid-logic solid-namespace@latest rdflib@latest"
+          "npm install activitystreams-pane@latest chat-pane@latest contacts-pane@latest folder-pane@latest issue-pane@latest meeting-pane@latest pane-registry@latest profile-pane@latest source-pane@latest solid-ui@latest solid-logic@latest solid-namespace@latest rdflib@latest"
       ]
     },
     {
@@ -35,7 +35,7 @@
       "path": "workspaces/mashlib",
       "repo": "https://github.com/SolidOS/mashlib.git",
       "afterInstall": [
-        "npm install solid-panes solid-ui solid-logic rdflib@latest"
+        "npm install solid-panes@latest pane-registry@latest solid-ui@latest solid-logic@latest rdflib@latest"
       ]
     }
   ]
