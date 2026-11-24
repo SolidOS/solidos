@@ -1,335 +1,365 @@
-Solidos Release Orchestrator - How To
+# SolidOS Release Orchestrator — How To
 
-## Quick Summary
-
-The Solidos monorepo uses a **centralized release orchestrator** to publish all dependent packages at once.
+`scripts/release-orchestrator.js`, driven by `.github/workflows/release.yml`, publishes the
+SolidOS package chain from a single manual Actions trigger.
 
 ```
-solidos/ (main branch)
+solidos/  (branch: main)
 ├── .github/workflows/
-│   └── release.yml                 ← Manual GitHub Actions trigger
+│   └── release.yml                  ← manual trigger only (workflow_dispatch)
 ├── scripts/
-│   └── release-orchestrator.js     ← Does the actual work
-├── release.config.json             ← Lists repos to publish (stable mode)
-├── release.config.test.json        ← Lists repos to publish (test mode)
+│   └── release-orchestrator.js      ← does the work
+├── release.config.json              ← repo list, mode defaults
+├── release.config.<variant>.json    ← extra configs, selected at trigger time
 └── workspaces/
-    ├── solid-panes/                ← Nothing special needed
-    ├── folder-pane/                ← Nothing special needed
-    └── (other repos)               ← Nothing special needed
+    ├── solid-panes/
+    ├── mashlib/
+    └── …
 ```
 
-## Org Owner Setup (5 Minutes)
+Nothing special is required inside the individual repos beyond a `package.json` with the
+scripts the config names, and a `ci.yml` that publishes `@latest` on `main` (see
+[Publishing is delegated to repo CI](#publishing-is-delegated-to-repo-ci)).
 
-Before the release workflow can publish stable versions from GitHub Actions:
+---
 
-1. Create a fine-grained PAT for release automation.
-2. Grant it `Contents: Read and write` and `Metadata: Read` on the SolidOS repos to be released.
-3. In `solidos/solidos` → Settings → Secrets and variables → Actions, add:
-  - `GIT_PUSH_TOKEN`
-  - `NPM_TOKEN`
-4. For **protected branches on main**: Use `mode=stable-publish` (no extra config needed—it auto-merges PRs)
-5. For **unprotected main branch**: Use `mode=stable` (requires direct push access)
-6. Run the `Solidos Release` workflow manually with:
-  - `mode=test` for prerelease publishing
-  - `mode=stable-publish` for `@latest` (protected branch)
-  - `mode=stable` for `@latest` (direct push)
+## TL;DR
 
-## How It Works
+| Goal | Trigger |
+|------|---------|
+| See what a run would do | locally: `--dry-run=true` (mandatory locally) |
+| Prerelease to npm `@test` | `mode=test` |
+| Protected `main`: PR → merge → repo CI publishes | `mode=stable-publish` |
+| Unprotected `main`: push + orchestrator publishes | `mode=stable` |
+| Only open the release PR, human merges | `mode=stable-prepare-pr` |
 
-**Three execution modes:**
+---
 
-| Scenario | Command | Where | Publishes? |
-|----------|---------|-------|-----------|
-| **Local Testing** | `node scripts/release-orchestrator.js --dry-run=true` | Your computer | ❌ No (prints what would happen) |
-| **Test Release** | Manual trigger: mode=test | GitHub Actions | ✅ Yes (@test tag) |
-| **Stable Release (Direct Push)** | Manual trigger: mode=stable | GitHub Actions | ✅ Yes (@latest tag) |
-| **Stable Release (Protected Branch)** | Manual trigger: mode=stable-publish | GitHub Actions | ✅ Yes (@latest tag, auto-merges PR) |
+## Modes
 
-**Workflow (stable-publish mode with protected branches):**
+| Mode | Starts from | Branch created | Merge strategy | Who runs `npm publish` | npm tag |
+|------|-------------|----------------|----------------|------------------------|---------|
+| `test` | target branch | — | — | orchestrator | `test` |
+| `stable` | target branch (+ source merged in) | — | direct push to target | orchestrator | `latest` |
+| `stable-prepare-pr` | **source** branch | `release/<pkg>-<timestamp>` | PR, **not** auto-merged | — (no publish) | — |
+| `stable-publish` | **target** branch | `release/<pkg>-<timestamp>` | PR, auto-merged (required) | each repo's `ci.yml` on `main` | `latest` |
+
+Effective config for both PR modes forces `gitPush: false` and `gitTag: false`; the PR merge
+is what lands on `main`.
+
+The `Step 1/3 / 2/3 / 3/3` lines in the log are cosmetic — step 3 does not publish anything.
+
+---
+
+## Branch model
+
+Two independent notions, resolved differently.
+
+**Target branch** — where the release lands:
+
 ```
-You click "Run workflow" → mode=stable-publish
-          ↓ Step 1/3: Create Release PR
-Creates release branch from dev → Merges dev into main → Pushes branch → Opens PR
-          ↓ Step 2/3: Auto-Merge PR
-Waits for CI checks to pass → Auto-merges PR with --squash → Fetches updated main
-          ↓ Step 3/3: Publish
-For each repo listed:
-  - npm install
-  - npm version (bump patch/minor/major)
-  - npm publish (@latest tag)
-  - git push + tags all at once
+--branch  →  repo.branch  →  modes[mode].branch  →  config.defaultBranch  →  'main'
 ```
 
-**Old two-step flow (still supported for manual workflows):**
-- Step 1: `mode=stable-prepare-pr` - creates PR, human reviews/merges
-- Step 2: `mode=stable-publish` - requires manual merge first
+**Source branch** — what gets merged into the target. Used only by `stable` and
+`stable-prepare-pr`:
 
-**New unified flow (recommended):**
-- Single `mode=stable-publish` - does all three: create PR, auto-merge, publish
-
-## Key Points
-
-- **Individual repos need nothing special** — they just need `package.json` and npm scripts
-- **All repos already exist in GitHub** — clone-missing is a fallback only
-- **Branches are configurable** — typically main for stable, develop for test
-- **Both test and stable default to main** — configure in release.config.json if you want different branches
-- **PR workflow is unaffected** — each repo's ci.yml still runs for PRs
-- **Waiting PRs won't auto-publish** — you manually trigger the release
-
-## Overview
-- This repository uses a multi-repo release orchestrator to publish dependent packages.
-- Publishing is only allowed in GitHub Actions; local runs must use --dry-run.
-- Test publishes use a prerelease version and the npm dist-tag "test" so @latest is unaffected.
-
-Files
-- release.config.json: repo list and per-repo overrides.
-- scripts/release-orchestrator.js: the release runner.
-- .github/workflows/release.yml: GitHub Actions workflow.
-
-Three Execution Scenarios
-
-**Scenario 1: Local Dry-Run (Testing)**
-```bash
-cd d:\github\solidos
-node scripts/release-orchestrator.js --mode test --dry-run=true
 ```
-- Runs on your computer
-- Prints commands without executing them (prefixed with `[dry-run]`)
-- Creates `release-summary.json` locally
-- No publishing occurs
-- **Use case:** See exactly what would happen before running for real
+repo.releaseSourceBranch → repo.sourceBranch → modes['stable-publish'].sourceBranch
+  → modes.stable.sourceBranch → config.releaseSourceBranch → modes.test.branch → target
+```
 
-**Scenario 2: GitHub Test Release**
-- Click Actions → "Solidos Release" → Run workflow
-- Inputs: mode=test, dry_run=false
-- Publishes to npm with `@test` tag
-- Does NOT create git tags
-- Results in GitHub Actions logs and artifacts
-- **Always publishes** (no skip logic)
-- **Use case:** Pre-release versions for testing from dev branch
+Consequences worth knowing:
 
-**Scenario 3: GitHub Stable Release (Protected Branches)**
-- Click Actions → "Solidos Release" → Run workflow
-- Inputs: mode=stable-publish, dry_run=false
-- **Single command that does everything:**
-  1. Creates release branch from dev
-  2. Opens PR to main
-  3. Waits for CI checks to pass
-  4. Auto-merges PR (squash merge)
-  5. Publishes all packages to npm with `@latest` tag
-  6. Pushes git tags to main
-- Eliminates manual PR merge step
-- **Perfect for:** Organizations with branch protection rules on `main`
-- **Use case:** Automated stable releases without human intervention on PR merge
+- **`stable-publish` never reads the source branch.** It branches straight off the target
+  (`main`), so commits sitting on `staging` cannot reach a `stable-publish` release. They
+  flow in through `afterInstall` (`npm install <pkg>@latest`), not through a merge.
+- **`--branch` sets the target only**, never the source.
+- If the configured source does not exist on `origin`, it silently falls back to the target
+  with a warning. In dry-run the existence check is skipped.
+- With a config that has no `releaseSourceBranch` and no `modes.stable.sourceBranch`, the
+  fallback reaches `modes.test.branch` — for a typical config that means `stable` would try
+  to merge **`dev`**. Set `releaseSourceBranch` explicitly if you use `stable`.
 
-**Scenario 4: GitHub Stable Release (Direct Push)**
-- Click Actions → "Solidos Release" → Run workflow
-- Inputs: mode=stable, dry_run=false
-- Automatically merges origin/dev → main if dev has new commits
-- Publishes to npm with `@latest` tag
-- Creates git tags and pushes to GitHub
-- Results in GitHub Actions logs and artifacts
-- Skips if dev has no new commits (unless --branch=main specified)
-- **WARNING:** Requires write access to protected branches, may fail with 403
-- **Use case:** Repositories without branch protection on `main`
+---
 
-Local dry-run
-- Show the exact commands without running them:
-  node scripts/release-orchestrator.js --mode test --dry-run
-- Override the branch:
-  node scripts/release-orchestrator.js --mode test --dry-run --branch develop
-- Force stable publish regardless of changes:
-  node scripts/release-orchestrator.js --mode stable --branch main
-- Dry-run allows untracked files (ignored for convenience)
+## `stable-publish` in detail
 
-CI runs (GitHub Actions)
-- Trigger workflow "Solidos Release" with inputs:
-  - mode: test or stable
-  - config: release.config.json (or another config file)
-  - dry_run: true or false
-  - clone_missing: true or false
-  - branch: optional branch name override
+Per repo, in `repos` array order:
 
-  Fine-Grained PAT for Git Push (GIT_PUSH_TOKEN)
-  - Stable mode needs to push commits/tags to multiple SolidOS repos.
-  - `GITHUB_TOKEN` is often limited to the current repository.
-  - Configure `GIT_PUSH_TOKEN` as a repository secret in `solidos/solidos`.
+1. `ensureBranch` → `git fetch --all`, `git switch <target>`, `git pull --ff-only origin <target>`.
+2. `createReleaseBranch` → `git switch -c release/<pkg>-<timestamp>`, after
+   `ensureCiPushAccess` verifies with `git push --dry-run origin HEAD:<branch>`.
+3. `npm install` (or `repo.install` / `defaultInstall`), then `beforeInstall` / `afterInstall`
+   steps — this is where released dependencies are pulled in.
+4. `lockStableDependencyVersions` — pins the installed versions of every package named in
+   `afterInstall` (see [Dependency locking](#dependency-locking)).
+5. Tests, then build (`defaultTest` / `defaultBuild`), plus any `before*` / `after*` hooks.
+6. `bumpStableVersion` — patch bump by default, committed as `Release <v> [skip ci]`.
+7. Push the release branch, then `gh pr create` (**required** — fails the repo if this fails).
+8. `waitForPRMerge` with `required: true`:
+   - waits up to 2 min for the PR to become visible;
+   - requests `gh pr merge --merge --auto --delete-branch`;
+   - polls up to 20 min on `state`, `mergeStateStatus`, `statusCheckRollup`;
+   - if the PR stays `BLOCKED` with zero checks, force-pushes an empty commit
+     (`Trigger CI checks`) to re-fire the `pull_request` event so required checks materialize;
+   - falls back to `--admin` merge only once checks exist and are green;
+   - hard-fails after ~2 min of `BLOCKED` with no checks, or immediately on a failing check;
+   - then `git reset --hard`, `git clean -fd`, checkout target, `git pull`.
+9. Waits for `<repoCiWorkflow>` (default `ci.yml`, 20 min) to succeed **on the target HEAD**.
+10. Polls npm (10 min) for `name@version`; timeout is a hard error.
+11. Summary status: `published-by-repo-ci`.
 
-  Recommended setup (fine-grained PAT):
-  1. Create a new fine-grained PAT in GitHub (do not reuse a broad personal token).
-  2. Resource owner: `SolidOS` organization.
-  3. Repository access:
-    - Prefer "Only select repositories" and include repos listed in `release.config.json`.
-    - "All repositories" also works if needed.
-  4. Permissions:
-    - `Contents`: `Read and write` (required for clone/push/tags)
-    - `Metadata`: `Read` (required)
-    - `Actions`: `Read` (optional)
-  5. If branch protection blocks direct push to `main`, allow this token/account to bypass rules, or switch to a PR-based merge flow.
-  6. Save token as secret:
-    - Repo: `solidos/solidos`
-    - Secret name: `GIT_PUSH_TOKEN`
+`skipIfNoDiff` is **not** consulted in `stable-publish` — the release branch always exists
+because `afterInstall` is expected to change the dependency versions.
 
-  Security notes:
-  - Do not use high-risk scopes like `delete_repo` or `delete:packages`.
-  - Use a dedicated token for release automation.
-  - Rotate regularly and immediately on suspected exposure.
+### Publishing is delegated to repo CI
 
-Command-line Options
-- --mode: test or stable (default: stable)
-- --config: path to config file (default: release.config.json)
-- --dry-run: true or false (default: false)
-- --clone-missing: true or false (default: false)
-- --branch: override branch for all repos (optional)
-  - Also disables skip logic in stable mode (forces publish)
-- --summary-path: path to output summary file (default: release-summary.json)
+`stable-publish` ends at step 10. It does not run `npm publish`. Each target repository's
+`ci.yml` publishes `@latest` when a version bump lands on `main`. This keeps exactly one
+publisher for `latest`, so the orchestrator's npm publish and the repo CI publish cannot
+race or double-publish.
 
-Branch Configuration
+Two knock-on effects:
 
-By default, both test and stable modes use the `main` branch. To use different branches:
+- The version bumped by the orchestrator **must** be one the repo CI will publish, and it
+  cannot be re-used. `npm publish` cannot overwrite.
+- `mashlib` is listed after `solid-panes` in the config, but the orchestrator waits for
+  `solid-panes@<version>` to appear on npm before it starts `mashlib`, so the ordering holds.
 
-**Example release.config.json with separate branches:**
+---
+
+## Branch hygiene: `main`, `staging`, `release/*`
+
+- `staging` = `main` + a prerelease version. Prepared locally on `mainToStaging`. The
+  invariant is `origin/main` is an ancestor of `origin/staging`.
+- Release changes **never** go to `main` directly. They go to a branch, then a PR.
+- `.github/workflows/update-solidos-deps.yml` (the shared sync job) pins `dev` builds only
+  on non-released branches: `main` and `release/*` are exempt. Without that exemption, the
+  bot dev-pins the very release PR being merged, and an unreleased prerelease gets published
+  under `latest`.
+
+---
+
+## Tokens and preconditions
+
+| Env var | Used for |
+|---------|----------|
+| `GIT_PUSH_TOKEN` | clone, push, `gh` API (`preferGhToken` copies it to `GH_TOKEN` when `GH_TOKEN` is unset) |
+| `GITHUB_TOKEN` | fallback for git push |
+| `NPM_TOKEN` | test/stable publish from the orchestrator; repo CI handles `stable-publish` |
+
+Setup:
+
+1. Fine-grained PAT, resource owner `SolidOS`.
+2. Repository access: the repos in the config ("Only select repositories" or all).
+3. Permissions: `Contents: Read and write`, `Metadata: Read`, optionally `Actions: Read`.
+4. Store as repo secret `GIT_PUSH_TOKEN` in `solidos/solidos`, plus `NPM_TOKEN`.
+5. If branch protection blocks direct push, use `stable-publish` (PR flow) rather than asking
+   the token to bypass rules.
+
+Do not grant `delete_repo` or `delete:packages`. Use a dedicated token and rotate it.
+
+Also required in CI: the `gh` CLI, and a clean working tree (`ensureClean`). Locally, a
+non-dry-run invocation throws: *Publishing is only allowed in GitHub Actions.* In CI,
+`clone_missing` is forced to `true`.
+
+---
+
+## CLI
+
+```
+node scripts/release-orchestrator.js [--mode <mode>] [--config <path>] \
+  [--dry-run[=true|false]] [--clone-missing[=true|false]] \
+  [--branch <name>] [--summary-path <path>]
+```
+
+| Option | Default | Notes |
+|--------|---------|-------|
+| `--mode` | `stable` | `test` \| `stable` \| `stable-prepare-pr` \| `stable-publish` |
+| `--config` | `release.config.json` | resolved against the current directory |
+| `--dry-run` | `false` | mandatory locally |
+| `--clone-missing` | `false` | forced `true` in CI |
+| `--branch` | — | target branch override; also disables the `stable` no-diff skip |
+| `--summary-path` | `release-summary.json` | written even when the run fails |
+
+Booleans accept `--flag=true`, `--flag true`, or a bare `--flag` (meaning true). Unknown
+flags are ignored rather than rejected. There is no `--repo` filter — narrow a run by
+editing the config's `repos` array.
+
+---
+
+## Config reference
+
+`modes` may be an object keyed by mode name (usual form) or an array of `{ "name": … }`
+entries; both are accepted.
+
 ```json
 {
   "defaultBranch": "main",
-  "modes": [
-    {
-      "name": "test",
+  "skipIfNoDiff": true,
+  "defaultInstall": "npm install",
+  "defaultTest": "npm test",
+  "defaultBuild": "npm run build",
+  "modes": {
+    "stable": {
+      "branch": "main",
+      "versionBump": "patch",
+      "npmTag": "latest",
+      "gitTag": true,
+      "gitPush": true
+    },
+    "test": {
       "branch": "dev",
       "versionBump": "prerelease",
       "preid": "test",
-      "npmTag": "test"
-    },
-    {
-      "name": "stable",
-      "branch": "main",
-      "versionBump": "patch",
-      "npmTag": "latest"
+      "npmTag": "test",
+      "gitTag": false,
+      "gitPush": false
     }
-  ],
+  },
   "repos": [
     {
       "name": "solid-panes",
-      "path": "./workspaces/solid-panes",
+      "path": "workspaces/solid-panes",
+      "repo": "https://github.com/SolidOS/solid-panes.git",
       "afterInstall": [
-        "npm install profile-pane"
+        "npm install folder-pane@latest solid-ui@latest solid-logic@latest rdflib@latest"
       ]
     }
   ]
 }
 ```
 
-Behavior:
-- **Test mode:** 
-  - Pulls from `dev` branch
-  - Always publishes (no skip)
-  - afterInstall `npm install profile-pane` becomes `npm install profile-pane@test || npm install profile-pane@latest`
-- **Stable mode:**
-  - Pulls from `main` branch
-  - Auto-merges origin/dev if it has new commits
-  - Skips if no changes (unless --branch=main specified)
+Top level: `defaultBranch`, `skipIfNoDiff`, `defaultInstall`, `defaultTest`,
+`defaultBuild`, `modes`, `repos`, and the optional globals below.
 
-Publish modes
-- test:
-  - Runs on: dev branch (or configured branch)
-  - npm version prerelease --preid test
-  - npm publish --tag test --ignore-scripts
-  - does NOT create git tags or push
-  - **Always publishes** (no skip check)
-  - If the prerelease version already exists, it auto-bumps again before publishing
-  - Temporarily disables preversion/version/postversion scripts during version bump
-  - afterInstall commands use @test tag with @latest fallback
-- stable:
-  - Runs on: main branch (or configured branch)
-  - Checks if origin/dev has commits that main doesn't
-  - If yes: auto-merges origin/dev → main (may fail on conflicts)
-  - npm version patch (or configured bump)
-  - npm publish (latest) with --ignore-scripts
-  - creates git tags and pushes by default
-  - Skips if no changes (unless --branch explicitly specified)
-  - afterInstall commands use @latest tag
+Per repo: `name`, `path`, `repo` (needed for `gh` and for CI clones), `branch`,
+`install`, `test`, `build`, `skipIfNoDiff`, `sourceBranch`, `releaseSourceBranch`,
+and the step arrays `beforeInstall` / `afterInstall` / `beforeTest` / `afterTest` /
+`beforeBuild` / `afterBuild` / `beforePublish` / `afterPublish`.
 
-Multiple configs
-- Create additional config files (for example):
-  - release.config.json
-  - release.config.test.json
-  - release.config.hotfix.json
-- Use with: --config release.config.test.json
+Optional tuning keys (mode level or top level, mode wins):
 
-Skip logic
-- **Test mode:** Always publishes (no skip logic)
-- **Stable mode:**
-  - Compares origin/dev vs main to detect unpublished changes
-  - If origin/dev has commits that main doesn't: merges and publishes
-  - If no changes: skips publishing
-  - Override: `--branch=main` forces publish regardless of changes
-  - Merge happens automatically before publish (fails if conflicts)
-  - Merge commit includes `[skip ci]` to prevent redundant ci.yml runs
+| Key | Purpose |
+|-----|---------|
+| `sourceBranch` | source branch for `stable` / `stable-prepare-pr` |
+| `releaseSourceBranch` | same, top-level form |
+| `lockDependencyFields` | default `["dependencies","devDependencies"]` |
+| `lockDependencyPrefix` | default `^` |
+| `lockInstallCommand` | default `npm install` (run to refresh the lockfile) |
+| `lockCommitMessage` | default `chore(release): lock tested dependency versions [skip ci]` |
+| `requiredChecksWorkflow` | default `ci.yml` — workflow whose checks gate the merge |
+| `repoCiWorkflow` | default `ci.yml` — workflow awaited on `main` after merge |
+| `repoCiWorkflowTimeoutMs` / `repoCiWorkflowPollIntervalMs` | default 20 min / 15 s |
+| `repoCiPublishTimeoutMs` / `repoCiPublishPollIntervalMs` | default 10 min / 5 s |
+| `autoCommitBeforeVersion` | auto-commit dirty tree before the bump (default true in CI) |
+| `preVersionCommitMessage` | default `chore(release): sync release prep changes [skip ci]` |
 
-Summary output
-- A summary is printed at the end and written to release-summary.json.
-- Override with: --summary-path path/to/summary.json
+---
 
-npm install with dist-tags
-- **Test mode:** afterInstall commands automatically inject @test tags
-  - Example: `npm install solid-ui` becomes `npm install solid-ui@test`
-  - Fallback: If @test doesn't exist, tries @latest automatically
-  - Command: `npm install solid-ui@test || npm install solid-ui@latest`
-- **Stable mode:** afterInstall commands use @latest tags (default npm behavior)
-- Manual install: `npm install <pkg>@test` to get test versions
+## `afterInstall` and dist-tags
 
-Config options (release.config.json)
-- defaultBranch: branch name used if repo does not override.
-- skipIfNoDiff: skip publish if no diff vs origin.
-- defaultInstall / defaultTest / defaultBuild: commands for all repos.
-- modes: publish behavior for "stable" and "test".
-- repos: per repo configuration:
-  - name (required)
-  - path (required)
-  - repo (optional, needed for CI clone)
-  - branch (optional override)
-  - install/test/build (optional overrides)
-  - before*/after* arrays for custom steps
+`afterInstall` runs after `npm install`, with the mode's npm tag injected into bare package
+names:
 
-Notes
-- CI uses npm OIDC with NODE_AUTH_TOKEN set in GitHub Actions.
-- CI uses `GIT_PUSH_TOKEN` (preferred) or falls back to `GITHUB_TOKEN` for git clone/push authentication.
-- If a repo requires special install steps, add them under afterInstall in the config.
+- **`test`** → `npm install solid-ui` becomes `npm install solid-ui@test`, falling back to
+  `@latest` if the `test` dist-tag does not exist.
+- **`stable` / `stable-publish`** → `@latest` behaviour (explicit tags are preserved).
 
-Individual Repos and Their CI Workflows
+**Always write `@latest` explicitly when you want an upgrade.** A bare name is installed at
+whatever version `package.json` already pins; if the pin is exact (`4.1.0`), the command is
+a no-op and the release ships the old dependency while looking perfectly healthy.
 
-Each workspace repo (solid-panes, folder-pane, etc.) has its own `ci.yml` workflow for PR testing. This is **independent** of the release orchestrator:
+---
 
-**Per-repo ci.yml (solid-panes/.github/workflows/ci.yml):**
-- Triggers on: Push to main/develop, Pull requests
-- Runs: Tests, linting, building
-- Purpose: Verify code quality
-- Used by: PRs waiting to be merged
-- **Does NOT publish to npm**
+## Dependency locking
 
-**Central release.yml (solidos/.github/workflows/release.yml):**
-- Triggers on: Manual button click only
-- Runs: release-orchestrator.js
-- Purpose: Publish all repos to npm at once
-- Used by: Release maintainers
-- **Does NOT run automatically on PRs or merges**
+For `stable` and `stable-publish`, `lockStableDependencyVersions`:
 
-**Summary:**
-```
-┌─ PR Created
-│  └─ ci.yml runs in each repo → blocks merge if tests fail
-│
-└─ PR Merged to main/develop
-   └─ ci.yml finishes
-   └─ [waiting for manual release trigger]
-   └─ You click "Run workflow" in Actions
-      └─ release.yml runs → publishes to npm
-         └─ (stable mode) auto-merges dev→main with [skip ci]
-         └─ pushes version tags and commits
-         └─ ci.yml does NOT run (prevented by [skip ci])
-```
+1. Collects every package named in the repo's `afterInstall` steps.
+2. Reads the version actually installed in `node_modules`.
+3. Rewrites the matching `dependencies` / `devDependencies` entry to `^<installed>`
+   (`lockDependencyPrefix` overrides the caret).
+4. Runs `lockInstallCommand` to refresh `package-lock.json`.
+5. Commits `package.json` + lockfile as `chore(release): lock tested dependency versions [skip ci]`.
 
-**Important Notes:**
-- Waiting PRs are NOT automatically published. You must manually trigger the release after merging.
-- When stable mode merges dev→main automatically, it uses `[skip ci]` in the commit message to prevent redundant ci.yml runs in individual repos.
-- Tests/builds already ran in the release orchestrator, so skipping ci.yml avoids duplicate work.
+This is what makes the published package declare the versions that were actually tested,
+rather than floating ranges.
+
+---
+
+## Version bump
+
+`versionBump` (default `patch`) is applied with `npm version`:
+
+- `gitTag: true` → `npm version <bump> -m "Release %s"`, tag created and pushed.
+- `gitTag: false` (both PR modes) → `npm version <bump> --no-git-tag-version`, then an
+  explicit `git commit -m "Release <v> [skip ci]" --allow-empty`.
+
+Lifecycle scripts are skipped (`--ignore-scripts`). A dirty tree is either auto-committed
+(`autoCommitBeforeVersion`, true in CI) or rejected by `ensureCleanBeforeVersion`.
+
+---
+
+## Skip logic
+
+- **`test`** — always publishes.
+- **`stable`** — compares `target..origin/<source>`; `0` commits → skip (`no-diff`), unless
+  `--branch` was passed or `skipIfNoDiff: false`. Otherwise merges the source in
+  (`Merge <source> into <target> for release [skip ci]`) and publishes.
+- **`stable-prepare-pr`** — same comparison; skip if no diff; otherwise opens the PR.
+- **`stable-publish`** — never skips.
+
+---
+
+## Summary output
+
+A summary is printed and written to `--summary-path` (default `release-summary.json`) in a
+`finally` block, so it is emitted even when a repo fails. Statuses:
+`published`, `published-by-repo-ci`, `dry-run`, `prepared-pr`, `skipped`, `failed`.
+
+A dry run writes `release-summary.json` into the directory you ran it from — expect it in
+`git status`.
+
+---
+
+## Related workflows
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `release.yml` (solidos) | manual | runs the orchestrator |
+| `<repo>/ci.yml` | push / PR | tests, build, and `npm publish` of `@latest` on `main` |
+| `update-solidos-deps.yml` (solidos, reusable) | called by each repo's `ci.yml` | syncs declared SolidOS dependency versions from the registry |
+
+`update-solidos-deps.yml` pins each package listed in the repo's `solidosDependencies` to
+the `dev` build when newer, else `latest`; it deletes `node_modules` + `package-lock.json`,
+reinstalls, and commits `chore: update solidos dependencies …`. Pushes are
+warn-and-continue, so a rejected push is easy to miss.
+
+---
+
+## Known gotchas
+
+- **A published version is burned.** `npm publish` cannot overwrite. Fix forward with a new
+  bump; do not retry the same version.
+- **Prereleases do not satisfy `^` ranges.** `^3.1.1` never admits `3.2.0-0`. Peer ranges
+  that must accept both need a union: `>=3.1.1 <6.0.0 || >=5.1.2-0 <6.0.0`.
+- **The dev-pinning bot and the release are coupled.** A `dev`-pinned release branch produces
+  a `latest` version with prerelease dependencies. Hence the `main|release/*` exemption.
+- **Errors mask each other.** Dev pins can satisfy peer ranges that released versions would
+  violate, so a broken peer range only surfaces after the pinning bug is fixed.
+- **`staging` is invisible to `stable-publish`.** If a fix only lives on `staging`, release it
+  through npm first, then let `afterInstall` pull it in.
+- **`--branch` ≠ source.** It overrides the target branch for every repo in the config.
+- **The pre-merge guard is dead code.** `ensureMainContainsStableChanges` is defined but never
+  called, so nothing verifies the target is caught up with a source branch.
+
+---
+
+## References
+
+- Orchestrator: `scripts/release-orchestrator.js`
+- Workflow: `.github/workflows/release.yml`
+- Dependency sync: `.github/workflows/update-solidos-deps.yml`
+- Historical run notes: `RELEASE-STATUS.md`

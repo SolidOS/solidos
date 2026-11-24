@@ -5,6 +5,32 @@
 
 ---
 
+## Update — November 23, 2026
+
+`RELEASE-HOWTO.md` is now the authoritative reference; the checkpoints below are kept as
+history of how the pipeline reached its current shape.
+
+Confirmed and documented since the March checkpoints:
+
+- `stable-publish` is **target → target** (branch off `main`, PR back to `main`). It never
+  reads a source branch, so `staging` content cannot reach it — that flows through
+  `afterInstall` (`npm install <pkg>@latest`) instead.
+- Publishing for `stable-publish` stays delegated to repo `ci.yml`; the orchestrator waits for
+  the workflow on the merge commit, then polls npm before starting the next repo.
+- `update-solidos-deps.yml` exempts `main` **and** `release/*` from dev-pinning (`9b104bb`,
+  PR #480). Without it the bot dev-pinned the release PR and published unreleased prereleases
+  under `latest`.
+- `solidos-toolkit` peer ranges were widened to unions (`>=3.1.1 <6.0.0 || >=5.1.2-0 <6.0.0`
+  and equivalents) so that released versions satisfy them as well as prereleases.
+- Release configs use `@latest` in `afterInstall`. A bare package name against an exact pin
+  installs nothing, so the upgrade silently depended on the sync job succeeding.
+- `folder-pane@4.1.4` is the first version verified end to end: `pane-registry 5.1.1`,
+  `solid-logic 6.2.0`, `solid-ui 5.1.0`, published `@latest` by repo CI.
+- `ensureMainContainsStableChanges` is dead code: the pre-merge guard it was written for is
+  never invoked.
+
+---
+
 ## Checkpoint (March 20, 2026 - latest)
 
 Final decision for stable releases:
@@ -392,23 +418,23 @@ After implementing dependency locking:
 
 ## Quick Reference
 
-### Run test publish:
+### Publishing runs only in GitHub Actions
+
+A local non-dry-run invocation is rejected (`Publishing is only allowed in GitHub Actions`),
+so publishing is always triggered through the workflow:
+
 ```bash
-# From solidos repo
-node scripts/release-orchestrator.js \
-  --config release.config.json \
-  --mode test \
-  --dry-run=false \
-  --clone-missing=true
+# prerelease to npm @test
+gh workflow run release.yml -f mode=test -f config=release.config.json -f dry_run=false
+
+# protected main: release PR -> auto-merge -> repo ci.yml publishes @latest
+gh workflow run release.yml -f mode=stable-publish -f config=release.config.json -f dry_run=false
 ```
 
-### Run stable publish:
+Locally only a dry run is available (it writes `release-summary.json` and executes nothing):
+
 ```bash
-node scripts/release-orchestrator.js \
-  --config release.config.json \
-  --mode stable \
-  --dry-run=false \
-  --clone-missing=true
+node scripts/release-orchestrator.js --config release.config.json --mode test --dry-run=true
 ```
 
 ### Check published versions:
